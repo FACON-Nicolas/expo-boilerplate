@@ -1,13 +1,12 @@
-import { selectAuthState } from '@/redux/auth';
-import { useAppSelector } from '@/redux/store';
 import { Redirect, Stack } from 'expo-router';
 import { useResetAuthError } from '@/hooks/useResetAuthError';
+import { useAuthenticationManagement } from '@/hooks/useAuthenticationManagement';
 
 export default function RootLayout() {
-  const { user } = useAppSelector(selectAuthState);
+  const { isUserAuthenticated } = useAuthenticationManagement();
   useResetAuthError();
 
-  if (!!user) {
+  if (isUserAuthenticated) {
     return <Redirect href='/(protected)' />;
   }
 
