@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   TextInput,
   StyleSheet,
@@ -6,9 +5,6 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { ThemedView } from './ThemedView';
-import { ThemedText } from './ThemedText';
-import { IconSymbol } from './ui/IconSymbol';
-import { Ionicons } from '@expo/vector-icons';
 import { useToggle } from '@/hooks/useToggle';
 import { ThemedIcon } from './ThemedIcon';
 import { useThemeColor } from '@/hooks/useThemeColor';
@@ -19,6 +15,7 @@ export function ThemedInput({
   ...props
 }: TextInputProps) {
   const [isPasswordVisible, togglePasswordVisibility] = useToggle(false);
+
   const borderColor = useThemeColor({}, 'border');
   const placeholderColor = useThemeColor({}, 'placeholder');
   return (

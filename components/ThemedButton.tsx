@@ -1,20 +1,36 @@
-import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
+import {
+  ActivityIndicator,
+  TouchableOpacity,
+  TouchableOpacityProps,
+} from 'react-native';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { StyleSheet } from 'react-native';
 import { ThemedText } from './ThemedText';
 
+type ThemedButtonProps = Exclude<TouchableOpacityProps, 'activeOpacity'> & {
+  isLoading?: boolean;
+};
+
 export const ThemedButton = ({
   children,
+  style,
+  isLoading,
   ...props
-}: Exclude<TouchableOpacityProps, 'activeOpacity'>) => {
+}: ThemedButtonProps) => {
   const backgroundColor = useThemeColor({}, 'primary');
+  const textColor = useThemeColor({}, 'text');
   return (
     <TouchableOpacity
-      style={[styles.button, { backgroundColor }]}
+      disabled={isLoading}
+      style={[styles.button, { backgroundColor }, style]}
       activeOpacity={0.8}
       {...props}
     >
-      <ThemedText style={styles.buttonText}>{children}</ThemedText>
+      {isLoading ? (
+        <ActivityIndicator size='small' color={textColor} />
+      ) : (
+        <ThemedText style={styles.buttonText}>{children}</ThemedText>
+      )}
     </TouchableOpacity>
   );
 };
