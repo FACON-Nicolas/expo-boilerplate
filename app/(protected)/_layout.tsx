@@ -1,11 +1,12 @@
 import { Redirect, Stack } from 'expo-router';
-import { useAppSelector } from '@/redux/store';
-import { selectAuthState } from '@/redux/auth';
+import { useAuthenticationManagement } from '@/hooks/useAuthenticationManagement';
 
 export default function RootLayout() {
-  const { user } = useAppSelector(selectAuthState);
+  const { isUserAuthenticated, isUserLoading } = useAuthenticationManagement();
 
-  if (!user) {
+  if (isUserLoading) return null;
+
+  if (!isUserAuthenticated) {
     return <Redirect href='/(public)' />;
   }
 
