@@ -3,6 +3,9 @@ import { ThemedInput } from '@/components/ThemedInput';
 import ThemedLink from '@/components/ThemedLink';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { signIn } from '@/redux/auth';
+import { selectAuthState } from '@/redux/auth';
+import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { SignInUser } from '@/types/user';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,14 +18,25 @@ export default function Index() {
   });
 
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
+  const { isLoading, error } = useAppSelector(selectAuthState);
 
   const onChangeText = (key: keyof SignInUser, value: string) => {
     setUser({ ...user, [key]: value });
   };
 
+  const onPress = async () => {
+    try {
+      await dispatch(signIn(user)).unwrap();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <ThemedView style={styles.container}>
       <ThemedText type='subtitle'>{t('auth.login.title')}</ThemedText>
+      {error && <ThemedText type='error'>{error}</ThemedText>}
       <ThemedInput
         placeholder={t('auth.common.email')}
         value={user.email}
@@ -34,7 +48,9 @@ export default function Index() {
         value={user.password}
         onChangeText={(value) => onChangeText('password', value)}
       />
-      <ThemedButton>{t('auth.login.button')}</ThemedButton>
+      <ThemedButton onPress={onPress} isLoading={isLoading}>
+        {t('auth.login.button')}
+      </ThemedButton>
       <ThemedLink href='/(public)/sign-up' style={styles.link}>
         {t('auth.login.link')}
       </ThemedLink>

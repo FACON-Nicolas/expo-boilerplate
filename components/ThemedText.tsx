@@ -44,4 +44,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#0a7ea4',
   },
+  error: {
+    color: 'red',
+    fontSize: 14,
+  },
 });
