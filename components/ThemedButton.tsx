@@ -5,12 +5,13 @@ import { ThemedText } from './ThemedText';
 
 export const ThemedButton = ({
   children,
+  style,
   ...props
 }: Exclude<TouchableOpacityProps, 'activeOpacity'>) => {
   const backgroundColor = useThemeColor({}, 'primary');
   return (
     <TouchableOpacity
-      style={[styles.button, { backgroundColor }]}
+      style={[styles.button, { backgroundColor }, style]}
       activeOpacity={0.8}
       {...props}
     >
