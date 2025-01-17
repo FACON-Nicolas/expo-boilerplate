@@ -1,0 +1,19 @@
+{
+  "auth": {
+    "common": {
+      "email": "Email",
+      "password": "Password"
+    },
+    "login": {
+      "title": "Login",
+      "button": "Login",
+      "link": "No account ? Sign up"
+    },
+    "signUp": {
+      "title": "Sign Up",
+      "passwordConfirmation": "Password confirmation",
+      "button": "Sign Up",
+      "link": "Already have an account ? Login"
+    }
+  }
+}
