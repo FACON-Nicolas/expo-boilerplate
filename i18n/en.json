@@ -15,5 +15,16 @@
       "button": "Sign Up",
       "link": "Already have an account ? Login"
     }
+  },
+  "tabs": {
+    "home": "Home",
+    "profile": "Profile"
+  },
+  "profile": {
+    "title": "Profile",
+    "signOut": "Sign Out"
+  },
+  "home": {
+    "title": "Home"
   }
 }
