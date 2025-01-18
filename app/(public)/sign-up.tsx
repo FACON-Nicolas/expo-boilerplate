@@ -37,7 +37,7 @@ export default function SignUp() {
   return (
     <ThemedView style={styles.container}>
       <ThemedText type='subtitle'>{t('auth.signUp.title')}</ThemedText>
-      {error && <ThemedText type='error'>{error}</ThemedText>}
+      {error && <ThemedText type='error'>{t(error)}</ThemedText>}
       <ThemedInput
         placeholder={t('auth.common.email')}
         value={user.email}

@@ -38,7 +38,7 @@ export default function Index() {
   return (
     <ThemedView style={styles.container}>
       <ThemedText type='subtitle'>{t('auth.login.title')}</ThemedText>
-      {error && <ThemedText type='error'>{error}</ThemedText>}
+      {error && <ThemedText type='error'>{t(error)}</ThemedText>}
       <ThemedInput
         placeholder={t('auth.common.email')}
         value={user.email}
