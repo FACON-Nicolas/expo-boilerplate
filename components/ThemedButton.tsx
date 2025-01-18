@@ -9,15 +9,17 @@ import { ThemedText } from './ThemedText';
 
 type ThemedButtonProps = Exclude<TouchableOpacityProps, 'activeOpacity'> & {
   isLoading?: boolean;
+  variant?: 'primary' | 'error';
 };
 
 export const ThemedButton = ({
   children,
   style,
   isLoading,
+  variant = 'primary',
   ...props
 }: ThemedButtonProps) => {
-  const backgroundColor = useThemeColor({}, 'primary');
+  const backgroundColor = useThemeColor({}, variant);
   const textColor = useThemeColor({}, 'text');
   return (
     <TouchableOpacity

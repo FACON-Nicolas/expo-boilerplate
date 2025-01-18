@@ -18,6 +18,7 @@ export const Colors = {
     border: '#687076',
     placeholder: '#9BA1A6',
     link: '#0a7ea4',
+    error: '#ff0000',
   },
   dark: {
     primary: '#0a7ea4',
@@ -30,5 +31,6 @@ export const Colors = {
     border: '#9BA1A6',
     placeholder: '#687076',
     link: '#0a7ea4',
+    error: '#ff0000',
   },
 };

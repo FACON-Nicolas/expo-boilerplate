@@ -7,7 +7,7 @@ export default function RootLayout() {
   useResetAuthError();
 
   if (isUserAuthenticated) {
-    return <Redirect href='/(protected)' />;
+    return <Redirect href='/(protected)/(tabs)' />;
   }
 
   return (
