@@ -26,5 +26,20 @@
   },
   "home": {
     "title": "Accueil"
+  },
+  "errors": {
+    "email": {
+      "invalid": "Adresse email invalide"
+    },
+    "password": {
+      "minLength": "Le mot de passe doit contenir au moins 8 caractères",
+      "lowercase": "Le mot de passe doit contenir au moins une lettre minuscule",
+      "uppercase": "Le mot de passe doit contenir au moins une lettre majuscule",
+      "number": "Le mot de passe doit contenir au moins un chiffre",
+      "specialCharacter": "Le mot de passe doit contenir au moins un caractère spécial"
+    },
+    "passwordConfirmation": {
+      "sameAs": "La confirmation du mot de passe doit être identique au mot de passe"
+    }
   }
 }

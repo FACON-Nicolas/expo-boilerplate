@@ -26,5 +26,20 @@
   },
   "home": {
     "title": "Home"
+  },
+  "errors": {
+    "email": {
+      "invalid": "Invalid email address"
+    },
+    "password": {
+      "minLength": "Password must be at least 8 characters long",
+      "lowercase": "Password must contain at least one lowercase letter",
+      "uppercase": "Password must contain at least one uppercase letter",
+      "number": "Password must contain at least one number",
+      "specialCharacter": "Password must contain at least one special character"
+    },
+    "passwordConfirmation": {
+      "sameAs": "Password confirmation must be the same as password"
+    }
   }
 }
