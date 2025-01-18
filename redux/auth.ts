@@ -31,6 +31,10 @@ const authSlice = createSlice({
     setAuthError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
+    signOut: (state) => {
+      state.user = null;
+      state.session = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -85,5 +89,5 @@ export const signUp = createAsyncThunk<
 
 export default authSlice;
 
-export const { setAuthError } = authSlice.actions;
+export const { setAuthError, signOut } = authSlice.actions;
 export const { selectAuthState } = authSlice.selectors;

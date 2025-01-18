@@ -17,11 +17,12 @@ export function ThemedInput({
   const [isPasswordVisible, togglePasswordVisibility] = useToggle(false);
 
   const borderColor = useThemeColor({}, 'border');
+  const color = useThemeColor({}, 'text');
   const placeholderColor = useThemeColor({}, 'placeholder');
   return (
     <ThemedView style={[styles.inputContainer, { borderColor }]}>
       <TextInput
-        style={[styles.input, style]}
+        style={[styles.input, { color }, style]}
         {...props}
         secureTextEntry={secureTextEntry && !isPasswordVisible}
         placeholderTextColor={placeholderColor}
@@ -47,7 +48,6 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    color: 'white',
     height: 25,
   },
 });

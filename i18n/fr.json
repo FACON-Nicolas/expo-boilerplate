@@ -15,5 +15,16 @@
       "button": "Inscription",
       "link": "Déjà un compte ? Connexion"
     }
+  },
+  "tabs": {
+    "home": "Accueil",
+    "profile": "Profil"
+  },
+  "profile": {
+    "title": "Profil",
+    "signOut": "Déconnexion"
+  },
+  "home": {
+    "title": "Accueil"
   }
 }

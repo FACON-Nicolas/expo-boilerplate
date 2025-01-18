@@ -13,8 +13,10 @@ import { StyleSheet } from 'react-native';
 
 export default function Index() {
   const [user, setUser] = useState<SignInUser>({
-    email: '',
-    password: '',
+    email: __DEV__ ? process.env.EXPO_PUBLIC_SUPABASE_EMAIL_LOGIN_DEV! : '',
+    password: __DEV__
+      ? process.env.EXPO_PUBLIC_SUPABASE_PASSWORD_LOGIN_DEV!
+      : '',
   });
 
   const { t } = useTranslation();
