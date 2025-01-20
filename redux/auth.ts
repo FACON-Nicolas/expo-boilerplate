@@ -8,7 +8,12 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { SignInUser, SignUpUser } from '@/types/user';
-import { signInFromSupabase, signUpFromSupabase } from '@/api/auth';
+import {
+  refreshSessionFromSupabase,
+  setSessionFromSupabase,
+  signInFromSupabase,
+  signUpFromSupabase,
+} from '@/api/auth';
 
 type AuthSliceInitialState = {
   user: User | null;
@@ -38,6 +43,12 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(
+        setSupabaseSessionAndRefresh.fulfilled,
+        (state, action: PayloadAction<Session>) => {
+          state.session = action.payload;
+        }
+      )
       .addMatcher(isPending(signIn, signUp), (state) => {
         state.isLoading = true;
       })
@@ -51,10 +62,12 @@ const authSlice = createSlice({
         }
       )
       .addMatcher(
-        isRejected(signIn, signUp),
+        isRejected(signIn, signUp, setSupabaseSessionAndRefresh),
         (state, action: PayloadAction<string | undefined>) => {
           state.isLoading = false;
           state.error = action.payload || null;
+          state.session = null;
+          state.user = null;
         }
       );
   },
@@ -86,6 +99,22 @@ export const signUp = createAsyncThunk<
     return rejectWithValue(error.message as string);
   }
 });
+
+export const setSupabaseSessionAndRefresh = createAsyncThunk<
+  Session,
+  Session,
+  { rejectValue: string }
+>(
+  'auth/setSupabaseSessionAndRefresh',
+  async (session: Session, { rejectWithValue }) => {
+    try {
+      await setSessionFromSupabase(session);
+      return await refreshSessionFromSupabase();
+    } catch (error: any) {
+      return rejectWithValue(error.message as string);
+    }
+  }
+);
 
 export default authSlice;
 
