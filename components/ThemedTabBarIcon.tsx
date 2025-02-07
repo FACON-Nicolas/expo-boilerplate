@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { ThemedIcon } from './ThemedIcon';
 
 export function ThemedTabBarIcon({
   name,
@@ -10,7 +10,7 @@ export function ThemedTabBarIcon({
   focused: boolean;
 }) {
   return (
-    <Ionicons
+    <ThemedIcon
       name={focused ? name : `${name}-outline`}
       size={24}
       color={color}

@@ -1,11 +1,20 @@
 import { ThemedTabBarIcon } from '@/components/ThemedTabBarIcon';
+import { useThemeColor } from '@/hooks/useThemeColor';
 import { Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
 export default function RootLayout() {
   const { t } = useTranslation();
+  const backgroundColor = useThemeColor({}, 'background');
   return (
-    <Tabs screenOptions={{ headerShown: false }}>
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: {
+          backgroundColor,
+        },
+      }}
+    >
       <Tabs.Screen
         name='index'
         options={{
