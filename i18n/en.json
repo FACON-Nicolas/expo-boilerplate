@@ -41,5 +41,9 @@
     "passwordConfirmation": {
       "sameAs": "Password confirmation must be the same as password"
     }
+  },
+  "goals": {
+    "year": "Year",
+    "goal": "Goal"
   }
 }

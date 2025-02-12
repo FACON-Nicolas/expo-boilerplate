@@ -1,19 +1,5 @@
-import { Redirect, Stack } from 'expo-router';
-import { useResetAuthError } from '@/hooks/useResetAuthError';
-import { useAuthenticationManagement } from '@/hooks/useAuthenticationManagement';
+import { Redirect } from 'expo-router';
 
 export default function RootLayout() {
-  const { isUserAuthenticated } = useAuthenticationManagement();
-  useResetAuthError();
-
-  if (isUserAuthenticated) {
-    return <Redirect href='/(protected)/(tabs)' />;
-  }
-
-  return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name='index' />
-      <Stack.Screen name='sign-up' />
-    </Stack>
-  );
+  return <Redirect href='/(protected)/(tabs)' />;
 }

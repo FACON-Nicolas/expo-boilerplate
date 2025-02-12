@@ -1,34 +1,9 @@
-import { ThemedTabBarIcon } from '@/components/ThemedTabBarIcon';
-import { useThemeColor } from '@/hooks/useThemeColor';
-import { Tabs } from 'expo-router';
-import { useTranslation } from 'react-i18next';
+import { Stack } from 'expo-router';
 
 export default function RootLayout() {
-  const { t } = useTranslation();
-  const backgroundColor = useThemeColor({}, 'background');
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarStyle: {
-          backgroundColor,
-        },
-      }}
-    >
-      <Tabs.Screen
-        name='index'
-        options={{
-          title: t('tabs.home'),
-          tabBarIcon: (props) => <ThemedTabBarIcon name='home' {...props} />,
-        }}
-      />
-      <Tabs.Screen
-        name='profile'
-        options={{
-          title: t('tabs.profile'),
-          tabBarIcon: (props) => <ThemedTabBarIcon name='person' {...props} />,
-        }}
-      />
-    </Tabs>
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name='index' />
+    </Stack>
   );
 }

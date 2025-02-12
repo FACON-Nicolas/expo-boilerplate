@@ -41,5 +41,9 @@
     "passwordConfirmation": {
       "sameAs": "La confirmation du mot de passe doit être identique au mot de passe"
     }
+  },
+  "goals": {
+    "year": "Année",
+    "goal": "Objectif"
   }
 }
