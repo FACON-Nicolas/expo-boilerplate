@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { StyleSheet } from 'react-native';
-import { ThemedText } from './ThemedText';
+import { ThemedText } from '@/components/themed-text';
 
 type ThemedButtonProps = Exclude<TouchableOpacityProps, 'activeOpacity'> & {
   isLoading?: boolean;

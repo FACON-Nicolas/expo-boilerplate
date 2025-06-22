@@ -1,6 +1,6 @@
-import { ThemedButton } from '@/components/ThemedButton';
-import ThemedSafeAreaView from '@/components/ThemedSafeAreaView';
-import { ThemedText } from '@/components/ThemedText';
+import { ThemedButton } from '@/components/themed-button';
+import ThemedSafeAreaView from '@/components/themed-safe-area-view';
+import { ThemedText } from '@/components/themed-text';
 import { signOut } from '@/redux/auth';
 import { useAppDispatch } from '@/redux/store';
 import { useTranslation } from 'react-i18next';

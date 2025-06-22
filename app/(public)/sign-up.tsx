@@ -1,8 +1,8 @@
-import { ThemedButton } from '@/components/ThemedButton';
-import { ThemedInput } from '@/components/ThemedInput';
-import ThemedLink from '@/components/ThemedLink';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { ThemedButton } from '@/components/themed-button';
+import { ThemedInput } from '@/components/themed-input';
+import ThemedLink from '@/components/themed-link';
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
 import { useAppSelector } from '@/redux/store';
 import { selectAuthState, signUp } from '@/redux/auth';
 import { useAppDispatch } from '@/redux/store';
