@@ -43,12 +43,18 @@ export default function Index() {
         placeholder={t('auth.common.email')}
         value={user.email}
         onChangeText={(value) => onChangeText('email', value)}
+        autoCapitalize='none'
+        autoComplete='email'
+        keyboardType='email-address'
       />
       <ThemedInput
         secureTextEntry
         placeholder={t('auth.common.password')}
         value={user.password}
         onChangeText={(value) => onChangeText('password', value)}
+        autoCapitalize='none'
+        autoComplete='password'
+        keyboardType='visible-password'
       />
       <ThemedButton onPress={onPress} isLoading={isLoading}>
         {t('auth.login.button')}
