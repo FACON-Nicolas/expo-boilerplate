@@ -22,7 +22,12 @@
   },
   "profile": {
     "title": "Profile",
-    "signOut": "Sign Out"
+    "signOut": "Sign Out",
+    "firstname": "First Name",
+    "lastname": "Last Name",
+    "save": "Save Profile",
+    "edit": "Edit Profile",
+    "create": "Create Profile"
   },
   "home": {
     "title": "Home"
@@ -40,6 +45,16 @@
     },
     "passwordConfirmation": {
       "sameAs": "Password confirmation must be the same as password"
+    },
+    "profile": {
+      "firstname": {
+        "required": "First name is required",
+        "maxLength": "First name must be at most 50 characters long"
+      },
+      "lastname": {
+        "required": "Last name is required",
+        "maxLength": "Last name must be at most 50 characters long"
+      }
     }
   }
 }

@@ -2,21 +2,26 @@ import { SignInUser, SignUpUser } from '@/types/user';
 import supabase from './supabase';
 import { AuthResponse, Session } from '@supabase/supabase-js';
 import { loginSchema, signUpSchema } from '@/validation/auth';
+import { validateWithI18nAsync } from '@/utils/validator';
+import i18n from '@/i18n';
 
 export const signInFromSupabase = async ({
   email,
   password,
 }: SignInUser): Promise<AuthResponse['data']> => {
-  const loginValidation = loginSchema.safeParse({ email, password });
-  if (loginValidation.error) {
-    return Promise.reject(loginValidation.error.issues[0]);
-  }
-
-  try {
-    const { data, error } = await supabase.auth.signInWithPassword({
+  const signInUserValidated = await validateWithI18nAsync<SignInUser>(
+    i18n.t,
+    loginSchema,
+    {
       email,
       password,
-    });
+    }
+  );
+
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword(
+      signInUserValidated
+    );
 
     if (error) {
       return Promise.reject(error);
@@ -33,20 +38,14 @@ export const signUpFromSupabase = async ({
   password,
   passwordConfirmation,
 }: SignUpUser): Promise<AuthResponse['data']> => {
-  const signUpValidation = signUpSchema.safeParse({
+  await validateWithI18nAsync<SignUpUser>(i18n.t, signUpSchema, {
     email,
     password,
     passwordConfirmation,
   });
-  if (signUpValidation.error) {
-    return Promise.reject(signUpValidation.error.issues[0]);
-  }
 
   try {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
+    const { data, error } = await supabase.auth.signUp({ email, password });
 
     if (error) {
       return Promise.reject(error);

@@ -22,7 +22,12 @@
   },
   "profile": {
     "title": "Profil",
-    "signOut": "Déconnexion"
+    "signOut": "Déconnexion",
+    "firstname": "Prénom",
+    "lastname": "Nom de famille",
+    "save": "Enregistrer le profil",
+    "edit": "Modifier le profil",
+    "create": "Créer le profil"
   },
   "home": {
     "title": "Accueil"
@@ -40,6 +45,16 @@
     },
     "passwordConfirmation": {
       "sameAs": "La confirmation du mot de passe doit être identique au mot de passe"
+    },
+    "profile": {
+      "firstname": {
+        "required": "Le prénom est requis",
+        "maxLength": "Le prénom doit contenir au maximum 50 caractères"
+      },
+      "lastname": {
+        "required": "Le nom de famille est requis",
+        "maxLength": "Le nom de famille doit contenir au maximum 50 caractères"
+      }
     }
   }
 }
