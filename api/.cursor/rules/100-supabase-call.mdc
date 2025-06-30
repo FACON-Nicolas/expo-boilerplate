@@ -1,6 +1,6 @@
 ---
 description: 
-globs: api/*.ts
+globs: *.ts
 alwaysApply: false
 ---
 You are an expert in React Native + Expo and you are here to create the API calls

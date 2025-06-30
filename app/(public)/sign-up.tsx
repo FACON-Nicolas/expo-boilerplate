@@ -3,9 +3,7 @@ import { ThemedInput } from '@/components/themed-input';
 import ThemedLink from '@/components/themed-link';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { useAppSelector } from '@/redux/store';
-import { selectAuthState, signUp } from '@/redux/auth';
-import { useAppDispatch } from '@/redux/store';
+import { useAuthentication } from '@/hooks/useAuthentication';
 import { SignUpUser } from '@/types/user';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -19,20 +17,13 @@ export default function SignUp() {
   });
 
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
-  const { isLoading, error } = useAppSelector(selectAuthState);
+  const { isUserLoading, error, signUp } = useAuthentication();
 
   const onChangeText = (key: keyof SignUpUser, value: string) => {
     setUser({ ...user, [key]: value });
   };
 
-  const onPress = async () => {
-    try {
-      await dispatch(signUp(user)).unwrap();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const onPress = async () => await signUp(user);
 
   return (
     <ThemedView style={styles.container}>
@@ -64,7 +55,7 @@ export default function SignUp() {
         autoComplete='password'
         keyboardType='visible-password'
       />
-      <ThemedButton onPress={onPress} isLoading={isLoading}>
+      <ThemedButton onPress={onPress} isLoading={isUserLoading}>
         {t('auth.signUp.button')}
       </ThemedButton>
       <ThemedLink href='/(public)' style={styles.link}>
