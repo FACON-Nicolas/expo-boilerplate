@@ -21,7 +21,7 @@ Here are the instructions :
 - Simple objects
 - API responses
 - States
-- Redux store
+- Zustand store
 - Navigation params
 
 ### Use `interface` for:
