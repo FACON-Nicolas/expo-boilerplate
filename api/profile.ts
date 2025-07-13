@@ -2,13 +2,11 @@ import { CreateProfile, Profile, UpdateProfile } from '@/types/profile';
 import supabase from '@/api/supabase';
 import { createProfileSchema, updateProfileSchema } from '@/validation/profile';
 import { validateWithI18nAsync } from '@/utils/validator';
-import i18n from '@/i18n';
 
 export const createProfileFromSupabase = async (
   profileData: CreateProfile
 ): Promise<Profile> => {
   const validatedProfile = await validateWithI18nAsync<CreateProfile>(
-    i18n.t,
     createProfileSchema,
     profileData
   );
@@ -67,7 +65,6 @@ export const updateProfileFromSupabase = async (
   profileData: UpdateProfile
 ): Promise<Profile> => {
   const validatedProfile = await validateWithI18nAsync<UpdateProfile>(
-    i18n.t,
     updateProfileSchema,
     profileData
   );

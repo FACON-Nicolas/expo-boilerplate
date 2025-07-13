@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import i18n from '@/i18n';
 
 type ValidationResult<T> = {
   success: boolean;
@@ -39,11 +40,10 @@ export const validateWithI18n = <T>(
 };
 
 export const validateWithI18nAsync = async <T>(
-  t: (key: string) => string,
   schema: z.ZodSchema<T>,
   data: unknown
 ): Promise<T> => {
-  const result = validateWithI18n(t, schema, data);
+  const result = validateWithI18n(i18n.t, schema, data);
 
   if (result.success) {
     return Promise.resolve(result.data!);

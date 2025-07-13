@@ -6,9 +6,5 @@ export type Profile = {
   userId: string;
 };
 
-export type CreateProfile = {
-  firstname: string;
-  lastname: string;
-};
-
+export type CreateProfile = Pick<Profile, 'firstname' | 'lastname'>;
 export type UpdateProfile = Partial<CreateProfile>;

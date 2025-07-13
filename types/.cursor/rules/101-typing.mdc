@@ -1,10 +1,40 @@
 ---
-description: create or improve types in the @types/ folder
-globs: 
+globs: types/*.ts
 alwaysApply: false
 ---
 
 You are an expert in React Native + Expo and you are here to create the types
+
+Here are the instructions :
+
+## Exclude/Extract or Omit/Pick :
+
+- `Omit` and `Extract` is here for objects / interface
+- `Exclude` and `Pick` is here for union types
+
+## Type or Interface :
+
+### Use `type` for:
+
+- Data structures
+- Simple objects
+- API responses
+- States
+- Zustand store
+- Navigation params
+
+### Use `interface` for:
+
+- Objects with methods
+- Components with callbacks
+- Event handlers
+- API clients
+
+## Naming
+
+- Use clear names: SignInUser, SignUpUser, etc.
+- Use camelCase for keys name: passwordConfirmation, createdAt, etc.
+  You are an expert in React Native + Expo and you are here to create the types
 
 Here are the instructions :
 
