@@ -16,11 +16,12 @@ export function ThemedInput({
 }: TextInputProps) {
   const [isPasswordVisible, togglePasswordVisibility] = useToggle(false);
 
-  const borderColor = useThemeColor({}, 'border');
   const color = useThemeColor({}, 'text');
   const placeholderColor = useThemeColor({}, 'placeholder');
+  const backgroundColor = useThemeColor({}, 'inputBackground');
+
   return (
-    <ThemedView style={[styles.inputContainer, { borderColor }]}>
+    <ThemedView style={[styles.inputContainer, { backgroundColor }]}>
       <TextInput
         style={[styles.input, { color }, style]}
         {...props}
@@ -38,9 +39,8 @@ export function ThemedInput({
 
 const styles = StyleSheet.create({
   inputContainer: {
-    borderWidth: 2,
     padding: 15,
-    borderRadius: 16,
+    borderRadius: 12,
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
