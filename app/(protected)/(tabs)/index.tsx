@@ -1,5 +1,5 @@
-import ThemedSafeAreaView from '@/components/ThemedSafeAreaView';
-import { ThemedText } from '@/components/ThemedText';
+import ThemedSafeAreaView from '@/components/themed-safe-area-view';
+import { ThemedText } from '@/components/themed-text';
 import { useTranslation } from 'react-i18next';
 
 export default function Index() {

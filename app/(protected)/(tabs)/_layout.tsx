@@ -1,4 +1,4 @@
-import { ThemedTabBarIcon } from '@/components/ThemedTabBarIcon';
+import { ThemedTabBarIcon } from '@/components/themed-tab-bar-icon';
 import { Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 

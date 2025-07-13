@@ -1,11 +1,9 @@
-import { ThemedButton } from '@/components/ThemedButton';
-import { ThemedInput } from '@/components/ThemedInput';
-import ThemedLink from '@/components/ThemedLink';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { signIn } from '@/redux/auth';
-import { selectAuthState } from '@/redux/auth';
-import { useAppDispatch, useAppSelector } from '@/redux/store';
+import { ThemedButton } from '@/components/themed-button';
+import { ThemedInput } from '@/components/themed-input';
+import ThemedLink from '@/components/themed-link';
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
+import { useAuthentication } from '@/hooks/useAuthentication';
 import { SignInUser } from '@/types/user';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,20 +18,13 @@ export default function Index() {
   });
 
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
-  const { isLoading, error } = useAppSelector(selectAuthState);
+  const { isUserLoading, error, signIn } = useAuthentication();
 
   const onChangeText = (key: keyof SignInUser, value: string) => {
     setUser({ ...user, [key]: value });
   };
 
-  const onPress = async () => {
-    try {
-      await dispatch(signIn(user)).unwrap();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const onPress = async () => await signIn(user);
 
   return (
     <ThemedView style={styles.container}>
@@ -43,14 +34,20 @@ export default function Index() {
         placeholder={t('auth.common.email')}
         value={user.email}
         onChangeText={(value) => onChangeText('email', value)}
+        autoCapitalize='none'
+        autoComplete='email'
+        keyboardType='email-address'
       />
       <ThemedInput
         secureTextEntry
         placeholder={t('auth.common.password')}
         value={user.password}
         onChangeText={(value) => onChangeText('password', value)}
+        autoCapitalize='none'
+        autoComplete='password'
+        keyboardType='visible-password'
       />
-      <ThemedButton onPress={onPress} isLoading={isLoading}>
+      <ThemedButton onPress={onPress} isLoading={isUserLoading}>
         {t('auth.login.button')}
       </ThemedButton>
       <ThemedLink href='/(public)/sign-up' style={styles.link}>

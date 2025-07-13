@@ -4,9 +4,9 @@ import {
   TextInputProps,
   TouchableOpacity,
 } from 'react-native';
-import { ThemedView } from './ThemedView';
+import { ThemedView } from '@/components/themed-view';
 import { useToggle } from '@/hooks/useToggle';
-import { ThemedIcon } from './ThemedIcon';
+import { ThemedIcon } from '@/components/themed-icon';
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 export function ThemedInput({

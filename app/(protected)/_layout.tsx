@@ -1,14 +1,10 @@
-import { Redirect, Stack } from 'expo-router';
-import { useAuthenticationManagement } from '@/hooks/useAuthenticationManagement';
+import { Stack } from 'expo-router';
+import { useAuthentication } from '@/hooks/useAuthentication';
 
 export default function RootLayout() {
-  const { isUserAuthenticated, isUserLoading } = useAuthenticationManagement();
+  const { isUserLoading } = useAuthentication();
 
   if (isUserLoading) return null;
-
-  if (!isUserAuthenticated) {
-    return <Redirect href='/(public)' />;
-  }
 
   return (
     <Stack screenOptions={{ headerShown: false }}>

@@ -6,25 +6,22 @@ import {
 import { Stack } from 'expo-router';
 import { useColorScheme } from 'react-native';
 import '@/i18n';
-import { Provider } from 'react-redux';
-import store, { persistor } from '@/redux/store';
-import { PersistGate } from 'redux-persist/integration/react';
+import { useAuthentication } from '@/hooks/useAuthentication';
 
 export default function RootLayout() {
   const scheme = useColorScheme();
+
+  const { isUserAuthenticated } = useAuthentication();
   return (
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <ThemeProvider value={scheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <Stack
-            screenOptions={{ headerShown: false }}
-            initialRouteName='(public)'
-          >
-            <Stack.Screen name='(public)' />
-            <Stack.Screen name='(protected)' />
-          </Stack>
-        </ThemeProvider>
-      </PersistGate>
-    </Provider>
+    <ThemeProvider value={scheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <Stack screenOptions={{ headerShown: false }} initialRouteName='(public)'>
+        <Stack.Protected guard={isUserAuthenticated}>
+          <Stack.Screen name='(protected)' />
+        </Stack.Protected>
+        <Stack.Protected guard={!isUserAuthenticated}>
+          <Stack.Screen name='(public)' />
+        </Stack.Protected>
+      </Stack>
+    </ThemeProvider>
   );
 }

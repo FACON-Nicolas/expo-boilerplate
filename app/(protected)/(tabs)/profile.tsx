@@ -1,23 +1,18 @@
-import { ThemedButton } from '@/components/ThemedButton';
-import ThemedSafeAreaView from '@/components/ThemedSafeAreaView';
-import { ThemedText } from '@/components/ThemedText';
-import { signOut } from '@/redux/auth';
-import { useAppDispatch } from '@/redux/store';
+import { ThemedButton } from '@/components/themed-button';
+import ThemedSafeAreaView from '@/components/themed-safe-area-view';
+import { ThemedText } from '@/components/themed-text';
+import { useAuth } from '@/store/auth';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
 export default function Profile() {
-  const dispatch = useAppDispatch();
   const { t } = useTranslation();
-
-  const onSignOut = () => {
-    dispatch(signOut());
-  };
+  const { signOut } = useAuth();
 
   return (
     <ThemedSafeAreaView style={styles.container}>
       <ThemedText>{t('profile.title')}</ThemedText>
-      <ThemedButton onPress={onSignOut} variant='error'>
+      <ThemedButton onPress={signOut} variant='error'>
         {t('profile.signOut')}
       </ThemedButton>
     </ThemedSafeAreaView>

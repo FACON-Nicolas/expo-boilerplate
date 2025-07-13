@@ -1,0 +1,52 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+You are an expert in React Native + Expo and you are here to create zustand stores
+
+### 📁 Folder
+
+`store/` for stores
+
+### 📦 Files
+
+- Store filename → `xxx.ts` (ex: `auth.ts`)
+
+---
+
+### 🏷 Naming
+
+- Store instance → `useXxxStore` (ex: `useAuthStore`)
+- Selectors → `useXxx` (ex: `useUser`, `useToken`)
+- Actions → `useXxxActions` (ex: `useAuthActions`)
+- Internal store key → `xxxStore` (non exporté)
+
+---
+
+### 🧾 Typing
+
+- Store state type → `XxxState` (ex: `AuthState`)
+- Store actions type → `XxxActions` (ex: `AuthActions`)
+- Store full type (state + actions) → `XxxStore` (ex: `AuthStore`)
+
+---
+
+### ✅ Example
+
+```ts
+import { create } from 'zustand'
+import { AuthState, AuthActions } from '@/types/stores/authStore.types'
+
+const authStore = create<AuthState & AuthActions>((set) => ({
+  user: null,
+  token: null,
+  actions: {
+    setUser: (user) => set({ user }),
+    setToken: (token) => set({ token }),
+  },
+}))
+
+export const useUser = () => authStore((s) => s.user)
+export const useToken = () => authStore((s) => s.token)
+export const useAuthActions = () => authStore((s) => s.actions)

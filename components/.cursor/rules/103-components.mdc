@@ -1,0 +1,230 @@
+---
+description: Create or Update themd-based custom components
+globs: 
+alwaysApply: false
+---
+# Component Conventions
+
+## File Naming Conventions
+
+### Component Files
+- All component files use **kebab-case** naming convention
+- Component files are located in the `/components` directory 
+- All component files use `.tsx` extension
+- Files are prefixed with `themed-` to indicate they are themed components
+- Examples: [themed-button.tsx](mdc:components/themed-button.tsx), [themed-input.tsx](mdc:components/themed-input.tsx), [themed-text.tsx](mdc:components/themed-text.tsx)
+
+## Component Naming Conventions
+
+### Component Names
+- All components use **PascalCase** naming convention
+- Components are prefixed with `Themed` to indicate theming support
+- Component names match their file names (e.g., `ThemedButton` in `themed-button.tsx`)
+- Examples: `ThemedButton`, `ThemedInput`, `ThemedText`, `ThemedView`, `ThemedIcon`
+
+## Export Conventions
+
+### Export Patterns
+There are two main export patterns used:
+
+1. **Named exports with const declarations** (preferred for complex components):
+```typescript
+export const ThemedButton = ({ ... }: ThemedButtonProps) => {
+  // component logic
+};
+```
+
+2. **Function exports** (used for simpler components):
+```typescript
+export function ThemedText({ ... }: ThemedTextProps) {
+  // component logic
+}
+```
+
+3. **Default exports** (used sparingly, mainly for specialized components):
+```typescript
+export default function ThemedLink({ ... }: LinkProps) {
+  // component logic
+}
+```
+
+## Props and TypeScript Conventions
+
+### Props Type Definitions
+- Always define TypeScript interfaces/types for component props
+- Use descriptive names ending with `Props` (e.g., `ThemedButtonProps`, `ThemedTextProps`)
+- Extend existing React Native component props when appropriate:
+```typescript
+type ThemedButtonProps = Exclude<TouchableOpacityProps, 'activeOpacity'> & {
+  isLoading?: boolean;
+  variant?: 'primary' | 'error';
+};
+```
+
+### Props Destructuring
+- Use destructuring with rest spread pattern for props
+- Extract commonly used props explicitly, use `...rest` or `...props` for remaining props:
+```typescript
+export function ThemedText({
+  style,
+  lightColor,
+  darkColor,
+  type = 'default',
+  ...rest
+}: ThemedTextProps) {
+  // component logic
+}
+```
+
+### Optional Props
+- Use optional properties (`?`) for non-required props
+- Provide sensible defaults using default parameter values:
+```typescript
+variant = 'primary'
+size = 24
+type = 'default'
+```
+
+## Component Structure
+
+### File Organization
+Components follow this consistent structure:
+1. **Imports** (React Native components, hooks, types)
+2. **Type definitions** (Props interfaces/types)
+3. **Component function**
+4. **StyleSheet** (if needed, always at the bottom)
+
+### Import Conventions
+- Import React Native components first
+- Import custom hooks using `@/hooks/` path
+- Import other custom components using `@/components/` path
+- Group related imports together
+
+Example structure from [themed-button.tsx](mdc:components/themed-button.tsx):
+```typescript
+import {
+  ActivityIndicator,
+  TouchableOpacity,
+  TouchableOpacityProps,
+} from 'react-native';
+import { useThemeColor } from '@/hooks/useThemeColor';
+import { StyleSheet } from 'react-native';
+import { ThemedText } from '@/components/themed-text';
+```
+
+## Theming Conventions
+
+### Theme Hook Usage
+- **Always** use `useThemeColor` hook for consistent theming across components
+- Destructure theme properties from the hook:
+```typescript
+const backgroundColor = useThemeColor({}, 'background');
+const textColor = useThemeColor({}, 'text');
+const borderColor = useThemeColor({}, 'border');
+```
+
+### Theme Color Properties
+Common theme color keys used:
+- `background` - for background colors
+- `text` - for text colors  
+- `border` - for border colors
+- `icon` - for icon colors
+- `link` - for link colors
+- `placeholder` - for placeholder text
+- `primary` - for primary button/accent colors
+- `error` - for error states
+
+### Light/Dark Color Support
+For components that need explicit light/dark color overrides:
+```typescript
+export type ThemedTextProps = TextProps & {
+  lightColor?: string;
+  darkColor?: string;
+};
+
+const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
+```
+
+## Styling Conventions
+
+### StyleSheet Usage
+- Use `StyleSheet.create()` for component styles
+- Place StyleSheet at the **bottom** of the file
+- Use descriptive style names that match their purpose
+- Apply consistent spacing and layout patterns:
+
+```typescript
+const styles = StyleSheet.create({
+  button: {
+    padding: 15,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    width: '100%',
+    textAlign: 'center',
+  },
+});
+```
+
+### Style Application
+- Combine theme colors with StyleSheet styles using array syntax:
+```typescript
+style={[styles.button, { backgroundColor }, style]}
+style={[{ color }, styles[type], style]}
+```
+- Always allow style prop override by placing it last in the array
+
+## Component Patterns
+
+### State Management
+- Use React hooks for local state management
+- Common hooks used: `useToggle` for boolean states
+- Extract state logic into custom hooks when reusable
+
+### Conditional Rendering
+- Use ternary operators for simple conditional rendering:
+```typescript
+{isLoading ? (
+  <ActivityIndicator size='small' color={textColor} />
+) : (
+  <ThemedText style={styles.buttonText}>{children}</ThemedText>
+)}
+```
+
+### Event Handling
+- Use TouchableOpacity for interactive elements
+- Set appropriate activeOpacity values (commonly 0.8)
+- Disable interactions during loading states
+
+### Icon Usage
+- Use Ionicons from `@expo/vector-icons`
+- Support focused/unfocused states for tab icons:
+```typescript
+name={focused ? name : `${name}-outline`}
+```
+
+## Common Component Features
+
+### Loading States
+Components that perform actions should support loading states:
+```typescript
+disabled={isLoading}
+{isLoading ? <ActivityIndicator /> : <Content />}
+```
+
+### Accessibility
+- Support all standard React Native accessibility props through prop spreading
+- Maintain semantic HTML/accessibility structure
+
+### Responsive Design
+- Use percentage-based widths where appropriate (`width: '100%'`)
+- Use flex layouts for responsive behavior
+- Apply consistent padding and margin values (commonly 15px, 16px for border radius)
+
+These conventions ensure consistency across all themed components and maintain a cohesive design system throughout the application.
