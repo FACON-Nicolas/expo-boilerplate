@@ -54,7 +54,7 @@ export default function Onboarding() {
           </ThemedView>
         </ThemedView>
         <ThemedButton onPress={onPress} isLoading={isPending}>
-          <ThemedText>{t('onboarding.next')}</ThemedText>
+          {t('onboarding.next')}
         </ThemedButton>
       </ThemedView>
     </ThemedSafeAreaView>
