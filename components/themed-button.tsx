@@ -20,7 +20,10 @@ export const ThemedButton = ({
   ...props
 }: ThemedButtonProps) => {
   const backgroundColor = useThemeColor({}, variant);
-  const textColor = useThemeColor({}, 'text');
+  const color = useThemeColor(
+    {},
+    variant === 'primary' ? 'background' : 'text'
+  );
   return (
     <TouchableOpacity
       disabled={isLoading}
@@ -29,9 +32,11 @@ export const ThemedButton = ({
       {...props}
     >
       {isLoading ? (
-        <ActivityIndicator size='small' color={textColor} />
+        <ActivityIndicator size='small' color={color} />
       ) : (
-        <ThemedText style={styles.buttonText}>{children}</ThemedText>
+        <ThemedText style={[styles.buttonText, { color }]}>
+          {children}
+        </ThemedText>
       )}
     </TouchableOpacity>
   );
@@ -40,7 +45,7 @@ export const ThemedButton = ({
 const styles = StyleSheet.create({
   button: {
     padding: 15,
-    borderRadius: 16,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',

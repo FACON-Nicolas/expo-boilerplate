@@ -1,11 +1,24 @@
 import { ThemedTabBarIcon } from '@/components/themed-tab-bar-icon';
+import { useThemeColor } from '@/hooks/useThemeColor';
 import { Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
 export default function RootLayout() {
   const { t } = useTranslation();
+  const backgroundColor = useThemeColor({}, 'background');
+  const tintColor = useThemeColor({}, 'tint');
+
   return (
-    <Tabs screenOptions={{ headerShown: false }}>
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: tintColor,
+        headerShown: false,
+        tabBarStyle: {
+          backgroundColor,
+          borderTopColor: tintColor,
+        },
+      }}
+    >
       <Tabs.Screen
         name='index'
         options={{
