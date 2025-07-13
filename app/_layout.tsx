@@ -15,13 +15,11 @@ export default function RootLayout() {
   const scheme = useColorScheme();
 
   const { isUserAuthenticated } = useAuthentication();
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider value={scheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack
-          screenOptions={{ headerShown: false }}
-          initialRouteName='(public)'
-        >
+        <Stack screenOptions={{ headerShown: false }}>
           <Stack.Protected guard={isUserAuthenticated}>
             <Stack.Screen name='(protected)' />
           </Stack.Protected>
