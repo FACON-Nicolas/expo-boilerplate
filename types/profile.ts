@@ -1,10 +1,11 @@
-export type Profile = {
-  id: number;
-  createdAt: string;
-  firstname: string;
-  lastname: string;
-  userId: string;
-};
+import { z } from 'zod';
+import {
+  createProfileSchema,
+  profileSchema,
+  updateProfileSchema,
+} from '@/validation/profile';
 
-export type CreateProfile = Pick<Profile, 'firstname' | 'lastname'>;
-export type UpdateProfile = Partial<CreateProfile>;
+export type Profile = z.output<typeof profileSchema>;
+export type FetchedProfile = z.input<typeof profileSchema>;
+export type CreateProfile = z.infer<typeof createProfileSchema>;
+export type UpdateProfile = z.infer<typeof updateProfileSchema>;

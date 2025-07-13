@@ -1,6 +1,10 @@
 import { CreateProfile, Profile, UpdateProfile } from '@/types/profile';
 import supabase from '@/api/supabase';
-import { createProfileSchema, updateProfileSchema } from '@/validation/profile';
+import {
+  createProfileSchema,
+  profileSchema,
+  updateProfileSchema,
+} from '@/validation/profile';
 import { validateWithI18nAsync } from '@/utils/validator';
 
 export const createProfileFromSupabase = async (
@@ -22,14 +26,7 @@ export const createProfileFromSupabase = async (
       return Promise.reject(error);
     }
 
-    const profile: Profile = {
-      id: data.id,
-      createdAt: data.created_at,
-      firstname: data.firstname,
-      lastname: data.lastname,
-      userId: data.user_id,
-    };
-
+    const profile: Profile = profileSchema.parse(data);
     return Promise.resolve(profile);
   } catch (error) {
     return Promise.reject(error);
@@ -47,14 +44,7 @@ export const getProfileFromSupabase = async (): Promise<Profile> => {
       return Promise.reject(error);
     }
 
-    const profile: Profile = {
-      id: data.id,
-      createdAt: data.created_at,
-      firstname: data.firstname,
-      lastname: data.lastname,
-      userId: data.user_id,
-    };
-
+    const profile: Profile = profileSchema.parse(data);
     return Promise.resolve(profile);
   } catch (error) {
     return Promise.reject(error);
@@ -80,14 +70,7 @@ export const updateProfileFromSupabase = async (
       return Promise.reject(error);
     }
 
-    const profile: Profile = {
-      id: data.id,
-      createdAt: data.created_at,
-      firstname: data.firstname,
-      lastname: data.lastname,
-      userId: data.user_id,
-    };
-
+    const profile: Profile = profileSchema.parse(data);
     return Promise.resolve(profile);
   } catch (error) {
     return Promise.reject(error);

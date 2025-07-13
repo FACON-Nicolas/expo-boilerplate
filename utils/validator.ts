@@ -8,7 +8,6 @@ type ValidationResult<T> = {
 };
 
 export const validateWithI18n = <T>(
-  t: (key: string) => string,
   schema: z.ZodSchema<T>,
   data: unknown
 ): ValidationResult<T> => {
@@ -28,7 +27,7 @@ export const validateWithI18n = <T>(
     typeof firstError.message === 'string' &&
     firstError.message.startsWith('errors.')
   ) {
-    errorMessage = t(firstError.message);
+    errorMessage = i18n.t(firstError.message);
   } else {
     errorMessage = firstError.message;
   }
@@ -43,7 +42,7 @@ export const validateWithI18nAsync = async <T>(
   schema: z.ZodSchema<T>,
   data: unknown
 ): Promise<T> => {
-  const result = validateWithI18n(i18n.t, schema, data);
+  const result = validateWithI18n(schema, data);
 
   if (result.success) {
     return Promise.resolve(result.data!);
