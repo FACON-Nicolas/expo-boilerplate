@@ -29,6 +29,13 @@
     "edit": "Modifier le profil",
     "create": "Créer le profil"
   },
+  "onboarding": {
+    "title": "Comment tu t'appelles ?",
+    "subtitle": "Nous avons besoin de ton prénom pour commencer.",
+    "firstname": "Prénom",
+    "lastname": "Nom de famille",
+    "next": "Suivant"
+  },
   "home": {
     "title": "Accueil"
   },

@@ -8,7 +8,8 @@ import {
 import { validateWithI18nAsync } from '@/utils/validator';
 
 export const createProfileFromSupabase = async (
-  profileData: CreateProfile
+  profileData: CreateProfile,
+  userId: string
 ): Promise<Profile> => {
   const validatedProfile = await validateWithI18nAsync<CreateProfile>(
     createProfileSchema,
@@ -18,7 +19,7 @@ export const createProfileFromSupabase = async (
   try {
     const { data, error } = await supabase
       .from('profiles')
-      .insert([validatedProfile])
+      .insert([{ ...validatedProfile, user_id: userId }])
       .select()
       .single();
 

@@ -29,6 +29,13 @@
     "edit": "Edit Profile",
     "create": "Create Profile"
   },
+  "onboarding": {
+    "title": "What's your name?",
+    "subtitle": "We need your first name to start.",
+    "firstname": "First Name",
+    "lastname": "Last Name",
+    "next": "Next"
+  },
   "home": {
     "title": "Home"
   },

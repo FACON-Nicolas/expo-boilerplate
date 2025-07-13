@@ -4,15 +4,26 @@ import { ThemedText } from '@/components/themed-text';
 import { useAuth } from '@/store/auth';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function Profile() {
   const { t } = useTranslation();
   const { signOut } = useAuth();
+  const queryClient = useQueryClient();
+
+  const onSignOut = async () => {
+    try {
+      await signOut();
+      await queryClient.clear();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <ThemedSafeAreaView style={styles.container}>
       <ThemedText>{t('profile.title')}</ThemedText>
-      <ThemedButton onPress={signOut} variant='error'>
+      <ThemedButton onPress={onSignOut} variant='error'>
         {t('profile.signOut')}
       </ThemedButton>
     </ThemedSafeAreaView>
