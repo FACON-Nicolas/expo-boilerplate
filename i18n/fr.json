@@ -30,11 +30,19 @@
     "create": "Créer le profil"
   },
   "onboarding": {
-    "title": "Comment tu t'appelles ?",
-    "subtitle": "Nous avons besoin de ton prénom pour commencer.",
-    "firstname": "Prénom",
-    "lastname": "Nom de famille",
-    "next": "Suivant"
+    "welcome": {
+      "title": "Bienvenue à toi, nouvel arrivant !",
+      "body": "Et oui tu ne t'appelles pas comme ça !\n\nOn a besoin de quelques infos pour personnaliser ton expérience 🫵",
+      "ps": "PS: Ça prend 2 minutes !",
+      "button": "C'est parti !"
+    },
+    "identity": {
+      "title": "Comment tu t'appelles ?",
+      "subtitle": "Nous avons besoin de ton prénom pour commencer.",
+      "firstname": "Prénom",
+      "lastname": "Nom de famille",
+      "next": "Suivant"
+    }
   },
   "home": {
     "title": "Accueil"
