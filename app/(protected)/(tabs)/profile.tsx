@@ -5,6 +5,7 @@ import { useAuth } from '@/store/auth';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
+import { signOutFromSupabase } from '@/api/auth';
 
 export default function Profile() {
   const { t } = useTranslation();
@@ -14,7 +15,8 @@ export default function Profile() {
   const onSignOut = async () => {
     try {
       await signOut();
-      await queryClient.clear();
+      await signOutFromSupabase();
+      await queryClient.resetQueries();
     } catch (error) {
       console.error(error);
     }

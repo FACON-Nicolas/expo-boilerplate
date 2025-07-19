@@ -30,11 +30,19 @@
     "create": "Create Profile"
   },
   "onboarding": {
-    "title": "What's your name?",
-    "subtitle": "We need your first name to start.",
-    "firstname": "First Name",
-    "lastname": "Last Name",
-    "next": "Next"
+    "welcome": {
+      "title": "Welcome, newcomer!",
+      "body": "And yes, that's not your name!\n\nWe need a few details to personalize your experience 🫵",
+      "ps": "PS: It only takes 2 minutes!",
+      "button": "Let's go!"
+    },
+    "identity": {
+      "title": "What's your name?",
+      "subtitle": "We need your first name to start.",
+      "firstname": "First Name",
+      "lastname": "Last Name",
+      "next": "Next"
+    }
   },
   "home": {
     "title": "Home"
