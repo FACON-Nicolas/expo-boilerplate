@@ -33,28 +33,28 @@ export default function Onboarding() {
       <ThemedView style={styles.container}>
         <ThemedView style={styles.form}>
           <ThemedText type='title' style={styles.title}>
-            {t('onboarding.title')}
+            {t('onboarding.identity.title')}
           </ThemedText>
           <ThemedText style={styles.subtitle}>
-            {t('onboarding.subtitle')}
+            {t('onboarding.identity.subtitle')}
           </ThemedText>
           <ThemedView style={styles.inputs}>
             <ThemedInput
               value={profile.firstname}
-              placeholder={t('onboarding.firstname')}
+              placeholder={t('onboarding.identity.firstname')}
               autoCorrect={false}
               onChangeText={(value) => onProfileFieldChange('firstname', value)}
             />
             <ThemedInput
               value={profile.lastname}
-              placeholder={t('onboarding.lastname')}
+              placeholder={t('onboarding.identity.lastname')}
               autoCorrect={false}
               onChangeText={(value) => onProfileFieldChange('lastname', value)}
             />
           </ThemedView>
         </ThemedView>
         <ThemedButton onPress={onPress} isLoading={isPending}>
-          {t('onboarding.next')}
+          {t('onboarding.identity.next')}
         </ThemedButton>
       </ThemedView>
     </ThemedSafeAreaView>
