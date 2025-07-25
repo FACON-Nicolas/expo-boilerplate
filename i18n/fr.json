@@ -42,6 +42,11 @@
       "firstname": "Prénom",
       "lastname": "Nom de famille",
       "next": "Suivant"
+    },
+    "age": {
+      "title": "Quel âge as-tu ?",
+      "subtitle": "Sélectionne ta tranche d'âge pour personnaliser ton expérience.",
+      "next": "Terminer"
     }
   },
   "home": {
@@ -69,6 +74,10 @@
       "lastname": {
         "required": "Le nom de famille est requis",
         "maxLength": "Le nom de famille doit contenir au maximum 50 caractères"
+      },
+      "ageRange": {
+        "required": "La tranche d'âge est requise",
+        "invalid": "Veuillez sélectionner une tranche d'âge valide"
       }
     }
   }

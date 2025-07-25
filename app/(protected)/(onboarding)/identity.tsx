@@ -5,27 +5,26 @@ import { ThemedButton } from '@/components/themed-button';
 import { ThemedView } from '@/components/themed-view';
 import { StyleSheet } from 'react-native';
 import { useState } from 'react';
-import { CreateProfile } from '@/types/profile';
 import { useTranslation } from 'react-i18next';
-import { useCreateProfile } from '@/hooks/queries/useCreateProfile';
-import { useAuth } from '@/store/auth';
+import { useOnboarding } from '@/contexts/OnboardingContext';
+import { router } from 'expo-router';
+import { Identity } from '@/types/onboarding';
 
-export default function Onboarding() {
+export default function IdentityScreen() {
   const { t } = useTranslation();
-  const { user } = useAuth();
-  const [profile, setProfile] = useState<CreateProfile>({
-    firstname: '',
-    lastname: '',
+  const { profile, setIdentity, isValidIdentity } = useOnboarding();
+  const [identity, setIdentityForm] = useState<Identity>({
+    firstname: profile.firstname,
+    lastname: profile.lastname,
   });
 
-  const onProfileFieldChange = (field: keyof CreateProfile, value: string) => {
-    setProfile((prev) => ({ ...prev, [field]: value }));
+  const onFieldChange = (field: keyof Identity, value: string) => {
+    setIdentityForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const { mutate: createProfile, isPending } = useCreateProfile();
-
-  const onPress = async () => {
-    await createProfile({ profile, userId: user?.id ?? '' });
+  const onPress = () => {
+    setIdentity(identity);
+    router.push('/age');
   };
 
   return (
@@ -40,20 +39,20 @@ export default function Onboarding() {
           </ThemedText>
           <ThemedView style={styles.inputs}>
             <ThemedInput
-              value={profile.firstname}
+              value={identity.firstname}
               placeholder={t('onboarding.identity.firstname')}
               autoCorrect={false}
-              onChangeText={(value) => onProfileFieldChange('firstname', value)}
+              onChangeText={(value) => onFieldChange('firstname', value)}
             />
             <ThemedInput
-              value={profile.lastname}
+              value={identity.lastname}
               placeholder={t('onboarding.identity.lastname')}
               autoCorrect={false}
-              onChangeText={(value) => onProfileFieldChange('lastname', value)}
+              onChangeText={(value) => onFieldChange('lastname', value)}
             />
           </ThemedView>
         </ThemedView>
-        <ThemedButton onPress={onPress} isLoading={isPending}>
+        <ThemedButton onPress={onPress} disabled={!isValidIdentity(identity)}>
           {t('onboarding.identity.next')}
         </ThemedButton>
       </ThemedView>

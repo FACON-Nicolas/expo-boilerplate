@@ -7,5 +7,5 @@ import {
 
 export type Profile = z.output<typeof profileSchema>;
 export type FetchedProfile = z.input<typeof profileSchema>;
-export type CreateProfile = z.infer<typeof createProfileSchema>;
+export type CreateProfile = z.input<typeof createProfileSchema>;
 export type UpdateProfile = z.infer<typeof updateProfileSchema>;
