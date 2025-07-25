@@ -9,7 +9,30 @@ import '@/i18n';
 import { useAuthentication } from '@/hooks/useAuthentication';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const queryClient = new QueryClient();
+const STALE_TIME = 5 * 60 * 1000;
+const GC_TIME = 10 * 60 * 1000;
+const MAX_RETRIES = 3;
+const NO_RETRY_ERROR_CODES = ['PGRST116', '42501'];
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: STALE_TIME,
+      gcTime: GC_TIME,
+      retry: (failureCount, error: any) => {
+        if (NO_RETRY_ERROR_CODES.includes(error?.code)) return false;
+        return failureCount < MAX_RETRIES;
+      },
+      refetchOnWindowFocus: false,
+    },
+    mutations: {
+      retry: false,
+      onError: (error) => {
+        console.error('Mutation error:', error);
+      },
+    },
+  },
+});
 
 export default function RootLayout() {
   const scheme = useColorScheme();

@@ -17,8 +17,8 @@ export const useCreateProfile = () => {
     }) => {
       return await createProfileFromSupabase(profile, userId);
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['profile'] });
+    onSuccess: async (_, { userId }) => {
+      await queryClient.invalidateQueries({ queryKey: ['profile', userId] });
       router.replace('/(protected)/(tabs)');
     },
   });
