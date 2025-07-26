@@ -23,25 +23,25 @@ export default function AgeScreen() {
   const { mutate: createProfile, isPending } = useCreateProfile();
 
   const onPress = () => {
-    if (selectedAge) {
-      setAgeRange(selectedAge);
+    if (!selectedAge) return;
 
-      createProfile(
-        {
-          profile: {
-            firstname: profile.firstname,
-            lastname: profile.lastname,
-            ageRange: selectedAge,
-          },
-          userId: user?.id ?? '',
+    setAgeRange(selectedAge);
+
+    createProfile(
+      {
+        profile: {
+          firstname: profile.firstname,
+          lastname: profile.lastname,
+          ageRange: selectedAge,
         },
-        {
-          onSuccess: () => {
-            reset();
-          },
-        }
-      );
-    }
+        userId: user?.id ?? '',
+      },
+      {
+        onSuccess: () => {
+          reset();
+        },
+      }
+    );
   };
 
   const renderAgeOption = ({ item }: { item: AgeRange }) => (
