@@ -42,6 +42,11 @@
       "firstname": "First Name",
       "lastname": "Last Name",
       "next": "Next"
+    },
+    "age": {
+      "title": "How old are you?",
+      "subtitle": "Select your age range to personalize your experience.",
+      "next": "Complete"
     }
   },
   "home": {
@@ -69,6 +74,10 @@
       "lastname": {
         "required": "Last name is required",
         "maxLength": "Last name must be at most 50 characters long"
+      },
+      "ageRange": {
+        "required": "Age range is required",
+        "invalid": "Please select a valid age range"
       }
     }
   }

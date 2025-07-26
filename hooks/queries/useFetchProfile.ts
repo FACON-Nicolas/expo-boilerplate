@@ -7,7 +7,7 @@ export const useFetchProfile = () => {
   const { user } = useAuth();
 
   return useQuery({
-    queryKey: ['profile'],
+    queryKey: ['profile', user?.id],
     queryFn: getProfileFromSupabase,
     enabled: !!user,
     retry: false,
