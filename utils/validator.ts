@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import i18n from '@/i18n';
+import { z } from "zod";
+import i18n from "@/i18n";
 
 type ValidationResult<T> = {
   success: boolean;
@@ -7,10 +7,10 @@ type ValidationResult<T> = {
   error?: string;
 };
 
-export const validateWithI18n = <T>(
-  schema: z.ZodSchema<T>,
+export const validateWithI18n = <TInput, TOutput = TInput>(
+  schema: z.ZodSchema<TOutput, z.ZodTypeDef, TInput>,
   data: unknown
-): ValidationResult<T> => {
+): ValidationResult<TOutput> => {
   const result = schema.safeParse(data);
 
   if (result.success) {
@@ -24,8 +24,8 @@ export const validateWithI18n = <T>(
 
   let errorMessage: string;
   if (
-    typeof firstError.message === 'string' &&
-    firstError.message.startsWith('errors.')
+    typeof firstError.message === "string" &&
+    firstError.message.startsWith("errors.")
   ) {
     errorMessage = i18n.t(firstError.message);
   } else {
@@ -38,11 +38,11 @@ export const validateWithI18n = <T>(
   };
 };
 
-export const validateWithI18nAsync = async <T>(
-  schema: z.ZodSchema<T>,
+export const validateWithI18nAsync = async <TInput, TOutput = TInput>(
+  schema: z.ZodSchema<TOutput, z.ZodTypeDef, TInput>,
   data: unknown
-): Promise<T> => {
-  const result = validateWithI18n(schema, data);
+): Promise<TOutput> => {
+  const result = validateWithI18n<TInput, TOutput>(schema, data);
 
   if (result.success) {
     return Promise.resolve(result.data!);
