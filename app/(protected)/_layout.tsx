@@ -1,6 +1,6 @@
-import { Stack } from 'expo-router';
-import { useAuthentication } from '@/hooks/useAuthentication';
-import { useFetchProfile } from '@/hooks/queries/useFetchProfile';
+import { Stack } from "expo-router";
+import { useAuthentication } from "@/hooks/useAuthentication";
+import { useFetchProfile } from "@/hooks/queries/useFetchProfile";
 
 export default function RootLayout() {
   const { isUserLoading } = useAuthentication();

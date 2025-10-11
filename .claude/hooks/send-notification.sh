@@ -1,0 +1,1 @@
+osascript -e 'display notification "Claude Code a fini son travail !" with title "Claude Code"' && afplay /System/Library/Sounds/Glass.aiff

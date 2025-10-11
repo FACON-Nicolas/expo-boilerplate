@@ -1,24 +1,42 @@
-import { CreateProfile, Profile, UpdateProfile } from '@/types/profile';
-import supabase from '@/api/supabase';
+import {
+  CreateProfile,
+  CreateProfileSupabase,
+  Profile,
+  UpdateProfile,
+} from "@/types/profile";
+import supabase from "@/api/supabase";
 import {
   createProfileSchema,
   profileSchema,
   updateProfileSchema,
-} from '@/validation/profile';
-import { validateWithI18nAsync } from '@/utils/validator';
+} from "@/validation/profile";
+import { validateWithI18nAsync } from "@/utils/validator";
+import { User } from "@supabase/supabase-js";
+
+const getAuthenticatedUser = async (): Promise<User> => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("No authenticated user found");
+  }
+
+  return user;
+};
 
 export const createProfileFromSupabase = async (
   profileData: CreateProfile,
   userId: string
 ): Promise<Profile> => {
-  const validatedProfile = await validateWithI18nAsync<CreateProfile>(
-    createProfileSchema,
-    profileData
-  );
+  const validatedProfile = await validateWithI18nAsync<
+    CreateProfile,
+    CreateProfileSupabase
+  >(createProfileSchema, profileData);
 
   try {
     const { data, error } = await supabase
-      .from('profiles')
+      .from("profiles")
       .insert([{ ...validatedProfile, user_id: userId }])
       .select()
       .single();
@@ -36,9 +54,12 @@ export const createProfileFromSupabase = async (
 
 export const getProfileFromSupabase = async (): Promise<Profile> => {
   try {
+    const user = await getAuthenticatedUser();
+
     const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
+      .from("profiles")
+      .select("*")
+      .eq("user_id", user.id)
       .single();
 
     if (error) {
@@ -61,9 +82,12 @@ export const updateProfileFromSupabase = async (
   );
 
   try {
+    const user = await getAuthenticatedUser();
+
     const { data, error } = await supabase
-      .from('profiles')
+      .from("profiles")
       .update(validatedProfile)
+      .eq("user_id", user.id)
       .select()
       .single();
 

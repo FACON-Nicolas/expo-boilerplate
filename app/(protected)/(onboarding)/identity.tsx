@@ -1,14 +1,14 @@
-import { ThemedInput } from '@/components/themed-input';
-import ThemedSafeAreaView from '@/components/themed-safe-area-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedButton } from '@/components/themed-button';
-import { ThemedView } from '@/components/themed-view';
-import { StyleSheet } from 'react-native';
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useOnboarding } from '@/contexts/OnboardingContext';
-import { router } from 'expo-router';
-import { Identity } from '@/types/onboarding';
+import { ThemedInput } from "@/components/themed-input";
+import ThemedSafeAreaView from "@/components/themed-safe-area-view";
+import { ThemedText } from "@/components/themed-text";
+import { ThemedButton } from "@/components/themed-button";
+import { ThemedView } from "@/components/themed-view";
+import { StyleSheet } from "react-native";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useOnboarding } from "@/contexts/OnboardingContext";
+import { router } from "expo-router";
+import { Identity } from "@/types/onboarding";
 
 export default function IdentityScreen() {
   const { t } = useTranslation();
@@ -24,7 +24,7 @@ export default function IdentityScreen() {
 
   const onPress = () => {
     setIdentity(identity);
-    router.push('/age');
+    router.push("/age");
   };
 
   return (
@@ -32,28 +32,28 @@ export default function IdentityScreen() {
       <ThemedView style={styles.container}>
         <ThemedView style={styles.form}>
           <ThemedText type='title' style={styles.title}>
-            {t('onboarding.identity.title')}
+            {t("onboarding.identity.title")}
           </ThemedText>
           <ThemedText style={styles.subtitle}>
-            {t('onboarding.identity.subtitle')}
+            {t("onboarding.identity.subtitle")}
           </ThemedText>
           <ThemedView style={styles.inputs}>
             <ThemedInput
               value={identity.firstname}
-              placeholder={t('onboarding.identity.firstname')}
+              placeholder={t("onboarding.identity.firstname")}
               autoCorrect={false}
-              onChangeText={(value) => onFieldChange('firstname', value)}
+              onChangeText={(value) => onFieldChange("firstname", value)}
             />
             <ThemedInput
               value={identity.lastname}
-              placeholder={t('onboarding.identity.lastname')}
+              placeholder={t("onboarding.identity.lastname")}
               autoCorrect={false}
-              onChangeText={(value) => onFieldChange('lastname', value)}
+              onChangeText={(value) => onFieldChange("lastname", value)}
             />
           </ThemedView>
         </ThemedView>
         <ThemedButton onPress={onPress} disabled={!isValidIdentity(identity)}>
-          {t('onboarding.identity.next')}
+          {t("onboarding.identity.next")}
         </ThemedButton>
       </ThemedView>
     </ThemedSafeAreaView>
@@ -64,21 +64,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 30,
-    alignItems: 'center',
+    alignItems: "center",
     paddingHorizontal: 20,
     gap: 20,
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
   },
   form: {
     gap: 20,
   },
   inputs: {
     gap: 10,
+    width: "100%",
   },
   title: {
-    textAlign: 'center',
+    textAlign: "center",
   },
   subtitle: {
-    textAlign: 'center',
+    textAlign: "center",
   },
 });
