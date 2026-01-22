@@ -8,6 +8,7 @@ Cette boilerplate est en cours de refonte pour devenir une base **modulaire**, *
 
 - ✅ **Phase 1 : Clean Architecture + Feature-Based** - Structure migrée
 - ✅ **Upgrade Expo 53 → 54** - SDK 54, React 19.1, React Native 0.81.5, Reanimated v4
+- ✅ **Phase 2 : HeroUI Native + Design System** - Migration complète
 
 ### Structure actuelle
 
@@ -57,14 +58,14 @@ expo-boilerplate/
 │   │   ├── storage/secure-storage.ts
 │   │   └── validation/validator.ts
 │   └── presentation/hooks/
-│       ├── use-theme-color.ts
 │       └── use-toggle.ts
 │
 ├── infrastructure/                   # External Dependencies
 │   └── supabase/client.ts
 │
-├── components/                       # Composants UI (à migrer vers ui/ en Phase 2)
-├── constants/Colors.ts
+├── ui/                               # Design System
+│   ├── components/                   # Composants UI (Button, Input, Text, etc.)
+│   └── theme/                        # Tokens et theme store
 ├── i18n/
 └── assets/
 ```
@@ -106,123 +107,16 @@ import { AppError } from '@/core';
 
 ---
 
-## Phase 2 : HeroUI Native + Design System
+## ~~Phase 2 : HeroUI Native + Design System~~ ✅
 
-### Objectif
-
-Migrer le système de styling vers **HeroUI Native** (Tailwind v4 via Uniwind) pour avoir une UI moderne et cohérente.
-
-### Prérequis
-
-- Lire la doc HeroUI Native : https://v3.heroui.com/docs/native/getting-started
-- Lire la doc Uniwind : https://docs.uniwind.dev/quickstart
-
-### Tâches
-
-#### 2.1 Setup Uniwind (Tailwind v4 pour React Native)
-
-1. Installer les dépendances :
-   ```bash
-   npx expo install uniwind react-native-css tailwind-variants tailwind-merge
-   ```
-
-2. Créer `global.css` à la racine :
-   ```css
-   @import 'tailwindcss';
-   @import 'uniwind';
-   ```
-
-3. Configurer Metro pour Uniwind (voir doc Uniwind)
-
-4. Importer `global.css` dans `app/_layout.tsx`
-
-#### 2.2 Setup HeroUI Native
-
-1. Installer HeroUI Native :
-   ```bash
-   npx expo install heroui-native @gorhom/bottom-sheet react-native-svg
-   ```
-
-2. Mettre à jour `global.css` :
-   ```css
-   @import 'tailwindcss';
-   @import 'uniwind';
-   @import 'heroui-native/styles';
-   @source './node_modules/heroui-native/lib';
-   ```
-
-3. Wrapper l'app avec `HeroUINativeProvider` dans `app/_layout.tsx` :
-   ```typescript
-   import { HeroUINativeProvider } from 'heroui-native';
-   import { GestureHandlerRootView } from 'react-native-gesture-handler';
-
-   export default function RootLayout() {
-     return (
-       <GestureHandlerRootView style={{ flex: 1 }}>
-         <HeroUINativeProvider>
-           {/* reste de l'app */}
-         </HeroUINativeProvider>
-       </GestureHandlerRootView>
-     );
-   }
-   ```
-
-#### 2.3 Créer le Design System
-
-1. Créer `ui/theme/tokens.ts` avec les tokens de design :
-   - Colors (primary, secondary, error, success, warning, background, text)
-   - Spacing (xs, sm, md, lg, xl)
-   - Typography (font sizes, weights)
-   - Border radius
-
-2. Configurer le thème HeroUI avec ces tokens
-
-#### 2.4 Migrer les composants themed
-
-Migrer chaque composant de `components/themed-*.tsx` vers `ui/components/` en utilisant HeroUI :
-
-| Ancien | Nouveau | Composant HeroUI |
-|--------|---------|------------------|
-| `themed-button.tsx` | `ui/components/button.tsx` | `Button` de heroui-native |
-| `themed-input.tsx` | `ui/components/input.tsx` | `Input` de heroui-native |
-| `themed-text.tsx` | `ui/components/text.tsx` | Custom avec Tailwind |
-| `themed-view.tsx` | `ui/components/view.tsx` | Custom avec Tailwind |
-| `themed-option.tsx` | `ui/components/option.tsx` | Custom ou `Chip` |
-| `themed-link.tsx` | `ui/components/link.tsx` | Custom avec `Link` expo-router |
-| `themed-safe-area-view.tsx` | `ui/components/safe-area-view.tsx` | Wrapper `SafeAreaView` |
-
-3. Mettre à jour les imports dans `app/` pour pointer vers `ui/components/`
-
-4. Supprimer `components/themed-*.tsx` une fois la migration complète
-
-#### 2.5 Dark Mode Toggle
-
-1. Créer `ui/theme/theme-store.ts` (Zustand) :
-   ```typescript
-   type ThemeMode = 'light' | 'dark' | 'system';
-
-   interface ThemeStore {
-     mode: ThemeMode;
-     setMode: (mode: ThemeMode) => void;
-   }
-   ```
-
-2. Persister le choix utilisateur avec `expo-secure-store`
-
-3. Ajouter un toggle dans l'écran Profile
-
-#### 2.6 Loading Skeletons
-
-1. Créer `ui/components/skeleton.tsx` pour les états de chargement
-2. Remplacer les `return null` pendant le loading par des skeletons
-
-### Critères de validation
-
-- [ ] L'app démarre sans erreur
-- [ ] Le thème light/dark fonctionne
-- [ ] Tous les composants utilisent HeroUI/Tailwind
-- [ ] `npm run lint` passe
-- [ ] `npx tsc --noEmit` passe
+> **Complétée** - Migration vers HeroUI Native + Uniwind (Tailwind v4) terminée.
+>
+> - Uniwind configuré avec `global.css` et Metro
+> - HeroUI Native avec `HeroUINativeProvider`
+> - Design tokens définis (colors, spacing, typography, radius)
+> - Composants migrés dans `ui/components/` (Button, Input, Text, View, Link, SafeAreaView, Skeleton, Icon, TabBarIcon)
+> - Theme store Zustand avec persistance (`ui/theme/theme-store.ts`)
+> - Anciens composants `themed-*.tsx` et `Colors.ts` supprimés
 
 ---
 
@@ -652,7 +546,7 @@ Voir la doc : https://docs.expo.dev/eas/workflows/
 
 ## Ordre d'exécution recommandé
 
-1. **Phase 2** (HeroUI) - Donne une UI moderne rapidement
+1. ~~**Phase 2** (HeroUI) - Donne une UI moderne rapidement~~ ✅
 2. **Phase 3** (Forms) - Améliore la DX immédiatement
 3. **Phase 4** (Error Handling) - Quick wins robustesse
 4. **Phase 5** (Testing) - Sécurise les refactos

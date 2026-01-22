@@ -168,6 +168,38 @@ Never use these words:
 2. **Use TodoWrite** to plan complex tasks
 3. **Verify** with `npx tsc --noEmit` and `npm run lint` after each modification
 
+## Reuse over reinvention
+
+**NEVER create custom implementations** before checking:
+
+1. **HeroUI Native components first** - Use MCP Context7 to search for existing components (Button, TextField, RadioGroup, Skeleton, Chip, etc.)
+2. **Existing codebase utilities** - Search with Grep for similar patterns (storage, hooks, helpers)
+3. **HeroUI hooks** - Use `useThemeColor` from heroui-native instead of custom color constants
+
+```typescript
+// ❌ FORBIDDEN - Custom implementation when lib provides it
+const COLORS = { light: { text: '#11181C' }, dark: { text: '#ECEDEE' } };
+const color = COLORS[theme].text;
+
+// ✅ CORRECT - Use HeroUI hook
+import { useThemeColor } from 'heroui-native';
+const [textColor] = useThemeColor(['foreground']);
+```
+
+```typescript
+// ❌ FORBIDDEN - Custom Option component
+export function Option({ isSelected, onPress, children }) { ... }
+
+// ✅ CORRECT - Use HeroUI RadioGroup
+import { RadioGroup } from 'heroui-native';
+<RadioGroup.Item value={value}>
+  <RadioGroup.Label>{label}</RadioGroup.Label>
+  <RadioGroup.Indicator />
+</RadioGroup.Item>
+```
+
+**Rule**: If you're about to create a UI component, search HeroUI docs first via MCP.
+
 ## Available scripts
 
 ```bash
