@@ -1,69 +1,39 @@
-import { StyleSheet } from 'react-native';
-import React from 'react';
-import ThemedSafeAreaView from '@/components/themed-safe-area-view';
-import { ThemedText } from '@/components/themed-text';
+import { SafeAreaView } from '@/ui/components/safe-area-view';
+import { Text } from '@/ui/components/text';
+import { View } from '@/ui/components/view';
+import { Button } from '@/ui/components/button';
 import LottieView from 'lottie-react-native';
-import { ThemedView } from '@/components/themed-view';
-import { ThemedButton } from '@/components/themed-button';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
+const ANIMATION_SIZE = 200;
+
 export default function Index() {
-  const onButtonPress = () => router.replace('/identity');
+  const onPressStart = () => router.replace('/identity');
   const { t } = useTranslation();
 
   return (
-    <ThemedSafeAreaView style={styles.container}>
-      <ThemedView style={styles.content}>
+    <SafeAreaView className="px-6 justify-between items-center">
+      <View className="gap-6 items-center flex-1 justify-center">
         <LottieView
           source={require('@/assets/animations/start-onboarding.json')}
           autoPlay
           loop
-          style={styles.animation}
+          style={{ width: ANIMATION_SIZE, height: ANIMATION_SIZE }}
         />
-        <ThemedText type='title' style={styles.title}>
+        <Text variant='title' className="text-center leading-7">
           {t('onboarding.welcome.title')}
-        </ThemedText>
-        <ThemedText style={styles.body}>
+        </Text>
+        <Text className="text-center leading-6">
           {t('onboarding.welcome.body')}
-        </ThemedText>
-        <ThemedText style={[styles.body, { fontSize: 14, opacity: 0.8 }]}>
+        </Text>
+        <Text className="text-center text-sm opacity-80">
           {t('onboarding.welcome.ps')}
-        </ThemedText>
-      </ThemedView>
-      <ThemedButton onPress={onButtonPress}>
+        </Text>
+      </View>
+      <Button onPress={onPressStart}>
         {t('onboarding.welcome.button')}
-      </ThemedButton>
-    </ThemedSafeAreaView>
+      </Button>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 24,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  content: {
-    gap: 24,
-    alignItems: 'center',
-    flexGrow: 1,
-    justifyContent: 'center',
-  },
-  animation: {
-    width: 200,
-    height: 200,
-  },
-  title: {
-    textAlign: 'center',
-    lineHeight: 28,
-  },
-  body: {
-    textAlign: 'center',
-    lineHeight: 24,
-  },
-  button: {
-    marginTop: 'auto',
-  },
-});

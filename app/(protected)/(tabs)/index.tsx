@@ -1,12 +1,12 @@
-import ThemedSafeAreaView from '@/components/themed-safe-area-view';
-import { ThemedText } from '@/components/themed-text';
+import { SafeAreaView } from '@/ui/components/safe-area-view';
+import { Text } from '@/ui/components/text';
 import { useTranslation } from 'react-i18next';
 
 export default function Index() {
   const { t } = useTranslation();
   return (
-    <ThemedSafeAreaView>
-      <ThemedText>{t('home.title')}</ThemedText>
-    </ThemedSafeAreaView>
+    <SafeAreaView>
+      <Text>{t('home.title')}</Text>
+    </SafeAreaView>
   );
 }

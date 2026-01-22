@@ -1,13 +1,12 @@
-import { ThemedButton } from '@/components/themed-button';
-import { ThemedInput } from '@/components/themed-input';
-import ThemedLink from '@/components/themed-link';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { Button } from '@/ui/components/button';
+import { Input } from '@/ui/components/input';
+import { Link } from '@/ui/components/link';
+import { Text } from '@/ui/components/text';
+import { View } from '@/ui/components/view';
 import { useAuthentication } from '@/features/auth/presentation/hooks/use-authentication';
 import type { SignUpCredentials } from '@/features/auth/domain/entities/session';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet } from 'react-native';
 
 export default function SignUp() {
   const [user, setUser] = useState<SignUpCredentials>({
@@ -23,13 +22,13 @@ export default function SignUp() {
     setUser({ ...user, [key]: value });
   };
 
-  const onPress = async () => await signUp(user);
+  const onPressSignUp = async () => await signUp(user);
 
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type='subtitle'>{t('auth.signUp.title')}</ThemedText>
-      {error && <ThemedText type='error'>{t(error)}</ThemedText>}
-      <ThemedInput
+    <View className="flex-1 justify-center gap-2.5 p-2.5">
+      <Text variant='subtitle'>{t('auth.signUp.title')}</Text>
+      {error && <Text variant='error'>{t(error)}</Text>}
+      <Input
         placeholder={t('auth.common.email')}
         value={user.email}
         onChangeText={(value) => onChangeText('email', value)}
@@ -37,7 +36,7 @@ export default function SignUp() {
         autoComplete='email'
         keyboardType='email-address'
       />
-      <ThemedInput
+      <Input
         secureTextEntry
         placeholder={t('auth.common.password')}
         value={user.password}
@@ -46,7 +45,7 @@ export default function SignUp() {
         autoComplete='password'
         keyboardType='visible-password'
       />
-      <ThemedInput
+      <Input
         secureTextEntry
         placeholder={t('auth.signUp.passwordConfirmation')}
         value={user.passwordConfirmation}
@@ -55,24 +54,12 @@ export default function SignUp() {
         autoComplete='password'
         keyboardType='visible-password'
       />
-      <ThemedButton onPress={onPress} isLoading={isUserLoading}>
+      <Button onPress={onPressSignUp} isLoading={isUserLoading}>
         {t('auth.signUp.button')}
-      </ThemedButton>
-      <ThemedLink href='/(public)' style={styles.link}>
+      </Button>
+      <Link href='/(public)' className="text-center">
         {t('auth.signUp.link')}
-      </ThemedLink>
-    </ThemedView>
+      </Link>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    gap: 10,
-    padding: 10,
-  },
-  link: {
-    textAlign: 'center',
-  },
-});

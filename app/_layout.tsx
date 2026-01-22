@@ -1,18 +1,20 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar, useColorScheme } from 'react-native';
-import '@/i18n';
-import { useAuthentication } from '@/features/auth/presentation/hooks/use-authentication';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import "@/global.css";
+
+import { Stack } from "expo-router";
+import { StatusBar } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { HeroUINativeProvider } from "heroui-native";
+import { Uniwind } from "uniwind";
+import "@/i18n";
+import { useAuthentication } from "@/features/auth/presentation/hooks/use-authentication";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useThemeStore } from "@/ui/theme/theme-store";
+import { useEffect } from "react";
 
 const STALE_TIME = 5 * 60 * 1000;
 const GC_TIME = 10 * 60 * 1000;
 const MAX_RETRIES = 3;
-const NO_RETRY_ERROR_CODES = ['PGRST116', '42501'];
+const NO_RETRY_ERROR_CODES = ["PGRST116", "42501"];
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,30 +30,48 @@ const queryClient = new QueryClient({
     mutations: {
       retry: false,
       onError: (error) => {
-        console.error('Mutation error:', error);
+        console.error("Mutation error:", error);
       },
     },
   },
 });
 
-export default function RootLayout() {
-  const scheme = useColorScheme();
-
+function NavigationStack() {
   const { isUserAuthenticated } = useAuthentication();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <StatusBar translucent />
-      <ThemeProvider value={scheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Protected guard={isUserAuthenticated}>
-            <Stack.Screen name='(protected)' />
-          </Stack.Protected>
-          <Stack.Protected guard={!isUserAuthenticated}>
-            <Stack.Screen name='(public)' />
-          </Stack.Protected>
-        </Stack>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Protected guard={isUserAuthenticated}>
+        <Stack.Screen name='(protected)' />
+      </Stack.Protected>
+      <Stack.Protected guard={!isUserAuthenticated}>
+        <Stack.Screen name='(public)' />
+      </Stack.Protected>
+    </Stack>
+  );
+}
+
+function RootLayoutContent() {
+  const mode = useThemeStore((state) => state.mode);
+
+  useEffect(() => {
+    Uniwind.setTheme(mode);
+  }, [mode]);
+
+  return (
+    <HeroUINativeProvider>
+      <NavigationStack />
+    </HeroUINativeProvider>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <QueryClientProvider client={queryClient}>
+        <StatusBar translucent />
+        <RootLayoutContent />
+      </QueryClientProvider>
+    </GestureHandlerRootView>
   );
 }

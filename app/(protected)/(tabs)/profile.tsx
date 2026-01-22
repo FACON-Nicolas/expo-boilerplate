@@ -1,12 +1,12 @@
-import { ThemedButton } from "@/components/themed-button";
-import ThemedSafeAreaView from "@/components/themed-safe-area-view";
-import { ThemedText } from "@/components/themed-text";
-import { useAuth } from "@/features/auth/presentation/hooks/use-auth";
-import { useTranslation } from "react-i18next";
-import { StyleSheet } from "react-native";
-import { useQueryClient } from "@tanstack/react-query";
-import { createSupabaseAuthRepository } from "@/features/auth/data/repositories/supabase-auth-repository";
-import { supabaseClient } from "@/infrastructure/supabase/client";
+import { Button } from '@/ui/components/button';
+import { SafeAreaView } from '@/ui/components/safe-area-view';
+import { Text } from '@/ui/components/text';
+import { View } from '@/ui/components/view';
+import { useAuth } from '@/features/auth/presentation/hooks/use-auth';
+import { useTranslation } from 'react-i18next';
+import { useQueryClient } from '@tanstack/react-query';
+import { createSupabaseAuthRepository } from '@/features/auth/data/repositories/supabase-auth-repository';
+import { supabaseClient } from '@/infrastructure/supabase/client';
 
 export default function Profile() {
   const { t } = useTranslation();
@@ -15,12 +15,12 @@ export default function Profile() {
 
   const authRepository = createSupabaseAuthRepository(supabaseClient);
 
-  const onSignOut = async () => {
+  const onPressSignOut = async () => {
     try {
       await authRepository.signOut();
       signOut();
       await queryClient.invalidateQueries({
-        queryKey: ["profile", user?.id],
+        queryKey: ['profile', user?.id],
       });
     } catch (error) {
       console.error(error);
@@ -28,19 +28,14 @@ export default function Profile() {
   };
 
   return (
-    <ThemedSafeAreaView style={styles.container}>
-      <ThemedText>{t("profile.title")}</ThemedText>
-      <ThemedButton onPress={onSignOut} variant='error'>
-        {t("profile.signOut")}
-      </ThemedButton>
-    </ThemedSafeAreaView>
+    <SafeAreaView className="px-5 gap-2.5">
+      <Text>{t('profile.title')}</Text>
+
+      <View className="mt-auto">
+        <Button onPress={onPressSignOut} variant='danger'>
+          {t('profile.signOut')}
+        </Button>
+      </View>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 20,
-    gap: 10,
-  },
-});
