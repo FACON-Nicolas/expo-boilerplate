@@ -3,14 +3,14 @@ import { ThemedInput } from '@/components/themed-input';
 import ThemedLink from '@/components/themed-link';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { useAuthentication } from '@/hooks/useAuthentication';
-import { SignUpUser } from '@/types/user';
+import { useAuthentication } from '@/features/auth/presentation/hooks/use-authentication';
+import type { SignUpCredentials } from '@/features/auth/domain/entities/session';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
 export default function SignUp() {
-  const [user, setUser] = useState<SignUpUser>({
+  const [user, setUser] = useState<SignUpCredentials>({
     email: '',
     password: '',
     passwordConfirmation: '',
@@ -19,7 +19,7 @@ export default function SignUp() {
   const { t } = useTranslation();
   const { isUserLoading, error, signUp } = useAuthentication();
 
-  const onChangeText = (key: keyof SignUpUser, value: string) => {
+  const onChangeText = (key: keyof SignUpCredentials, value: string) => {
     setUser({ ...user, [key]: value });
   };
 

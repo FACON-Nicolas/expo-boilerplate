@@ -6,16 +6,16 @@ import { ThemedView } from "@/components/themed-view";
 import { StyleSheet } from "react-native";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useOnboarding } from "@/contexts/OnboardingContext";
+import { useOnboarding } from "@/features/onboarding/presentation/context/onboarding-context";
 import { router } from "expo-router";
-import { Identity } from "@/types/onboarding";
+import type { Identity } from "@/features/onboarding/domain/entities/onboarding-data";
 
 export default function IdentityScreen() {
   const { t } = useTranslation();
-  const { profile, setIdentity, isValidIdentity } = useOnboarding();
+  const { data, setIdentity, isValidIdentity } = useOnboarding();
   const [identity, setIdentityForm] = useState<Identity>({
-    firstname: profile.firstname,
-    lastname: profile.lastname,
+    firstname: data.firstname,
+    lastname: data.lastname,
   });
 
   const onFieldChange = (field: keyof Identity, value: string) => {

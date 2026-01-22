@@ -1,21 +1,24 @@
 import { ThemedButton } from "@/components/themed-button";
 import ThemedSafeAreaView from "@/components/themed-safe-area-view";
 import { ThemedText } from "@/components/themed-text";
-import { useAuth } from "@/store/auth";
+import { useAuth } from "@/features/auth/presentation/hooks/use-auth";
 import { useTranslation } from "react-i18next";
 import { StyleSheet } from "react-native";
 import { useQueryClient } from "@tanstack/react-query";
-import { signOutFromSupabase } from "@/api/auth";
+import { createSupabaseAuthRepository } from "@/features/auth/data/repositories/supabase-auth-repository";
+import { supabaseClient } from "@/infrastructure/supabase/client";
 
 export default function Profile() {
   const { t } = useTranslation();
   const { signOut, user } = useAuth();
   const queryClient = useQueryClient();
 
+  const authRepository = createSupabaseAuthRepository(supabaseClient);
+
   const onSignOut = async () => {
     try {
-      await signOut();
-      await signOutFromSupabase();
+      await authRepository.signOut();
+      signOut();
       await queryClient.invalidateQueries({
         queryKey: ["profile", user?.id],
       });

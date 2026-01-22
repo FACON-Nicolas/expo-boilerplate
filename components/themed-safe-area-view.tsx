@@ -1,4 +1,4 @@
-import { useThemeColor } from '@/hooks/useThemeColor';
+import { useThemeColor } from '@/core/presentation/hooks/use-theme-color';
 import {
   SafeAreaView,
   SafeAreaViewProps,

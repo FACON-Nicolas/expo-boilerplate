@@ -1,5 +1,5 @@
 import { ThemedTabBarIcon } from '@/components/themed-tab-bar-icon';
-import { useThemeColor } from '@/hooks/useThemeColor';
+import { useThemeColor } from '@/core/presentation/hooks/use-theme-color';
 import { Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 

@@ -1,6 +1,6 @@
 import { TouchableOpacity, TouchableOpacityProps, StyleSheet } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
-import { useThemeColor } from '@/hooks/useThemeColor';
+import { useThemeColor } from '@/core/presentation/hooks/use-theme-color';
 
 export type ThemedOptionProps = TouchableOpacityProps & {
   children: React.ReactNode;

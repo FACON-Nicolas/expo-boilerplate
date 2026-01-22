@@ -3,14 +3,14 @@ import { ThemedInput } from '@/components/themed-input';
 import ThemedLink from '@/components/themed-link';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { useAuthentication } from '@/hooks/useAuthentication';
-import { SignInUser } from '@/types/user';
+import { useAuthentication } from '@/features/auth/presentation/hooks/use-authentication';
+import type { SignInCredentials } from '@/features/auth/domain/entities/session';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 
 export default function Index() {
-  const [user, setUser] = useState<SignInUser>({
+  const [user, setUser] = useState<SignInCredentials>({
     email: __DEV__ ? process.env.EXPO_PUBLIC_SUPABASE_EMAIL_LOGIN_DEV! : '',
     password: __DEV__
       ? process.env.EXPO_PUBLIC_SUPABASE_PASSWORD_LOGIN_DEV!
@@ -20,7 +20,7 @@ export default function Index() {
   const { t } = useTranslation();
   const { isUserLoading, error, signIn } = useAuthentication();
 
-  const onChangeText = (key: keyof SignInUser, value: string) => {
+  const onChangeText = (key: keyof SignInCredentials, value: string) => {
     setUser({ ...user, [key]: value });
   };
 

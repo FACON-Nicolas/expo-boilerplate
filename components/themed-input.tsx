@@ -5,9 +5,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { ThemedView } from '@/components/themed-view';
-import { useToggle } from '@/hooks/useToggle';
+import { useToggle } from '@/core/presentation/hooks/use-toggle';
 import { ThemedIcon } from '@/components/themed-icon';
-import { useThemeColor } from '@/hooks/useThemeColor';
+import { useThemeColor } from '@/core/presentation/hooks/use-theme-color';
 
 export function ThemedInput({
   style,

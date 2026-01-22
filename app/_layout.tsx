@@ -6,7 +6,7 @@ import {
 import { Stack } from 'expo-router';
 import { StatusBar, useColorScheme } from 'react-native';
 import '@/i18n';
-import { useAuthentication } from '@/hooks/useAuthentication';
+import { useAuthentication } from '@/features/auth/presentation/hooks/use-authentication';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const STALE_TIME = 5 * 60 * 1000;

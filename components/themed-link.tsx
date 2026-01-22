@@ -1,4 +1,4 @@
-import { useThemeColor } from '@/hooks/useThemeColor';
+import { useThemeColor } from '@/core/presentation/hooks/use-theme-color';
 import { Link, LinkProps } from 'expo-router';
 
 export default function ThemedLink({ children, href, style }: LinkProps) {
