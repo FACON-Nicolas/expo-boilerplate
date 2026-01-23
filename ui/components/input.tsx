@@ -1,8 +1,9 @@
-import { Pressable, type TextInputProps } from "react-native";
 import { TextField } from "heroui-native";
+import { Pressable, type TextInputProps } from "react-native";
+
+import { useToggle } from "@/core/presentation/hooks/use-toggle";
 import { Icon } from "@/ui/components/icon";
 import { View } from "@/ui/components/view";
-import { useToggle } from "@/core/presentation/hooks/use-toggle";
 
 type InputProps = TextInputProps & {
   secureTextEntry?: boolean;

@@ -1,7 +1,8 @@
-import { TabBarIcon } from "@/ui/components/tab-bar-icon";
-import { useThemeColor } from "heroui-native";
 import { Tabs } from "expo-router";
+import { useThemeColor } from "heroui-native";
 import { useTranslation } from "react-i18next";
+
+import { TabBarIcon } from "@/ui/components/tab-bar-icon";
 
 export default function RootLayout() {
   const { t } = useTranslation();

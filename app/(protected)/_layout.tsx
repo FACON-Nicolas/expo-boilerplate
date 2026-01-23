@@ -1,4 +1,5 @@
 import { Stack } from 'expo-router';
+
 import { useAuthentication } from '@/features/auth/presentation/hooks/use-authentication';
 import { SafeAreaView } from '@/ui/components/safe-area-view';
 import { Skeleton, SkeletonGroup } from '@/ui/components/skeleton';

@@ -1,4 +1,4 @@
-import type { Session, SignInCredentials, SignUpCredentials } from '../entities/session';
+import type { Session, SignInCredentials, SignUpCredentials } from '@/features/auth/domain/entities/session';
 
 export type AuthRepository = {
   signIn: (credentials: SignInCredentials) => Promise<Session>;

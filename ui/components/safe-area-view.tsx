@@ -2,8 +2,8 @@ import {
   SafeAreaView as RNSafeAreaView,
   type SafeAreaViewProps,
 } from 'react-native-safe-area-context';
-import { withUniwind } from 'uniwind';
 import { twMerge } from 'tailwind-merge';
+import { withUniwind } from 'uniwind';
 
 const StyledSafeAreaView = withUniwind(RNSafeAreaView);
 

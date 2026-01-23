@@ -1,5 +1,5 @@
-import type { ProfileRepository } from '../repositories/profile-repository';
-import type { Profile } from '../entities/profile';
+import type { Profile } from '@/features/profile/domain/entities/profile';
+import type { ProfileRepository } from '@/features/profile/domain/repositories/profile-repository';
 
 export const fetchProfile =
   (repository: ProfileRepository) =>

@@ -1,7 +1,9 @@
-import type { ProfileRepository } from '../repositories/profile-repository';
-import type { Profile, CreateProfileInput } from '../entities/profile';
-import { createProfileSchema } from '../validation/profile-schema';
-import { validateWithI18nAsync } from '@/core/data/validation/validator';
+import { validateWithI18nAsync } from '@/core/domain/validation/validator';
+import { createProfileSchema } from '@/features/profile/domain/validation/profile-schema';
+
+import type { Profile, CreateProfileInput } from '@/features/profile/domain/entities/profile';
+import type { ProfileRepository } from '@/features/profile/domain/repositories/profile-repository';
+
 
 export const createProfile =
   (repository: ProfileRepository) =>

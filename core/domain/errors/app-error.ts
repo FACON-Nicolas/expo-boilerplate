@@ -44,4 +44,12 @@ export class AppError extends Error {
   static notFound(message: string): AppError {
     return new AppError(message, 'NOT_FOUND');
   }
+
+  static hasCode(error: unknown): error is { code: string } {
+    if (error === null || typeof error !== 'object' || !('code' in error)) {
+      return false;
+    }
+    const { code } = error;
+    return typeof code === 'string';
+  }
 }

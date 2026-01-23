@@ -1,11 +1,10 @@
+import { RadioGroup } from "heroui-native";
 import {
   Controller,
   type Control,
   type FieldValues,
   type Path,
 } from "react-hook-form";
-import { RadioGroup } from "heroui-native";
-import { View } from "react-native";
 
 type RadioOption = {
   value: string;

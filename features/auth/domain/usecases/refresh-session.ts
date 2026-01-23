@@ -1,5 +1,5 @@
-import type { AuthRepository } from '../repositories/auth-repository';
-import type { Session } from '../entities/session';
+import type { Session } from '@/features/auth/domain/entities/session';
+import type { AuthRepository } from '@/features/auth/domain/repositories/auth-repository';
 
 export const refreshSession =
   (repository: AuthRepository) =>

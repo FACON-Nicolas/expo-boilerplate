@@ -1,7 +1,9 @@
-import type { AuthRepository } from '../repositories/auth-repository';
-import type { Session, SignUpCredentials } from '../entities/session';
-import { signUpSchema } from '../validation/auth-schema';
-import { validateWithI18nAsync } from '@/core/data/validation/validator';
+import { validateWithI18nAsync } from '@/core/domain/validation/validator';
+import { signUpSchema } from '@/features/auth/domain/validation/auth-schema';
+
+import type { Session, SignUpCredentials } from '@/features/auth/domain/entities/session';
+import type { AuthRepository } from '@/features/auth/domain/repositories/auth-repository';
+
 
 export const signUp =
   (repository: AuthRepository) =>

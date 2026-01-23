@@ -1,7 +1,9 @@
-import type { SupabaseClient, Session as SupabaseSession, User as SupabaseUser } from '@supabase/supabase-js';
-import type { AuthRepository } from '../../domain/repositories/auth-repository';
-import type { Session, SignInCredentials, SignUpCredentials, User } from '../../domain/entities/session';
 import { AppError } from '@/core/domain/errors/app-error';
+
+import type { Session, SignInCredentials, SignUpCredentials, User } from '@/features/auth/domain/entities/session';
+import type { AuthRepository } from '@/features/auth/domain/repositories/auth-repository';
+import type { SupabaseClient, Session as SupabaseSession, User as SupabaseUser } from '@supabase/supabase-js';
+
 
 const mapSupabaseUser = (user: SupabaseUser): User => ({
   id: user.id,

@@ -1,13 +1,16 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+
+import { signInSchema } from "@/features/auth/domain/validation/auth-schema";
+import { useAuthentication } from "@/features/auth/presentation/hooks/use-authentication";
 import { Button } from "@/ui/components/button";
 import { FormTextField } from "@/ui/components/form/form-text-field";
 import { Link } from "@/ui/components/link";
 import { Text } from "@/ui/components/text";
 import { View } from "@/ui/components/view";
-import { useAuthentication } from "@/features/auth/presentation/hooks/use-authentication";
-import { signInSchema } from "@/features/auth/domain/validation/auth-schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
+
+
 import type { SignInCredentials } from "@/features/auth/domain/entities/session";
 
 export default function Index() {

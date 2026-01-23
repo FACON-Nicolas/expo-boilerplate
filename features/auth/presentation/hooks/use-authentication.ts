@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { useAuth } from './use-auth';
-import type { SignInCredentials, SignUpCredentials } from '../../domain/entities/session';
+
+import { useAuth } from '@/features/auth/presentation/hooks/use-auth';
+
+import type { SignInCredentials, SignUpCredentials } from '@/features/auth/domain/entities/session';
 
 export function useAuthentication() {
   const { user, isLoading, signIn: signInStore, signUp: signUpStore } = useAuth();
@@ -10,8 +12,8 @@ export function useAuthentication() {
     try {
       setError(null);
       await signInStore(credentials);
-    } catch (err: Error | any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     }
   };
 
@@ -19,8 +21,8 @@ export function useAuthentication() {
     try {
       setError(null);
       await signUpStore(credentials);
-    } catch (err: Error | any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     }
   };
 

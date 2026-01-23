@@ -10,6 +10,7 @@ Cette boilerplate est en cours de refonte pour devenir une base **modulaire**, *
 - ✅ **Upgrade Expo 53 → 54** - SDK 54, React 19.1, React Native 0.81.5, Reanimated v4
 - ✅ **Phase 2 : HeroUI Native + Design System** - Migration complète
 - ✅ **Phase 3 : Forms & Validation** - React Hook Form + Zod intégrés
+- ✅ **Phase 4 : Configuration ESLint Stricte** - Règles strictes + boundaries Clean Architecture
 
 ### Structure actuelle
 
@@ -46,10 +47,11 @@ expo-boilerplate/
 │           └── hooks/use-fetch-profile.ts, use-create-profile.ts
 │
 ├── core/                             # Shared Domain
-│   ├── domain/errors/app-error.ts
-│   ├── data/
-│   │   ├── storage/secure-storage.ts
+│   ├── domain/
+│   │   ├── errors/app-error.ts
 │   │   └── validation/validator.ts
+│   ├── data/
+│   │   └── storage/secure-storage.ts
 │   └── presentation/hooks/
 │       └── use-toggle.ts
 │
@@ -131,7 +133,37 @@ import { AppError } from "@/core";
 
 ---
 
-## Phase 4 : Error Handling & Config
+## ~~Phase 4 : Configuration ESLint Stricte~~ ✅
+
+> **Complétée** - Configuration ESLint production-ready avec règles strictes.
+>
+> **Plugins installés** :
+> - `eslint-plugin-boundaries` - Règles Clean Architecture entre layers
+> - `eslint-plugin-import` - Organisation et validation des imports
+> - `eslint-plugin-no-relative-import-paths` - Forcer `@/` alias
+> - `@typescript-eslint/eslint-plugin` - Règles TypeScript strictes
+> - `lint-staged` - Lint uniquement les fichiers modifiés
+>
+> **Règles configurées** :
+> - ✅ Imports relatifs (`./`, `../`) bloqués
+> - ✅ `require()` bloqué
+> - ✅ Naming convention : `handle*`, `manage*`, `process*` bloqués
+> - ✅ Boundaries Clean Architecture :
+>   - `feature-domain` → `[feature-domain, core-domain]` ✅
+>   - `feature-domain` → `[feature-data, infrastructure]` ❌
+>   - `feature-data` → `[feature-domain, core-domain, infrastructure]` ✅
+> - ✅ `import/order` avec alphabétisation automatique
+> - ✅ `consistent-type-imports` pour les imports de types
+>
+> **Hooks configurés** :
+> - `.husky/pre-commit` → `npx lint-staged`
+> - `.claude/settings.local.json` → Hook "Stop" avec lint
+>
+> **Correction pré-requise** : `validator.ts` déplacé de `core/data/` vers `core/domain/` pour respecter Clean Architecture
+
+---
+
+## Phase 5 : Error Handling & Config
 
 ### Objectif
 
@@ -139,7 +171,7 @@ Robustesse production avec error handling global et validation de config.
 
 ### Tâches
 
-#### 4.1 Error Boundary Global
+#### 5.1 Error Boundary Global
 
 1. Créer `core/presentation/components/error-boundary.tsx` :
 
@@ -181,7 +213,7 @@ Robustesse production avec error handling global et validation de config.
 
 3. Wrapper l'app dans `app/_layout.tsx`
 
-#### 4.2 Validation des Variables d'Environnement
+#### 5.2 Validation des Variables d'Environnement
 
 1. Créer `core/config/env.ts` :
 
@@ -203,13 +235,13 @@ Robustesse production avec error handling global et validation de config.
 
 3. L'app crashera au démarrage si les env vars sont manquantes (mieux qu'un crash random plus tard)
 
-#### 4.3 Toast / Snackbar
+#### 5.3 Toast / Snackbar
 
 1. Installer un package de toast compatible HeroUI ou créer un custom
 2. Créer `core/presentation/hooks/use-toast.ts`
 3. Afficher les erreurs API via toast au lieu de `console.error`
 
-#### 4.4 Améliorer les Loading States
+#### 5.4 Améliorer les Loading States
 
 Remplacer tous les `return null` pendant le loading :
 
@@ -225,7 +257,7 @@ Remplacer tous les `return null` pendant le loading :
 
 ---
 
-## Phase 5 : Testing
+## Phase 6 : Testing
 
 ### Objectif
 
@@ -238,7 +270,7 @@ Coverage des hooks et composants critiques.
 
 ### Tâches
 
-#### 5.1 Setup Testing Library
+#### 6.1 Setup Testing Library
 
 ```bash
 npm install --save-dev @testing-library/react-native @testing-library/jest-native
@@ -246,7 +278,7 @@ npm install --save-dev @testing-library/react-native @testing-library/jest-nativ
 
 Configurer dans `jest.config.js` ou `package.json`.
 
-#### 5.2 Setup MSW (Mock Service Worker)
+#### 6.2 Setup MSW (Mock Service Worker)
 
 ```bash
 npm install --save-dev msw
@@ -256,7 +288,7 @@ npm install --save-dev msw
 2. Créer `__tests__/mocks/server.ts`
 3. Configurer dans `jest.setup.js`
 
-#### 5.3 Tests Unitaires des Usecases
+#### 6.3 Tests Unitaires des Usecases
 
 Créer des tests pour chaque usecase :
 
@@ -310,7 +342,7 @@ describe("signIn usecase", () => {
 });
 ```
 
-#### 5.4 Tests des Hooks
+#### 6.4 Tests des Hooks
 
 Créer des tests pour les hooks critiques :
 
@@ -320,7 +352,7 @@ Créer des tests pour les hooks critiques :
 
 Utiliser `@testing-library/react-hooks` ou `renderHook` de Testing Library.
 
-#### 5.5 Tests des Composants
+#### 6.5 Tests des Composants
 
 Créer des tests pour les composants UI critiques :
 
@@ -328,7 +360,7 @@ Créer des tests pour les composants UI critiques :
 - `input.test.tsx`
 - `form-input.test.tsx`
 
-#### 5.6 Hook Pre-commit
+#### 6.6 Hook Pre-commit
 
 Ajouter les tests au pre-commit hook `.husky/pre-commit` :
 
@@ -346,7 +378,7 @@ npm test -- --watchAll=false --passWithNoTests
 
 ---
 
-## Phase 6 : Scripts Modulaires + CI/CD
+## Phase 7 : Scripts Modulaires + CI/CD
 
 ### Objectif
 
@@ -354,7 +386,7 @@ Permettre de customiser la boilerplate via scripts et automatiser le déploiemen
 
 ### Tâches
 
-#### 6.1 Script Engine
+#### 7.1 Script Engine
 
 Créer `scripts/utils/` avec des utilitaires communs :
 
@@ -362,7 +394,7 @@ Créer `scripts/utils/` avec des utilitaires communs :
 2. `package-utils.ts` - Manipulation du package.json
 3. `import-utils.ts` - Analyse et modification des imports
 
-#### 6.2 Script `remove:feature`
+#### 7.2 Script `remove:feature`
 
 Créer `scripts/remove-feature.ts` :
 
@@ -378,7 +410,7 @@ Ce script doit :
 4. Mettre à jour `app/_layout.tsx` pour retirer les guards auth
 5. Supprimer les dépendances inutilisées du `package.json`
 
-#### 6.3 Script `remove:supabase`
+#### 7.3 Script `remove:supabase`
 
 Créer `scripts/remove-supabase.ts` :
 
@@ -394,7 +426,7 @@ Ce script doit :
 4. Créer des fichiers repository placeholder (interface vide avec TODO)
 5. Afficher les instructions pour implémenter un autre backend
 
-#### 6.4 Script `add:custom-api`
+#### 7.4 Script `add:custom-api`
 
 Créer `scripts/add-custom-api.ts` :
 
@@ -408,7 +440,7 @@ Ce script doit :
 2. Créer des templates de repository pour custom API
 3. Mettre à jour les imports
 
-#### 6.5 Script `setup:minimal`
+#### 7.5 Script `setup:minimal`
 
 Créer `scripts/setup-minimal.ts` :
 
@@ -422,7 +454,7 @@ Ce script doit :
 2. Supprimer toutes les routes sauf une page d'accueil basique
 3. Nettoyer l'app pour avoir juste navigation + UI
 
-#### 6.6 Ajouter les scripts au package.json
+#### 7.6 Ajouter les scripts au package.json
 
 ```json
 {
@@ -435,7 +467,7 @@ Ce script doit :
 }
 ```
 
-#### 6.7 GitHub Actions CI
+#### 7.7 GitHub Actions CI
 
 Créer `.github/workflows/ci.yml` :
 
@@ -463,7 +495,7 @@ jobs:
       - run: npm test -- --watchAll=false
 ```
 
-#### 6.8 EAS Workflow
+#### 7.8 EAS Workflow
 
 Créer `.eas/workflows/build-and-submit.yml` pour :
 
@@ -487,9 +519,10 @@ Voir la doc : https://docs.expo.dev/eas/workflows/
 
 1. ~~**Phase 2** (HeroUI) - Donne une UI moderne rapidement~~ ✅
 2. ~~**Phase 3** (Forms) - Améliore la DX immédiatement~~ ✅
-3. **Phase 4** (Error Handling) - Quick wins robustesse
-4. **Phase 5** (Testing) - Sécurise les refactos
-5. **Phase 6** (Scripts + CI/CD) - Automatisation finale
+3. ~~**Phase 4** (ESLint Strict) - Qualité de code dès maintenant~~ ✅
+4. **Phase 5** (Error Handling) - Quick wins robustesse
+5. **Phase 6** (Testing) - Sécurise les refactos
+6. **Phase 7** (Scripts + CI/CD) - Automatisation finale
 
 ---
 

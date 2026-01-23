@@ -1,8 +1,9 @@
+import * as Localization from 'expo-localization';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import * as Localization from 'expo-localization';
-import translationFr from './fr.json';
-import translationEn from './en.json';
+
+import translationEn from '@/i18n/en.json';
+import translationFr from '@/i18n/fr.json';
 
 const resources = {
   fr: { translation: translationFr },

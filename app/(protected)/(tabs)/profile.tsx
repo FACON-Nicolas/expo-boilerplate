@@ -1,12 +1,14 @@
+import { useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
+
+import { createSupabaseAuthRepository } from '@/features/auth/data/repositories/supabase-auth-repository';
+import { useAuth } from '@/features/auth/presentation/hooks/use-auth';
+import { supabaseClient } from '@/infrastructure/supabase/client';
 import { Button } from '@/ui/components/button';
 import { SafeAreaView } from '@/ui/components/safe-area-view';
 import { Text } from '@/ui/components/text';
 import { View } from '@/ui/components/view';
-import { useAuth } from '@/features/auth/presentation/hooks/use-auth';
-import { useTranslation } from 'react-i18next';
-import { useQueryClient } from '@tanstack/react-query';
-import { createSupabaseAuthRepository } from '@/features/auth/data/repositories/supabase-auth-repository';
-import { supabaseClient } from '@/infrastructure/supabase/client';
+
 
 export default function Profile() {
   const { t } = useTranslation();

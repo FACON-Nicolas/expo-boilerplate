@@ -1,8 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import type { CreateProfileInput } from '../../domain/entities/profile';
-import { createProfile } from '../../domain/usecases/create-profile';
-import { createSupabaseProfileRepository } from '../../data/repositories/supabase-profile-repository';
+
+import { createSupabaseProfileRepository } from '@/features/profile/data/repositories/supabase-profile-repository';
+import { createProfile } from '@/features/profile/domain/usecases/create-profile';
 import { supabaseClient } from '@/infrastructure/supabase/client';
+
+
+import type { CreateProfileInput } from '@/features/profile/domain/entities/profile';
+
 
 const profileRepository = createSupabaseProfileRepository(supabaseClient);
 

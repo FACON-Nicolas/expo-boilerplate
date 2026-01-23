@@ -1,4 +1,4 @@
-import type { AuthRepository } from '../repositories/auth-repository';
+import type { AuthRepository } from '@/features/auth/domain/repositories/auth-repository';
 
 export const signOut = (repository: AuthRepository) => async (): Promise<void> => {
   return repository.signOut();

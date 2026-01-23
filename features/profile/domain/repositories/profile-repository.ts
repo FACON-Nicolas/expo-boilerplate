@@ -1,4 +1,4 @@
-import type { Profile, CreateProfileInput, UpdateProfileInput } from '../entities/profile';
+import type { Profile, CreateProfileInput, UpdateProfileInput } from '@/features/profile/domain/entities/profile';
 
 export type ProfileRepository = {
   getProfile: () => Promise<Profile>;

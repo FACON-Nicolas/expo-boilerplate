@@ -1,12 +1,15 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import type { Session, SignInCredentials, SignUpCredentials, User } from '../../domain/entities/session';
-import { signIn as signInUsecase } from '../../domain/usecases/sign-in';
-import { signUp as signUpUsecase } from '../../domain/usecases/sign-up';
-import { refreshSession as refreshSessionUsecase } from '../../domain/usecases/refresh-session';
-import { createSupabaseAuthRepository } from '../../data/repositories/supabase-auth-repository';
-import { supabaseClient } from '@/infrastructure/supabase/client';
+
 import { secureStorage } from '@/core/data/storage/secure-storage';
+import { createSupabaseAuthRepository } from '@/features/auth/data/repositories/supabase-auth-repository';
+import { refreshSession as refreshSessionUsecase } from '@/features/auth/domain/usecases/refresh-session';
+import { signIn as signInUsecase } from '@/features/auth/domain/usecases/sign-in';
+import { signUp as signUpUsecase } from '@/features/auth/domain/usecases/sign-up';
+import { supabaseClient } from '@/infrastructure/supabase/client';
+
+
+import type { Session, SignInCredentials, SignUpCredentials, User } from '@/features/auth/domain/entities/session';
 
 type AuthState = {
   user: User | null;
@@ -44,8 +47,8 @@ export const useAuthStore = create<AuthStore>()(
           set({ isLoading: true, error: null });
           const session = await signInUsecase(authRepository)(credentials);
           set({ session, user: session.user, isLoading: false });
-        } catch (error: any) {
-          set({ isLoading: false, error: error.message, session: null, user: null });
+        } catch (error: unknown) {
+          set({ isLoading: false, error: error instanceof Error ? error.message : 'An error occurred', session: null, user: null });
           throw error;
         }
       },
@@ -55,8 +58,8 @@ export const useAuthStore = create<AuthStore>()(
           set({ isLoading: true, error: null });
           const session = await signUpUsecase(authRepository)(credentials);
           set({ session, user: session.user, isLoading: false });
-        } catch (error: any) {
-          set({ isLoading: false, error: error.message, session: null, user: null });
+        } catch (error: unknown) {
+          set({ isLoading: false, error: error instanceof Error ? error.message : 'An error occurred', session: null, user: null });
           throw error;
         }
       },
@@ -73,8 +76,8 @@ export const useAuthStore = create<AuthStore>()(
         try {
           const refreshedSession = await refreshSessionUsecase(authRepository)(session);
           set({ session: refreshedSession, user: refreshedSession.user });
-        } catch (error: any) {
-          set({ error: error.message, session: null, user: null });
+        } catch (error: unknown) {
+          set({ error: error instanceof Error ? error.message : 'An error occurred', session: null, user: null });
           throw error;
         }
       },

@@ -1,15 +1,18 @@
 import "@/global.css";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
+import { HeroUINativeProvider } from "heroui-native";
+import { useEffect } from "react";
 import { StatusBar } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { HeroUINativeProvider } from "heroui-native";
 import { Uniwind } from "uniwind";
-import "@/i18n";
+
+import { AppError } from "@/core/domain/errors/app-error";
 import { useAuthentication } from "@/features/auth/presentation/hooks/use-authentication";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useThemeStore } from "@/ui/theme/theme-store";
-import { useEffect } from "react";
+
+import "@/i18n";
 
 const STALE_TIME = 5 * 60 * 1000;
 const GC_TIME = 10 * 60 * 1000;
@@ -21,8 +24,13 @@ const queryClient = new QueryClient({
     queries: {
       staleTime: STALE_TIME,
       gcTime: GC_TIME,
-      retry: (failureCount, error: any) => {
-        if (NO_RETRY_ERROR_CODES.includes(error?.code)) return false;
+      retry: (failureCount, error: unknown) => {
+        if (
+          AppError.hasCode(error) &&
+          NO_RETRY_ERROR_CODES.includes(error.code)
+        ) {
+          return false;
+        }
         return failureCount < MAX_RETRIES;
       },
       refetchOnWindowFocus: false,

@@ -1,9 +1,12 @@
-import type { SupabaseClient } from '@supabase/supabase-js';
-import type { ProfileRepository } from '../../domain/repositories/profile-repository';
-import type { Profile, CreateProfileInput, UpdateProfileInput } from '../../domain/entities/profile';
-import { profileSchema, createProfileSchema, updateProfileSchema } from '../../domain/validation/profile-schema';
-import { validateWithI18nAsync } from '@/core/data/validation/validator';
 import { AppError } from '@/core/domain/errors/app-error';
+import { validateWithI18nAsync } from '@/core/domain/validation/validator';
+import { profileSchema, createProfileSchema, updateProfileSchema } from '@/features/profile/domain/validation/profile-schema';
+
+import type { Profile, CreateProfileInput, UpdateProfileInput } from '@/features/profile/domain/entities/profile';
+import type { ProfileRepository } from '@/features/profile/domain/repositories/profile-repository';
+import type { SupabaseClient } from '@supabase/supabase-js';
+
+
 
 export const createSupabaseProfileRepository = (client: SupabaseClient): ProfileRepository => ({
   getProfile: async (): Promise<Profile> => {

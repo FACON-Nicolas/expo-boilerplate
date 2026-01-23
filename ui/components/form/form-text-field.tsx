@@ -1,6 +1,8 @@
 import { Controller, type Control, type FieldValues, type Path } from 'react-hook-form';
-import { Input } from '@/ui/components/input';
 import { useTranslation } from 'react-i18next';
+
+import { Input } from '@/ui/components/input';
+
 import type { TextInputProps } from 'react-native';
 
 type FormTextFieldProps<T extends FieldValues> = Omit<TextInputProps, 'value' | 'onChangeText'> & {

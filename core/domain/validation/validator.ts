@@ -1,5 +1,7 @@
-import { z } from 'zod';
 import i18n from '@/i18n';
+
+import type { z } from 'zod';
+
 
 type ValidationResult<T> = {
   success: boolean;
