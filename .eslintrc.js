@@ -38,13 +38,14 @@ module.exports = {
       { type: 'ui', pattern: 'ui/**' },
       { type: 'i18n', pattern: 'i18n/**' },
       { type: 'scripts', pattern: 'scripts/**' },
+      { type: 'tests', pattern: '__tests__/**' },
+      { type: 'mocks', pattern: '__mocks__/**' },
           ],
     'boundaries/ignore': [
       '**/*.test.ts',
       '**/*.test.tsx',
       '**/*.spec.ts',
       '**/*.spec.tsx',
-      '__tests__/**/*',
     ],
   },
   ignorePatterns: [
@@ -57,6 +58,7 @@ module.exports = {
     'metro.config.js',
     'tailwind.config.js',
     'jest.config.js',
+    'jest.setup.ts',
     'commitlint.config.js',
     '.eslintrc.js',
     '*.d.ts',
@@ -164,6 +166,14 @@ module.exports = {
           },
           {
             from: 'scripts',
+            allow: ['*'],
+          },
+          {
+            from: 'tests',
+            allow: ['*'],
+          },
+          {
+            from: 'mocks',
             allow: ['*'],
           },
         ],
