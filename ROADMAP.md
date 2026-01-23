@@ -82,7 +82,8 @@ Les usecases sont des **fonctions curried** avec injection de dépendances :
 
 ```typescript
 // Définition
-export const signIn = (repository: AuthRepository) =>
+export const signIn =
+  (repository: AuthRepository) =>
   async (credentials: SignInCredentials): Promise<Session> => {
     return repository.signIn(credentials);
   };
@@ -98,11 +99,11 @@ const session = await signIn(authRepository)(credentials);
 
 ```typescript
 // ✅ Correct
-import { AppError } from '@/core/domain/errors/app-error';
-import { useAuth } from '@/features/auth/presentation/hooks/use-auth';
+import { AppError } from "@/core/domain/errors/app-error";
+import { useAuth } from "@/features/auth/presentation/hooks/use-auth";
 
 // ❌ Éviter
-import { AppError } from '@/core';
+import { AppError } from "@/core";
 ```
 
 ---
@@ -148,6 +149,7 @@ Créer `ui/components/form/` :
 3. `form-select.tsx` - Select/Picker connecté à RHF
 
 Exemple :
+
 ```typescript
 import { Controller, useFormContext } from 'react-hook-form';
 import { Input } from 'heroui-native';
@@ -220,8 +222,9 @@ Robustesse production avec error handling global et validation de config.
 #### 4.1 Error Boundary Global
 
 1. Créer `core/presentation/components/error-boundary.tsx` :
+
    ```typescript
-   import { Component, ReactNode } from 'react';
+   import { Component, ReactNode } from "react";
 
    interface Props {
      children: ReactNode;
@@ -242,7 +245,7 @@ Robustesse production avec error handling global et validation de config.
 
      componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
        // Log vers Sentry ou autre service
-       console.error('ErrorBoundary caught:', error, errorInfo);
+       console.error("ErrorBoundary caught:", error, errorInfo);
      }
 
      render() {
@@ -261,8 +264,9 @@ Robustesse production avec error handling global et validation de config.
 #### 4.2 Validation des Variables d'Environnement
 
 1. Créer `core/config/env.ts` :
+
    ```typescript
-   import { z } from 'zod';
+   import { z } from "zod";
 
    const envSchema = z.object({
      EXPO_PUBLIC_SUPABASE_URL: z.string().url(),
@@ -353,13 +357,17 @@ __tests__/
 ```
 
 Exemple de test :
-```typescript
-import { signIn } from '@/features/auth/domain/usecases/sign-in';
-import { AuthRepository } from '@/features/auth/domain/repositories/auth-repository';
 
-describe('signIn usecase', () => {
-  it('should return session on successful sign in', async () => {
-    const mockSession = { accessToken: 'token', user: { id: '1', email: 'test@test.com' } };
+```typescript
+import { signIn } from "@/features/auth/domain/usecases/sign-in";
+import { AuthRepository } from "@/features/auth/domain/repositories/auth-repository";
+
+describe("signIn usecase", () => {
+  it("should return session on successful sign in", async () => {
+    const mockSession = {
+      accessToken: "token",
+      user: { id: "1", email: "test@test.com" },
+    };
     const mockRepository: AuthRepository = {
       signIn: jest.fn().mockResolvedValue(mockSession),
       signUp: jest.fn(),
@@ -368,10 +376,16 @@ describe('signIn usecase', () => {
       setSession: jest.fn(),
     };
 
-    const result = await signIn(mockRepository)({ email: 'test@test.com', password: 'password' });
+    const result = await signIn(mockRepository)({
+      email: "test@test.com",
+      password: "password",
+    });
 
     expect(result).toEqual(mockSession);
-    expect(mockRepository.signIn).toHaveBeenCalledWith({ email: 'test@test.com', password: 'password' });
+    expect(mockRepository.signIn).toHaveBeenCalledWith({
+      email: "test@test.com",
+      password: "password",
+    });
   });
 });
 ```
@@ -397,6 +411,7 @@ Créer des tests pour les composants UI critiques :
 #### 5.6 Hook Pre-commit
 
 Ajouter les tests au pre-commit hook `.husky/pre-commit` :
+
 ```bash
 npm run lint
 npm test -- --watchAll=false --passWithNoTests
@@ -436,6 +451,7 @@ npm run remove:feature auth
 ```
 
 Ce script doit :
+
 1. Supprimer `features/auth/`
 2. Supprimer les routes liées dans `app/`
 3. Supprimer les imports cassés
@@ -451,6 +467,7 @@ npm run remove:supabase
 ```
 
 Ce script doit :
+
 1. Supprimer `infrastructure/supabase/`
 2. Supprimer tous les fichiers `supabase-*-repository.ts` dans features
 3. Désinstaller `@supabase/supabase-js`
@@ -466,6 +483,7 @@ npm run add:custom-api
 ```
 
 Ce script doit :
+
 1. Créer `infrastructure/api/client.ts` avec un client HTTP (fetch ou axios)
 2. Créer des templates de repository pour custom API
 3. Mettre à jour les imports
@@ -479,6 +497,7 @@ npm run setup:minimal
 ```
 
 Ce script doit :
+
 1. Supprimer `features/auth/`, `features/profile/`, `features/onboarding/`
 2. Supprimer toutes les routes sauf une page d'accueil basique
 3. Nettoyer l'app pour avoir juste navigation + UI
@@ -516,8 +535,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
       - run: npm ci
       - run: npm run lint
       - run: npx tsc --noEmit
