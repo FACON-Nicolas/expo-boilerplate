@@ -1,6 +1,5 @@
 import { Stack } from 'expo-router';
 import { useAuthentication } from '@/features/auth/presentation/hooks/use-authentication';
-import { useFetchProfile } from '@/features/profile/presentation/hooks/use-fetch-profile';
 import { SafeAreaView } from '@/ui/components/safe-area-view';
 import { Skeleton, SkeletonGroup } from '@/ui/components/skeleton';
 
@@ -21,18 +20,12 @@ function LoadingSkeleton() {
 
 export default function RootLayout() {
   const { isUserLoading } = useAuthentication();
-  const { data: profile, isLoading: isProfileLoading } = useFetchProfile();
 
-  if (isUserLoading || isProfileLoading) return <LoadingSkeleton />;
+  if (isUserLoading) return <LoadingSkeleton />;
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Protected guard={!profile}>
-        <Stack.Screen name='(onboarding)' />
-      </Stack.Protected>
-      <Stack.Protected guard={!!profile}>
-        <Stack.Screen name='(tabs)' />
-      </Stack.Protected>
+      <Stack.Screen name='(tabs)' />
     </Stack>
   );
 }
