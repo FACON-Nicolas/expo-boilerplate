@@ -9,6 +9,7 @@ Cette boilerplate est en cours de refonte pour devenir une base **modulaire**, *
 - ✅ **Phase 1 : Clean Architecture + Feature-Based** - Structure migrée
 - ✅ **Upgrade Expo 53 → 54** - SDK 54, React 19.1, React Native 0.81.5, Reanimated v4
 - ✅ **Phase 2 : HeroUI Native + Design System** - Migration complète
+- ✅ **Phase 3 : Forms & Validation** - React Hook Form + Zod intégrés
 
 ### Structure actuelle
 
@@ -18,8 +19,7 @@ expo-boilerplate/
 │   ├── _layout.tsx
 │   ├── (public)/                     # Routes non authentifiées
 │   └── (protected)/                  # Routes authentifiées
-│       ├── (tabs)/                   # Navigation tabs
-│       └── (onboarding)/             # Flow onboarding
+│       └── (tabs)/                   # Navigation tabs
 │
 ├── features/                         # Feature Modules (Clean Archi)
 │   ├── auth/
@@ -34,23 +34,16 @@ expo-boilerplate/
 │   │       ├── hooks/use-auth.ts, use-authentication.ts
 │   │       └── store/auth-store.ts
 │   │
-│   ├── profile/
-│   │   ├── domain/
-│   │   │   ├── entities/profile.ts
-│   │   │   ├── repositories/profile-repository.ts
-│   │   │   ├── usecases/fetch-profile.ts, create-profile.ts
-│   │   │   └── validation/profile-schema.ts
-│   │   ├── data/
-│   │   │   └── repositories/supabase-profile-repository.ts
-│   │   └── presentation/
-│   │       └── hooks/use-fetch-profile.ts, use-create-profile.ts
-│   │
-│   └── onboarding/
+│   └── profile/
 │       ├── domain/
-│       │   ├── entities/onboarding-data.ts
-│       │   └── validation/onboarding-schema.ts
+│       │   ├── entities/profile.ts
+│       │   ├── repositories/profile-repository.ts
+│       │   ├── usecases/fetch-profile.ts, create-profile.ts
+│       │   └── validation/profile-schema.ts
+│       ├── data/
+│       │   └── repositories/supabase-profile-repository.ts
 │       └── presentation/
-│           └── context/onboarding-context.tsx
+│           └── hooks/use-fetch-profile.ts, use-create-profile.ts
 │
 ├── core/                             # Shared Domain
 │   ├── domain/errors/app-error.ts
@@ -65,6 +58,7 @@ expo-boilerplate/
 │
 ├── ui/                               # Design System
 │   ├── components/                   # Composants UI (Button, Input, Text, etc.)
+│   │   └── form/                     # Composants de formulaire (FormTextField, FormRadioGroup)
 │   └── theme/                        # Tokens et theme store
 ├── i18n/
 └── assets/
@@ -121,93 +115,19 @@ import { AppError } from "@/core";
 
 ---
 
-## Phase 3 : Forms & Validation (React Hook Form)
+## ~~Phase 3 : Forms & Validation (React Hook Form)~~ ✅
 
-### Objectif
-
-Améliorer la DX des formulaires avec React Hook Form + Zod.
-
-### Prérequis
-
-- Lire la doc React Hook Form : https://react-hook-form.com/
-- Lire l'intégration Zod : https://react-hook-form.com/get-started#SchemaValidation
-
-### Tâches
-
-#### 3.1 Setup React Hook Form
-
-```bash
-npm install react-hook-form @hookform/resolvers
-```
-
-#### 3.2 Créer les composants de form
-
-Créer `ui/components/form/` :
-
-1. `form-field.tsx` - Wrapper avec label + error message
-2. `form-input.tsx` - Input connecté à RHF via `Controller`
-3. `form-select.tsx` - Select/Picker connecté à RHF
-
-Exemple :
-
-```typescript
-import { Controller, useFormContext } from 'react-hook-form';
-import { Input } from 'heroui-native';
-
-interface FormInputProps {
-  name: string;
-  label?: string;
-  placeholder?: string;
-  secureTextEntry?: boolean;
-}
-
-export function FormInput({ name, label, ...props }: FormInputProps) {
-  const { control, formState: { errors } } = useFormContext();
-
-  return (
-    <Controller
-      control={control}
-      name={name}
-      render={({ field: { onChange, onBlur, value } }) => (
-        <Input
-          label={label}
-          value={value}
-          onChangeText={onChange}
-          onBlur={onBlur}
-          isInvalid={!!errors[name]}
-          errorMessage={errors[name]?.message as string}
-          {...props}
-        />
-      )}
-    />
-  );
-}
-```
-
-#### 3.3 Refacto des écrans de formulaire
-
-Refactoriser avec RHF + Zod :
-
-1. **Login** (`app/(public)/index.tsx`)
-   - Utiliser `useForm` avec `zodResolver(signInSchema)`
-   - Remplacer le state local par `register` / `Controller`
-
-2. **Sign Up** (`app/(public)/sign-up.tsx`)
-   - Utiliser `useForm` avec `zodResolver(signUpSchema)`
-
-3. **Identity** (`app/(protected)/(onboarding)/identity.tsx`)
-   - Utiliser `useForm` avec `zodResolver(identitySchema)`
-
-4. **Age** (`app/(protected)/(onboarding)/age.tsx`)
-   - Utiliser `useForm` avec `zodResolver(ageSchema)`
-
-### Critères de validation
-
-- [ ] Les formulaires utilisent React Hook Form
-- [ ] La validation Zod s'affiche en temps réel
-- [ ] Les erreurs i18n fonctionnent toujours
-- [ ] `npm run lint` passe
-- [ ] `npx tsc --noEmit` passe
+> **Complétée** - React Hook Form + Zod intégrés pour la gestion des formulaires.
+>
+> - `react-hook-form` et `@hookform/resolvers` installés
+> - Composants créés dans `ui/components/form/` :
+>   - `form-text-field.tsx` - Input connecté à RHF via Controller
+>   - `form-radio-group.tsx` - RadioGroup connecté à RHF
+> - Écrans migrés vers RHF :
+>   - Login (`app/(public)/index.tsx`) avec `zodResolver(signInSchema)`
+>   - Sign Up (`app/(public)/sign-up.tsx`) avec `zodResolver(signUpSchema)`
+> - Validation Zod en temps réel avec messages d'erreur i18n
+> - Onboarding supprimé (flow simplifié)
 
 ---
 
@@ -566,7 +486,7 @@ Voir la doc : https://docs.expo.dev/eas/workflows/
 ## Ordre d'exécution recommandé
 
 1. ~~**Phase 2** (HeroUI) - Donne une UI moderne rapidement~~ ✅
-2. **Phase 3** (Forms) - Améliore la DX immédiatement
+2. ~~**Phase 3** (Forms) - Améliore la DX immédiatement~~ ✅
 3. **Phase 4** (Error Handling) - Quick wins robustesse
 4. **Phase 5** (Testing) - Sécurise les refactos
 5. **Phase 6** (Scripts + CI/CD) - Automatisation finale
