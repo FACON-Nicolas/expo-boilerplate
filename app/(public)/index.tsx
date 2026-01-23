@@ -1,5 +1,5 @@
 import { Button } from "@/ui/components/button";
-import { FormTextField } from "@/ui/components/form-text-field";
+import { FormTextField } from "@/ui/components/form/form-text-field";
 import { Link } from "@/ui/components/link";
 import { Text } from "@/ui/components/text";
 import { View } from "@/ui/components/view";
