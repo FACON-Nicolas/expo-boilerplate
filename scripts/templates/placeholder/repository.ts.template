@@ -1,0 +1,10 @@
+import type { {{ RepositoryInterface }} } from '@/features/{{ featureName }}/domain/repositories/{{ repositoryFile }}';
+
+// TODO: Implement this repository with your backend
+// Run one of the following commands to generate the implementation:
+//   npm run add:supabase
+//   npm run add:custom-backend
+
+export const createPlaceholder{{ RepositoryName }} = (): {{ RepositoryInterface }} => ({
+  // TODO: Implement all methods from {{ RepositoryInterface }}
+});

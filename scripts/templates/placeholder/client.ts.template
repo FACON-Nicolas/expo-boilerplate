@@ -1,0 +1,8 @@
+// TODO: Configure your backend client
+// Run one of the following commands:
+//   npm run add:supabase      - For Supabase backend
+//   npm run add:custom-backend - For custom REST API with axios
+
+export const placeholderClient = {
+  // Placeholder - no backend configured
+};

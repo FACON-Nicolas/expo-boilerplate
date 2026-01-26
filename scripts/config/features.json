@@ -1,0 +1,32 @@
+{
+  "auth": {
+    "name": "Authentication",
+    "dependencies": [],
+    "dependents": ["profile"],
+    "paths": {
+      "feature": "features/auth",
+      "tests": "__tests__/features/auth",
+      "routes": {
+        "public": ["app/(public)/index.tsx", "app/(public)/sign-up.tsx"],
+        "publicLayout": "app/(public)/_layout.tsx",
+        "layout": "app/_layout.tsx"
+      }
+    },
+    "envVars": [],
+    "npmDependencies": []
+  },
+  "profile": {
+    "name": "Profile",
+    "dependencies": ["auth"],
+    "dependents": [],
+    "paths": {
+      "feature": "features/profile",
+      "tests": "__tests__/features/profile",
+      "routes": {
+        "tab": "app/(protected)/(tabs)/profile.tsx"
+      }
+    },
+    "envVars": [],
+    "npmDependencies": []
+  }
+}

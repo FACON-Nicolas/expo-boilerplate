@@ -1,0 +1,13 @@
+import { z } from 'zod';
+
+export const {{ schemaName }}Schema = z.object({
+  id: z.string().uuid(),
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+});
+
+export const create{{ EntityName }}Schema = z.object({
+});
+
+export type {{ EntityName }} = z.infer<typeof {{ schemaName }}Schema>;
+export type Create{{ EntityName }}Input = z.infer<typeof create{{ EntityName }}Schema>;

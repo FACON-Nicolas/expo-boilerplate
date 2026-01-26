@@ -1,0 +1,8 @@
+import type { {{ EntityName }}, Create{{ EntityName }}Input } from '@/features/{{ featureName }}/domain/entities/{{ entityFile }}';
+
+export interface {{ RepositoryName }} {
+  fetch{{ EntityName }}(id: string): Promise<{{ EntityName }} | null>;
+  create{{ EntityName }}(input: Create{{ EntityName }}Input): Promise<{{ EntityName }}>;
+  update{{ EntityName }}(id: string, input: Partial<Create{{ EntityName }}Input>): Promise<{{ EntityName }}>;
+  delete{{ EntityName }}(id: string): Promise<void>;
+}

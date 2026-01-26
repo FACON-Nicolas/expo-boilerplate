@@ -1,0 +1,66 @@
+import { AppError } from '@/core/domain/errors/app-error';
+import { apiClient } from '@/infrastructure/api/client';
+
+import type { Session, SignInCredentials, SignUpCredentials } from '@/features/auth/domain/entities/session';
+import type { AuthRepository } from '@/features/auth/domain/repositories/auth-repository';
+
+interface ApiAuthResponse {
+  accessToken: string;
+  refreshToken: string;
+  expiresAt: number;
+  user: {
+    id: string;
+    email: string;
+  };
+}
+
+const mapApiResponse = (response: ApiAuthResponse): Session => ({
+  accessToken: response.accessToken,
+  refreshToken: response.refreshToken,
+  expiresAt: response.expiresAt,
+  user: {
+    id: response.user.id,
+    email: response.user.email,
+  },
+});
+
+export const createApiAuthRepository = (): AuthRepository => ({
+  signIn: async (credentials: SignInCredentials): Promise<Session> => {
+    try {
+      const response = await apiClient.post<ApiAuthResponse>('/auth/sign-in', credentials);
+      return mapApiResponse(response.data);
+    } catch (error) {
+      throw AppError.fromUnknown(error);
+    }
+  },
+
+  signUp: async (credentials: SignUpCredentials): Promise<Session> => {
+    try {
+      const response = await apiClient.post<ApiAuthResponse>('/auth/sign-up', credentials);
+      return mapApiResponse(response.data);
+    } catch (error) {
+      throw AppError.fromUnknown(error);
+    }
+  },
+
+  signOut: async (): Promise<void> => {
+    try {
+      await apiClient.post('/auth/sign-out');
+    } catch (error) {
+      throw AppError.fromUnknown(error);
+    }
+  },
+
+  refreshSession: async (): Promise<Session> => {
+    try {
+      const response = await apiClient.post<ApiAuthResponse>('/auth/refresh');
+      return mapApiResponse(response.data);
+    } catch (error) {
+      throw AppError.fromUnknown(error);
+    }
+  },
+
+  setSession: async (session: Session): Promise<Session> => {
+    return session;
+  },
+});

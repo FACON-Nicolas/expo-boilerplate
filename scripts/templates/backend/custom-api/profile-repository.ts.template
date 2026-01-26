@@ -1,0 +1,58 @@
+import { AppError } from '@/core/domain/errors/app-error';
+import { apiClient } from '@/infrastructure/api/client';
+
+import type { Profile, CreateProfileInput } from '@/features/profile/domain/entities/profile';
+import type { ProfileRepository } from '@/features/profile/domain/repositories/profile-repository';
+
+interface ApiProfileResponse {
+  id: string;
+  userId: string;
+  displayName: string | null;
+  avatarUrl: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+const mapApiResponse = (response: ApiProfileResponse): Profile => ({
+  id: response.id,
+  userId: response.userId,
+  displayName: response.displayName,
+  avatarUrl: response.avatarUrl,
+  createdAt: response.createdAt,
+  updatedAt: response.updatedAt,
+});
+
+export const createApiProfileRepository = (): ProfileRepository => ({
+  fetchProfile: async (userId: string): Promise<Profile | null> => {
+    try {
+      const response = await apiClient.get<ApiProfileResponse>(`/profiles/${userId}`);
+      return mapApiResponse(response.data);
+    } catch (error: unknown) {
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as { response?: { status?: number } };
+        if (axiosError.response?.status === 404) {
+          return null;
+        }
+      }
+      throw AppError.fromUnknown(error);
+    }
+  },
+
+  createProfile: async (input: CreateProfileInput): Promise<Profile> => {
+    try {
+      const response = await apiClient.post<ApiProfileResponse>('/profiles', input);
+      return mapApiResponse(response.data);
+    } catch (error) {
+      throw AppError.fromUnknown(error);
+    }
+  },
+
+  updateProfile: async (userId: string, input: Partial<CreateProfileInput>): Promise<Profile> => {
+    try {
+      const response = await apiClient.patch<ApiProfileResponse>(`/profiles/${userId}`, input);
+      return mapApiResponse(response.data);
+    } catch (error) {
+      throw AppError.fromUnknown(error);
+    }
+  },
+});
