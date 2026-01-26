@@ -12,7 +12,18 @@
     "test": "jest",
     "lint": "eslint . --max-warnings=0",
     "lint:fix": "eslint . --fix --max-warnings=0",
-    "prepare": "husky"
+    "prepare": "husky",
+    "add:supabase": "node scripts/add-supabase.js",
+    "remove:supabase": "node scripts/remove-supabase.js",
+    "add:custom-backend": "node scripts/add-custom-backend.js",
+    "remove:custom-backend": "node scripts/remove-custom-backend.js",
+    "add:feature": "node scripts/add-feature.js",
+    "remove:feature": "node scripts/remove-feature.js",
+    "add:auth": "node scripts/add-auth.js",
+    "remove:auth": "node scripts/remove-auth.js",
+    "add:profile": "node scripts/add-profile.js",
+    "remove:profile": "node scripts/remove-profile.js",
+    "setup:minimal": "node scripts/setup-minimal.js"
   },
   "lint-staged": {
     "!(jest.setup).{ts,tsx}": [

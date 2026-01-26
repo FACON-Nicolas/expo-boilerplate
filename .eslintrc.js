@@ -56,6 +56,7 @@ module.exports = {
     '/android/*',
     '/ios/*',
     '/coverage/*',
+    '/scripts/**/*.js',
     'babel.config.js',
     'metro.config.js',
     'tailwind.config.js',
