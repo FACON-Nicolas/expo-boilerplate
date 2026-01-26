@@ -38,18 +38,99 @@ const checkFeatures = () => {
   return features;
 };
 
+const SUPABASE_ENV_SCHEMA = [
+  { name: 'EXPO_PUBLIC_SUPABASE_URL', schema: 'z.string().url()' },
+  { name: 'EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY', schema: 'z.string().min(1)' },
+  { name: 'EXPO_PUBLIC_SUPABASE_EMAIL_LOGIN_DEV', schema: 'z.string().email().optional()' },
+  { name: 'EXPO_PUBLIC_SUPABASE_PASSWORD_LOGIN_DEV', schema: 'z.string().optional()' },
+];
+
+const SUPABASE_ENV_VARS = [
+  'EXPO_PUBLIC_SUPABASE_URL',
+  'EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY',
+  'EXPO_PUBLIC_SUPABASE_EMAIL_LOGIN_DEV',
+  'EXPO_PUBLIC_SUPABASE_PASSWORD_LOGIN_DEV',
+];
+
+const insertAfterLine = (lines, searchPattern, newLines) => {
+  const result = [];
+  for (let i = 0; i < lines.length; i++) {
+    result.push(lines[i]);
+    if (lines[i].includes(searchPattern)) {
+      result.push(...newLines);
+    }
+  }
+  return result;
+};
+
 const updateEnvFile = () => {
-  const envTemplate = templateUtils.loadTemplate('backend/supabase/env.ts.template');
-  fileUtils.writeFile('core/config/env.ts', envTemplate);
+  const envPath = 'core/config/env.ts';
+  let content = fileUtils.readFile(envPath);
+
+  const existingVars = SUPABASE_ENV_VARS.filter((varName) => content.includes(varName));
+  if (existingVars.length === SUPABASE_ENV_VARS.length) {
+    logger.info('Supabase environment variables already exist, skipping');
+    return;
+  }
+
+  if (!content.includes('z.object({')) {
+    logger.warning('Could not find envSchema in env.ts, using template');
+    const envTemplate = templateUtils.loadTemplate('backend/supabase/env.ts.template');
+    fileUtils.writeFile(envPath, envTemplate);
+    return;
+  }
+
+  let lines = content.split('\n');
+
+  const schemaEntries = SUPABASE_ENV_SCHEMA
+    .filter((entry) => !content.includes(entry.name))
+    .map((entry) => `  ${entry.name}: ${entry.schema},`);
+
+  if (schemaEntries.length > 0) {
+    lines = insertAfterLine(lines, 'z.object({', schemaEntries);
+  }
+
+  const safeParseEntries = SUPABASE_ENV_VARS
+    .filter((varName) => !content.includes(varName))
+    .map((varName) => {
+      const line = `    ${varName}: process.env.${varName},`;
+      if (line.length <= 80) {
+        return line;
+      }
+      return `    ${varName}:\n      process.env.${varName},`;
+    });
+
+  if (safeParseEntries.length > 0) {
+    lines = insertAfterLine(lines, 'safeParse({', safeParseEntries);
+  }
+
+  fileUtils.writeFile(envPath, lines.join('\n'));
 };
 
 const updateEnvExample = () => {
-  const envExampleContent = `EXPO_PUBLIC_SUPABASE_URL=
-EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
-EXPO_PUBLIC_SUPABASE_EMAIL_LOGIN_DEV=
-EXPO_PUBLIC_SUPABASE_PASSWORD_LOGIN_DEV=
-`;
-  fileUtils.writeFile('.env.example', envExampleContent);
+  const envExamplePath = '.env.example';
+  let content = '';
+
+  if (fileUtils.fileExists(envExamplePath)) {
+    content = fileUtils.readFile(envExamplePath);
+  }
+
+  const existingVars = SUPABASE_ENV_VARS.filter((varName) => content.includes(varName));
+  if (existingVars.length === SUPABASE_ENV_VARS.length) {
+    logger.info('Supabase variables already in .env.example, skipping');
+    return;
+  }
+
+  const newVars = SUPABASE_ENV_VARS
+    .filter((varName) => !content.includes(varName))
+    .map((varName) => `${varName}=`)
+    .join('\n');
+
+  if (newVars) {
+    const prefix = content && !content.endsWith('\n') ? '\n' : '';
+    content = newVars + '\n' + prefix + content;
+    fileUtils.writeFile(envExamplePath, content);
+  }
 };
 
 const createSupabaseClient = () => {

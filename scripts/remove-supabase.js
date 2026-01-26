@@ -37,13 +37,71 @@ const removeSupabaseClient = () => {
   fileUtils.deleteDirectory('infrastructure/supabase');
 };
 
-const createPlaceholderEnv = () => {
-  const placeholderEnv = templateUtils.loadTemplate('placeholder/env.ts.template');
-  fileUtils.writeFile('core/config/env.ts', placeholderEnv);
+const SUPABASE_ENV_VARS = [
+  'EXPO_PUBLIC_SUPABASE_URL',
+  'EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY',
+  'EXPO_PUBLIC_SUPABASE_EMAIL_LOGIN_DEV',
+  'EXPO_PUBLIC_SUPABASE_PASSWORD_LOGIN_DEV',
+];
+
+const removeSupabaseEnvVars = () => {
+  const envPath = 'core/config/env.ts';
+  const content = fileUtils.readFile(envPath);
+  const lines = content.split('\n');
+  const result = [];
+  let skipNextContinuation = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmed = line.trim();
+
+    if (skipNextContinuation) {
+      if (trimmed.startsWith('process.env.')) {
+        skipNextContinuation = false;
+        continue;
+      }
+    }
+
+    const isSupabaseVar = SUPABASE_ENV_VARS.some((v) => trimmed.startsWith(`${v}:`));
+
+    if (isSupabaseVar) {
+      if (!trimmed.includes('process.env.') && !trimmed.endsWith(',')) {
+        skipNextContinuation = true;
+      }
+      continue;
+    }
+
+    result.push(line);
+  }
+
+  let updatedContent = result.join('\n');
+  updatedContent = updatedContent.replace(/\n{3,}/g, '\n\n');
+
+  fileUtils.writeFile(envPath, updatedContent);
 };
 
 const cleanEnvExample = () => {
-  fileUtils.writeFile('.env.example', '# Add your environment variables here\n');
+  const envExamplePath = '.env.example';
+  if (!fileUtils.fileExists(envExamplePath)) {
+    return;
+  }
+
+  const content = fileUtils.readFile(envExamplePath);
+  const lines = content.split('\n');
+  const filteredLines = lines.filter((line) => {
+    const trimmed = line.trim();
+    if (trimmed === '' || trimmed.startsWith('#')) {
+      return true;
+    }
+    const varName = trimmed.split('=')[0];
+    return !SUPABASE_ENV_VARS.includes(varName);
+  });
+
+  let result = filteredLines.join('\n');
+  if (!result.endsWith('\n')) {
+    result += '\n';
+  }
+  fileUtils.writeFile(envExamplePath, result);
 };
 
 const createPlaceholderAuthRepository = () => {
@@ -68,6 +126,12 @@ export const createPlaceholderAuthRepository = (): AuthRepository => ({
     throw new Error('Not implemented - configure a backend first');
   },
   setSession: async () => {
+    throw new Error('Not implemented - configure a backend first');
+  },
+  getSession: async () => {
+    throw new Error('Not implemented - configure a backend first');
+  },
+  subscribeToAuthChanges: () => {
     throw new Error('Not implemented - configure a backend first');
   },
 });
@@ -130,8 +194,8 @@ const run = async () => {
     logger.step(++currentStep, totalSteps, 'Removing Supabase client');
     removeSupabaseClient();
 
-    logger.step(++currentStep, totalSteps, 'Creating placeholder env configuration');
-    createPlaceholderEnv();
+    logger.step(++currentStep, totalSteps, 'Removing Supabase environment variables');
+    removeSupabaseEnvVars();
 
     logger.step(++currentStep, totalSteps, 'Cleaning .env.example');
     cleanEnvExample();

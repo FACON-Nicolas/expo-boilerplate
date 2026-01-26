@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/react-native";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 import { useToggle } from "@/core/presentation/hooks/use-toggle";
 import { getAuthRepository } from "@/features/auth/presentation/store/auth-repository";
@@ -11,7 +11,7 @@ type UseSessionBootstrapResult = {
 
 export function useSessionBootstrap(): UseSessionBootstrapResult {
   const [isBootstrapping, toggleBootstrapping] = useToggle(true);
-  const repository = getAuthRepository();
+  const repository = useMemo(() => getAuthRepository(), []);
   const session = useAuthStore((state) => state.session);
   const setSession = useAuthStore((state) => state.setSession);
   const clearSession = useAuthStore((state) => state.clearSession);
@@ -43,14 +43,7 @@ export function useSessionBootstrap(): UseSessionBootstrapResult {
     };
 
     verifySession();
-  }, [
-    hasHydrated,
-    session,
-    setSession,
-    clearSession,
-    repository,
-    toggleBootstrapping,
-  ]);
+  }, [hasHydrated, session, setSession, clearSession, repository, toggleBootstrapping]);
 
   return { isBootstrapping };
 }

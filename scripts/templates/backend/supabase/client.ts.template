@@ -7,7 +7,7 @@ export const supabaseClient = createClient(
   env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
   {
     auth: {
-      autoRefreshToken: false,
+      autoRefreshToken: true,
       persistSession: false,
     },
   },

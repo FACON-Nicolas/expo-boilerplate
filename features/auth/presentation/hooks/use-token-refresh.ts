@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 import { getAuthRepository } from "@/features/auth/presentation/store/auth-repository";
 import { useAuthStore } from "@/features/auth/presentation/store/auth-store";
@@ -6,7 +6,7 @@ import { useAuthStore } from "@/features/auth/presentation/store/auth-store";
 const REFRESH_THRESHOLD_MS = 5 * 60 * 1000;
 
 export function useTokenRefresh(): void {
-  const repository = getAuthRepository();
+  const repository = useMemo(() => getAuthRepository(), []);
   const session = useAuthStore((state) => state.session);
 
   useEffect(() => {

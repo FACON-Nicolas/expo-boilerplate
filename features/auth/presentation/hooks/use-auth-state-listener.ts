@@ -1,10 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 import { getAuthRepository } from "@/features/auth/presentation/store/auth-repository";
 import { useAuthStore } from "@/features/auth/presentation/store/auth-store";
 
 export function useAuthStateListener(): void {
-  const repository = getAuthRepository();
+  const repository = useMemo(() => getAuthRepository(), []);
   const setSession = useAuthStore((state) => state.setSession);
   const clearSession = useAuthStore((state) => state.clearSession);
 

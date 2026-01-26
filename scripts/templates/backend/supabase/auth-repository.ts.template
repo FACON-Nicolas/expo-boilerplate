@@ -1,7 +1,7 @@
 import { AppError } from '@/core/domain/errors/app-error';
 
 import type { Session, SignInCredentials, SignUpCredentials, User } from '@/features/auth/domain/entities/session';
-import type { AuthRepository } from '@/features/auth/domain/repositories/auth-repository';
+import type { AuthRepository, AuthStateCallback, Unsubscribe } from '@/features/auth/domain/repositories/auth-repository';
 import type { SupabaseClient, Session as SupabaseSession, User as SupabaseUser } from '@supabase/supabase-js';
 
 
@@ -85,5 +85,33 @@ export const createSupabaseAuthRepository = (client: SupabaseClient): AuthReposi
     }
 
     return session;
+  },
+
+  getSession: async (): Promise<Session | null> => {
+    const { data, error } = await client.auth.getSession();
+
+    if (error || !data.session) {
+      return null;
+    }
+
+    return mapSupabaseSession(data.session);
+  },
+
+  subscribeToAuthChanges: (callback: AuthStateCallback): Unsubscribe => {
+    const { data: { subscription } } = client.auth.onAuthStateChange((event, session) => {
+      switch (event) {
+        case 'SIGNED_IN':
+        case 'TOKEN_REFRESHED':
+          if (session) {
+            callback(mapSupabaseSession(session));
+          }
+          break;
+        case 'SIGNED_OUT':
+          callback(null);
+          break;
+      }
+    });
+
+    return () => subscription.unsubscribe();
   },
 });
