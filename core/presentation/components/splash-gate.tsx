@@ -10,19 +10,22 @@ SplashScreen.preventAutoHideAsync();
 
 type SplashGateProps = {
   children: ReactNode;
+  isAuthReady?: boolean;
 };
 
-export function SplashGate({ children }: SplashGateProps) {
+export function SplashGate({ children, isAuthReady = true }: SplashGateProps) {
   const { isThemeStoreHydrated } = useThemeSync();
   const [isSplashHidden, toggleSplashHidden] = useToggle(false);
 
+  const isReady = isThemeStoreHydrated && isAuthReady;
+
   useEffect(() => {
-    if (isThemeStoreHydrated && !isSplashHidden) {
+    if (isReady && !isSplashHidden) {
       SplashScreen.hideAsync().then(toggleSplashHidden);
     }
-  }, [isThemeStoreHydrated, isSplashHidden, toggleSplashHidden]);
+  }, [isReady, isSplashHidden, toggleSplashHidden]);
 
-  if (!isThemeStoreHydrated) {
+  if (!isReady) {
     return null;
   }
 

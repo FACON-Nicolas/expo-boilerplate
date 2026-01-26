@@ -3,22 +3,16 @@ import { act, renderHook, waitFor } from '@testing-library/react-native';
 import { createElement } from 'react';
 
 import { useCreateProfile } from '@/features/profile/presentation/hooks/use-create-profile';
+import { initializeProfileRepository } from '@/features/profile/presentation/store/profile-repository';
 
 import type { CreateProfileInput, Profile } from '@/features/profile/domain/entities/profile';
+import type { ProfileRepository } from '@/features/profile/domain/repositories/profile-repository';
 import type { ReactNode } from 'react';
 
 const mockCreateProfile = jest.fn();
 
 jest.mock('@/features/profile/domain/usecases/create-profile', () => ({
   createProfile: () => mockCreateProfile,
-}));
-
-jest.mock('@/features/profile/data/repositories/supabase-profile-repository', () => ({
-  createSupabaseProfileRepository: jest.fn(() => ({})),
-}));
-
-jest.mock('@/infrastructure/supabase/client', () => ({
-  supabaseClient: {},
 }));
 
 const createMockProfile = (overrides?: Partial<Profile>): Profile => ({
@@ -36,6 +30,12 @@ const createMockProfileInput = (overrides?: Partial<CreateProfileInput>): Create
   lastname: 'Doe',
   ageRange: '25-34',
   ...overrides,
+});
+
+const createMockRepository = (): ProfileRepository => ({
+  getProfile: jest.fn(),
+  createProfile: jest.fn(),
+  updateProfile: jest.fn(),
 });
 
 const createQueryWrapper = () => {
@@ -62,6 +62,7 @@ const createQueryWrapper = () => {
 describe('useCreateProfile', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    initializeProfileRepository(createMockRepository());
   });
 
   it('calls mutation with correct parameters', async () => {

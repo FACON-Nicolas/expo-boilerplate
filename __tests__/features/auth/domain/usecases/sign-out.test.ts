@@ -8,6 +8,8 @@ const createMockRepository = (overrides?: Partial<AuthRepository>): AuthReposito
   signOut: jest.fn().mockResolvedValue(undefined),
   refreshSession: jest.fn(),
   setSession: jest.fn(),
+  getSession: jest.fn().mockResolvedValue(null),
+  subscribeToAuthChanges: jest.fn().mockReturnValue(() => {}),
   ...overrides,
 });
 

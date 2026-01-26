@@ -12,15 +12,29 @@ import { queryClient } from "@/core/config/query-client";
 import { ErrorBoundary } from "@/core/presentation/components/error-boundary";
 import { ErrorFallback } from "@/core/presentation/components/error-fallback";
 import { SplashGate } from "@/core/presentation/components/splash-gate";
+import { createSupabaseAuthRepository } from "@/features/auth/data/repositories/supabase-auth-repository";
+import { useAuthInit } from "@/features/auth/presentation/hooks/use-auth-init";
 import { useAuthentication } from "@/features/auth/presentation/hooks/use-authentication";
+import { initializeAuthRepository } from "@/features/auth/presentation/store/auth-repository";
+import { initializeAuthStore } from "@/features/auth/presentation/store/auth-store";
+import { createSupabaseProfileRepository } from "@/features/profile/data/repositories/supabase-profile-repository";
+import { initializeProfileRepository } from "@/features/profile/presentation/store/profile-repository";
 import {
   initializeSentry,
   navigationIntegration,
 } from "@/infrastructure/monitoring/sentry/client";
+import { supabaseClient } from "@/infrastructure/supabase/client";
 
 import "@/i18n";
 
 initializeSentry();
+
+const authRepository = createSupabaseAuthRepository(supabaseClient);
+const profileRepository = createSupabaseProfileRepository(supabaseClient);
+
+initializeAuthRepository(authRepository);
+initializeAuthStore(authRepository);
+initializeProfileRepository(profileRepository);
 
 function NavigationStack() {
   const { isUserAuthenticated } = useAuthentication();
@@ -39,6 +53,7 @@ function NavigationStack() {
 
 function RootLayout() {
   const navigationRef = useNavigationContainerRef();
+  const { isBootstrapping } = useAuthInit();
 
   useEffect(() => {
     if (navigationRef.current) {
@@ -51,7 +66,7 @@ function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <StatusBar translucent />
         <ErrorBoundary fallback={(props) => <ErrorFallback {...props} />}>
-          <SplashGate>
+          <SplashGate isAuthReady={!isBootstrapping}>
             <HeroUINativeProvider>
               <NavigationStack />
             </HeroUINativeProvider>

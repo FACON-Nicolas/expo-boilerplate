@@ -3,8 +3,10 @@ import { renderHook, waitFor } from '@testing-library/react-native';
 import { createElement } from 'react';
 
 import { useFetchProfile } from '@/features/profile/presentation/hooks/use-fetch-profile';
+import { initializeProfileRepository } from '@/features/profile/presentation/store/profile-repository';
 
 import type { Profile } from '@/features/profile/domain/entities/profile';
+import type { ProfileRepository } from '@/features/profile/domain/repositories/profile-repository';
 import type { ReactNode } from 'react';
 
 const mockFetchProfile = jest.fn();
@@ -20,14 +22,6 @@ jest.mock('@/features/profile/domain/usecases/fetch-profile', () => ({
   fetchProfile: () => mockFetchProfile,
 }));
 
-jest.mock('@/features/profile/data/repositories/supabase-profile-repository', () => ({
-  createSupabaseProfileRepository: jest.fn(() => ({})),
-}));
-
-jest.mock('@/infrastructure/supabase/client', () => ({
-  supabaseClient: {},
-}));
-
 const createMockProfile = (overrides?: Partial<Profile>): Profile => ({
   id: 1,
   userId: 'user-123',
@@ -36,6 +30,12 @@ const createMockProfile = (overrides?: Partial<Profile>): Profile => ({
   ageRange: '25-34',
   createdAt: '2024-01-01T00:00:00Z',
   ...overrides,
+});
+
+const createMockRepository = (): ProfileRepository => ({
+  getProfile: jest.fn(),
+  createProfile: jest.fn(),
+  updateProfile: jest.fn(),
 });
 
 const createQueryWrapper = () => {
@@ -48,22 +48,27 @@ const createQueryWrapper = () => {
     },
   });
 
-  return function Wrapper({ children }: { children: ReactNode }) {
-    return createElement(QueryClientProvider, { client: queryClient }, children);
+  return {
+    queryClient,
+    Wrapper: function Wrapper({ children }: { children: ReactNode }) {
+      return createElement(QueryClientProvider, { client: queryClient }, children);
+    },
   };
 };
 
 describe('useFetchProfile', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    initializeProfileRepository(createMockRepository());
   });
 
   it('fetches profile when user is authenticated', async () => {
     const mockProfile = createMockProfile();
     mockFetchProfile.mockResolvedValue(mockProfile);
 
+    const { Wrapper } = createQueryWrapper();
     const { result } = renderHook(() => useFetchProfile(), {
-      wrapper: createQueryWrapper(),
+      wrapper: Wrapper,
     });
 
     await waitFor(() => {
@@ -77,8 +82,9 @@ describe('useFetchProfile', () => {
   it('returns loading state initially', () => {
     mockFetchProfile.mockReturnValue(new Promise(() => {}));
 
+    const { Wrapper } = createQueryWrapper();
     const { result } = renderHook(() => useFetchProfile(), {
-      wrapper: createQueryWrapper(),
+      wrapper: Wrapper,
     });
 
     expect(result.current.isLoading).toBe(true);
@@ -88,8 +94,9 @@ describe('useFetchProfile', () => {
   it('returns error state on failure', async () => {
     mockFetchProfile.mockRejectedValue(new Error('Profile not found'));
 
+    const { Wrapper } = createQueryWrapper();
     const { result } = renderHook(() => useFetchProfile(), {
-      wrapper: createQueryWrapper(),
+      wrapper: Wrapper,
     });
 
     await waitFor(() => {
@@ -103,18 +110,10 @@ describe('useFetchProfile', () => {
     const mockProfile = createMockProfile();
     mockFetchProfile.mockResolvedValue(mockProfile);
 
-    const queryClient = new QueryClient({
-      defaultOptions: {
-        queries: {
-          retry: false,
-          gcTime: 0,
-        },
-      },
-    });
+    const { queryClient, Wrapper } = createQueryWrapper();
 
     renderHook(() => useFetchProfile(), {
-      wrapper: ({ children }) =>
-        createElement(QueryClientProvider, { client: queryClient }, children),
+      wrapper: Wrapper,
     });
 
     await waitFor(() => {

@@ -1,9 +1,14 @@
 import { act, renderHook } from "@testing-library/react-native";
 
 import { AppError } from "@/core/domain/errors/app-error";
-import { useAuthStore } from "@/features/auth/presentation/store/auth-store";
+import {
+  createAuthStore,
+  initializeAuthStore,
+  useAuthStore,
+} from "@/features/auth/presentation/store/auth-store";
 
 import type { Session } from "@/features/auth/domain/entities/session";
+import type { AuthRepository } from "@/features/auth/domain/repositories/auth-repository";
 
 const mockSignInUsecase = jest.fn();
 const mockSignUpUsecase = jest.fn();
@@ -19,17 +24,6 @@ jest.mock("@/features/auth/domain/usecases/sign-up", () => ({
 
 jest.mock("@/features/auth/domain/usecases/refresh-session", () => ({
   refreshSession: () => mockRefreshSessionUsecase,
-}));
-
-const mockRepositorySignOut = jest.fn();
-jest.mock("@/features/auth/data/repositories/supabase-auth-repository", () => ({
-  createSupabaseAuthRepository: () => ({
-    signOut: (...args: unknown[]) => mockRepositorySignOut(...args),
-  }),
-}));
-
-jest.mock("@/infrastructure/supabase/client", () => ({
-  supabaseClient: {},
 }));
 
 jest.mock("@/core/data/storage/secure-storage", () => ({
@@ -48,9 +42,22 @@ const createMockSession = (overrides?: Partial<Session>): Session => ({
   ...overrides,
 });
 
+const mockRepositorySignOut = jest.fn();
+
+const createMockRepository = (): AuthRepository => ({
+  signIn: jest.fn(),
+  signUp: jest.fn(),
+  signOut: mockRepositorySignOut,
+  refreshSession: jest.fn(),
+  setSession: jest.fn(),
+  getSession: jest.fn().mockResolvedValue(null),
+  subscribeToAuthChanges: jest.fn().mockReturnValue(() => {}),
+});
+
 describe("auth-store", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    initializeAuthStore(createMockRepository());
     useAuthStore.setState({
       user: null,
       session: null,
@@ -284,6 +291,16 @@ describe("auth-store", () => {
       expect(result.current.error?.message).toBe("Session expired");
       expect(result.current.user).toBeNull();
       expect(result.current.session).toBeNull();
+    });
+  });
+
+  describe("createAuthStore", () => {
+    it("creates a new store instance with injected repository", () => {
+      const mockRepository = createMockRepository();
+      const store = createAuthStore(mockRepository);
+
+      expect(store.getState().user).toBeNull();
+      expect(store.getState().session).toBeNull();
     });
   });
 });

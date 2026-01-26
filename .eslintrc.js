@@ -140,7 +140,7 @@ module.exports = {
               'feature-data',
               'core-domain',
               'core-data',
-              'infrastructure',
+              'core-presentation',
               'ui',
               'i18n',
             ],
