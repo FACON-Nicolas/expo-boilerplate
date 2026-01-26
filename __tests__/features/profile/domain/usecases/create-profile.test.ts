@@ -28,12 +28,15 @@ describe('createProfile usecase', () => {
   };
   const userId = 'user-123';
 
-  it('calls repository.createProfile with validated data and userId', async () => {
+  it('calls repository.createProfile with transformed data and userId', async () => {
     const mockRepository = createMockRepository();
 
     await createProfile(mockRepository)(validInput, userId);
 
-    expect(mockRepository.createProfile).toHaveBeenCalledWith(validInput, userId);
+    expect(mockRepository.createProfile).toHaveBeenCalledWith(
+      { firstname: 'John', lastname: 'Doe', age_range: '25-34' },
+      userId
+    );
     expect(mockRepository.createProfile).toHaveBeenCalledTimes(1);
   });
 

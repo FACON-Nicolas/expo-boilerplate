@@ -32,7 +32,7 @@ export default function SignUp() {
   return (
     <View className="flex-1 justify-center gap-2.5 p-2.5">
       <Text variant="subtitle">{t("auth.signUp.title")}</Text>
-      {error && <Text variant="error">{t(error)}</Text>}
+      {error && <Text variant="error">{t(error.message)}</Text>}
       <FormTextField
         control={control}
         name="email"

@@ -5,5 +5,5 @@ export const refreshSession =
   (repository: AuthRepository) =>
   async (session: Session): Promise<Session> => {
     await repository.setSession(session);
-    return repository.refreshSession(session);
+    return repository.refreshSession();
   };

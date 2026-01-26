@@ -1,17 +1,22 @@
 import { act, renderHook } from '@testing-library/react-native';
 
+import { AppError } from '@/core/domain/errors/app-error';
 import { useAuthentication } from '@/features/auth/presentation/hooks/use-authentication';
 
 const mockSignIn = jest.fn();
 const mockSignUp = jest.fn();
+const mockClearError = jest.fn();
 let mockUser: { id: string; email: string } | null = null;
+let mockError: AppError | null = null;
 
 jest.mock('@/features/auth/presentation/hooks/use-auth', () => ({
   useAuth: () => ({
     user: mockUser,
     isLoading: false,
+    error: mockError,
     signIn: mockSignIn,
     signUp: mockSignUp,
+    clearError: mockClearError,
   }),
 }));
 
@@ -20,7 +25,9 @@ describe('useAuthentication', () => {
     jest.clearAllMocks();
     mockSignIn.mockReset();
     mockSignUp.mockReset();
+    mockClearError.mockReset();
     mockUser = null;
+    mockError = null;
   });
 
   describe('initial state', () => {
@@ -46,47 +53,25 @@ describe('useAuthentication', () => {
       expect(mockSignIn).toHaveBeenCalledWith({ email: 'test@example.com', password: 'password' });
     });
 
-    it('clears error before signIn attempt', async () => {
-      mockSignIn.mockRejectedValueOnce(new Error('First error'));
-      mockSignIn.mockResolvedValueOnce(undefined);
+    it('calls clearError before signIn attempt', async () => {
+      mockSignIn.mockResolvedValue(undefined);
 
       const { result } = renderHook(() => useAuthentication());
 
       await act(async () => {
-        await result.current.signIn({ email: 'test@example.com', password: 'wrong' });
+        await result.current.signIn({ email: 'test@example.com', password: 'password' });
       });
 
-      expect(result.current.error).toBe('First error');
-
-      await act(async () => {
-        await result.current.signIn({ email: 'test@example.com', password: 'correct' });
-      });
-
-      expect(result.current.error).toBeNull();
+      expect(mockClearError).toHaveBeenCalled();
     });
 
-    it('sets error on signIn failure', async () => {
-      mockSignIn.mockRejectedValue(new Error('Invalid credentials'));
+    it('returns error from store', () => {
+      mockError = AppError.unauthorized('Invalid credentials');
 
       const { result } = renderHook(() => useAuthentication());
 
-      await act(async () => {
-        await result.current.signIn({ email: 'test@example.com', password: 'wrong' });
-      });
-
-      expect(result.current.error).toBe('Invalid credentials');
-    });
-
-    it('sets generic error for non-Error exceptions', async () => {
-      mockSignIn.mockRejectedValue('string error');
-
-      const { result } = renderHook(() => useAuthentication());
-
-      await act(async () => {
-        await result.current.signIn({ email: 'test@example.com', password: 'wrong' });
-      });
-
-      expect(result.current.error).toBe('An error occurred');
+      expect(result.current.error).toBeInstanceOf(AppError);
+      expect(result.current.error?.message).toBe('Invalid credentials');
     });
   });
 
@@ -111,20 +96,20 @@ describe('useAuthentication', () => {
       });
     });
 
-    it('sets error on signUp failure', async () => {
-      mockSignUp.mockRejectedValue(new Error('User already exists'));
+    it('calls clearError before signUp attempt', async () => {
+      mockSignUp.mockResolvedValue(undefined);
 
       const { result } = renderHook(() => useAuthentication());
 
       await act(async () => {
         await result.current.signUp({
-          email: 'existing@example.com',
+          email: 'new@example.com',
           password: 'Password123!',
           passwordConfirmation: 'Password123!',
         });
       });
 
-      expect(result.current.error).toBe('User already exists');
+      expect(mockClearError).toHaveBeenCalled();
     });
   });
 

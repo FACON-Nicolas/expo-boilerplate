@@ -1,9 +1,9 @@
 import { AppError } from '@/core/domain/errors/app-error';
-import { validateWithI18nAsync } from '@/core/domain/validation/validator';
-import { profileSchema, createProfileSchema, updateProfileSchema } from '@/features/profile/domain/validation/profile-schema';
+import { profileSchema } from '@/features/profile/domain/validation/profile-schema';
 
-import type { Profile, CreateProfileInput, UpdateProfileInput } from '@/features/profile/domain/entities/profile';
+import type { Profile } from '@/features/profile/domain/entities/profile';
 import type { ProfileRepository } from '@/features/profile/domain/repositories/profile-repository';
+import type { CreateProfileOutput, UpdateProfileOutput } from '@/features/profile/domain/validation/profile-schema';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 
@@ -31,12 +31,10 @@ export const createSupabaseProfileRepository = (client: SupabaseClient): Profile
     return profileSchema.parse(data);
   },
 
-  createProfile: async (profileData: CreateProfileInput, userId: string): Promise<Profile> => {
-    const validatedProfile = await validateWithI18nAsync(createProfileSchema, profileData);
-
+  createProfile: async (profileData: CreateProfileOutput, userId: string): Promise<Profile> => {
     const { data, error } = await client
       .from('profiles')
-      .insert([{ ...validatedProfile, user_id: userId }])
+      .insert([{ ...profileData, user_id: userId }])
       .select()
       .single();
 
@@ -47,7 +45,7 @@ export const createSupabaseProfileRepository = (client: SupabaseClient): Profile
     return profileSchema.parse(data);
   },
 
-  updateProfile: async (profileData: UpdateProfileInput): Promise<Profile> => {
+  updateProfile: async (profileData: UpdateProfileOutput): Promise<Profile> => {
     const {
       data: { user },
     } = await client.auth.getUser();
@@ -56,11 +54,9 @@ export const createSupabaseProfileRepository = (client: SupabaseClient): Profile
       throw AppError.unauthorized('No authenticated user found');
     }
 
-    const validatedProfile = await validateWithI18nAsync(updateProfileSchema, profileData);
-
     const { data, error } = await client
       .from('profiles')
-      .update(validatedProfile)
+      .update(profileData)
       .eq('user_id', user.id)
       .select()
       .single();

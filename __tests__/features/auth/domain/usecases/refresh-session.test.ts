@@ -37,7 +37,7 @@ describe('refreshSession usecase', () => {
 
     await refreshSession(mockRepository)(currentSession);
 
-    expect(mockRepository.refreshSession).toHaveBeenCalledWith(currentSession);
+    expect(mockRepository.refreshSession).toHaveBeenCalledWith();
     expect(mockRepository.refreshSession).toHaveBeenCalledTimes(1);
   });
 

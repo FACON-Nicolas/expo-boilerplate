@@ -1,28 +1,34 @@
-import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 
-import { secureStorage } from '@/core/data/storage/secure-storage';
-import { createSupabaseAuthRepository } from '@/features/auth/data/repositories/supabase-auth-repository';
-import { refreshSession as refreshSessionUsecase } from '@/features/auth/domain/usecases/refresh-session';
-import { signIn as signInUsecase } from '@/features/auth/domain/usecases/sign-in';
-import { signUp as signUpUsecase } from '@/features/auth/domain/usecases/sign-up';
-import { supabaseClient } from '@/infrastructure/supabase/client';
+import { secureStorage } from "@/core/data/storage/secure-storage";
+import { AppError } from "@/core/domain/errors/app-error";
+import { createSupabaseAuthRepository } from "@/features/auth/data/repositories/supabase-auth-repository";
+import { refreshSession as refreshSessionUsecase } from "@/features/auth/domain/usecases/refresh-session";
+import { signIn as signInUsecase } from "@/features/auth/domain/usecases/sign-in";
+import { signUp as signUpUsecase } from "@/features/auth/domain/usecases/sign-up";
+import { supabaseClient } from "@/infrastructure/supabase/client";
 
-
-import type { Session, SignInCredentials, SignUpCredentials, User } from '@/features/auth/domain/entities/session';
+import type {
+  Session,
+  SignInCredentials,
+  SignUpCredentials,
+  User,
+} from "@/features/auth/domain/entities/session";
 
 type AuthState = {
   user: User | null;
   session: Session | null;
   isLoading: boolean;
-  error: string | null;
+  error: AppError | null;
 };
 
 type AuthActions = {
   signIn: (credentials: SignInCredentials) => Promise<void>;
   signUp: (credentials: SignUpCredentials) => Promise<void>;
-  signOut: () => void;
-  setError: (error: string | null) => void;
+  signOut: () => Promise<void>;
+  setError: (error: AppError | null) => void;
+  clearError: () => void;
   refreshAndSetSession: (session: Session) => Promise<void>;
 };
 
@@ -48,8 +54,12 @@ export const useAuthStore = create<AuthStore>()(
           const session = await signInUsecase(authRepository)(credentials);
           set({ session, user: session.user, isLoading: false });
         } catch (error: unknown) {
-          set({ isLoading: false, error: error instanceof Error ? error.message : 'An error occurred', session: null, user: null });
-          throw error;
+          set({
+            isLoading: false,
+            error: AppError.fromUnknown(error),
+            session: null,
+            user: null,
+          });
         }
       },
 
@@ -59,32 +69,49 @@ export const useAuthStore = create<AuthStore>()(
           const session = await signUpUsecase(authRepository)(credentials);
           set({ session, user: session.user, isLoading: false });
         } catch (error: unknown) {
-          set({ isLoading: false, error: error instanceof Error ? error.message : 'An error occurred', session: null, user: null });
-          throw error;
+          set({
+            isLoading: false,
+            error: AppError.fromUnknown(error),
+            session: null,
+            user: null,
+          });
         }
       },
 
-      signOut: () => {
-        set({ user: null, session: null, error: null });
+      signOut: async () => {
+        try {
+          await authRepository.signOut();
+          set({ user: null, session: null, error: null });
+        } catch (error: unknown) {
+          set({ error: AppError.fromUnknown(error) });
+        }
       },
 
-      setError: (error: string | null) => {
+      setError: (error: AppError | null) => {
         set({ error });
+      },
+
+      clearError: () => {
+        set({ error: null });
       },
 
       refreshAndSetSession: async (session: Session) => {
         try {
-          const refreshedSession = await refreshSessionUsecase(authRepository)(session);
+          const refreshedSession =
+            await refreshSessionUsecase(authRepository)(session);
           set({ session: refreshedSession, user: refreshedSession.user });
         } catch (error: unknown) {
-          set({ error: error instanceof Error ? error.message : 'An error occurred', session: null, user: null });
-          throw error;
+          set({
+            error: AppError.fromUnknown(error),
+            session: null,
+            user: null,
+          });
         }
       },
     }),
     {
-      name: 'auth-storage',
+      name: "auth-storage",
       storage: createJSONStorage(() => secureStorage),
-    }
-  )
+    },
+  ),
 );
