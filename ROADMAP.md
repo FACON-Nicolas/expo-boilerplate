@@ -345,51 +345,42 @@ Ce script doit :
 }
 ```
 
-#### 7.7 GitHub Actions CI
+#### ~~7.7 GitHub Actions CI~~ ✅
 
-Créer `.github/workflows/ci.yml` :
+> **Complété** - CI configurée avec lint, typecheck et tests.
+>
+> **Fichier créé** : `.github/workflows/ci.yml`
+>
+> - Déclenché sur push/PR vers main
+> - Étapes : checkout → setup-node → npm ci → lint → tsc → tests
 
-```yaml
-name: CI
+#### ~~7.8 EAS Workflows~~ ✅
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-jobs:
-  lint-and-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-      - run: npm ci
-      - run: npm run lint
-      - run: npx tsc --noEmit
-      - run: npm test -- --watchAll=false
-```
-
-#### 7.8 EAS Workflow
-
-Créer `.eas/workflows/build-and-submit.yml` pour :
-
-1. **Fingerprint check** - Vérifier si un build natif est nécessaire
-2. **Build ou OTA** - Build si fingerprint changé, sinon OTA update
-3. **Submit** - Soumettre aux stores si sur main
-
-Voir la doc : https://docs.expo.dev/eas/workflows/
+> **Complété** - Workflows EAS avec fingerprint et OTA updates.
+>
+> **Fichiers créés** :
+>
+> - `eas.json` - Profiles development/preview/production avec channels
+> - `.eas/workflows/deploy-preview.yml` - Build/OTA sur PR vers main
+> - `.eas/workflows/deploy-production.yml` - Build/OTA sur push vers main
+> - `scripts/init-app.sh` - Script d'initialisation (nom, slug, bundleIdentifier)
+>
+> **Stratégie fingerprint** :
+>
+> 1. Calcul du fingerprint pour chaque plateforme
+> 2. Recherche d'un build existant avec ce fingerprint
+> 3. Si trouvé → OTA update uniquement (rapide)
+> 4. Sinon → nouveau build natif
+>
+> **Commande d'initialisation** : `npm run init`
 
 ### Critères de validation
 
 - [ ] `npm run remove:feature auth` supprime l'auth proprement
 - [ ] `npm run remove:supabase` supprime Supabase proprement
 - [ ] `npm run setup:minimal` crée un projet minimal fonctionnel
-- [ ] GitHub Actions CI passe sur chaque PR
-- [ ] EAS Workflow déploie correctement
+- [x] GitHub Actions CI passe sur chaque PR
+- [x] EAS Workflow configuré avec fingerprint + OTA
 
 ---
 
