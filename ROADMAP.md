@@ -15,6 +15,7 @@ Cette boilerplate est en cours de refonte pour devenir une base **modulaire**, *
 - ✅ **Phase 6 : Testing** - 91 tests, coverage 100% usecases/hooks, MSW configuré
 - ✅ **Phase 7 : Scripts Modulaires + CI/CD** - Scripts de scaffolding, GitHub Actions, EAS Workflows
 - ✅ **Phase 8 : Sentry** - Error tracking, performance monitoring, Session Replay, navigation tracking
+- ✅ **Phase 9 : Documentation** - README, Getting Started, Architecture, Scripts, Deployment, Troubleshooting
 
 ### Structure actuelle
 
@@ -180,112 +181,18 @@ eas secret:create --name SENTRY_PROJECT --value "expo-boilerplate"
 
 ---
 
-## Phase 9 : Documentation
+## ✅ Phase 9 : Documentation - TERMINÉE
 
-### Objectif
+### Réalisé
 
-Créer une documentation complète et maintenable pour faciliter l'onboarding et l'utilisation du boilerplate.
+Documentation complète en anglais :
 
-### Structure
-
-```
-expo-boilerplate/
-├── README.md                    # Overview, quick start, links to docs
-└── docs/
-    ├── getting-started.md       # Installation, configuration, first run
-    ├── architecture.md          # Clean Architecture, patterns, diagrams
-    ├── scripts.md               # npm scripts documentation
-    ├── deployment.md            # EAS Build, CI/CD, OTA updates
-    └── troubleshooting.md       # FAQ, common issues and solutions
-```
-
-### Tâches
-
-#### 9.1 README.md
-
-Refonte du README principal avec :
-
-1. Badges (CI status, Expo SDK, license)
-2. Features list avec emojis
-3. Quick start (5 étapes max)
-4. Screenshots/GIFs de l'app
-5. Table of contents vers docs/
-6. Contributing guidelines
-7. License
-
-#### 9.2 docs/getting-started.md
-
-1. Prerequisites (Node, npm, Expo CLI, EAS CLI)
-2. Installation step-by-step
-3. Environment variables setup (.env)
-4. Running on iOS/Android simulators
-5. Running on physical devices
-6. First modifications guide
-
-#### 9.3 docs/architecture.md
-
-1. Clean Architecture overview avec diagramme ASCII/Mermaid
-2. Folder structure explained
-3. Layer dependencies diagram
-4. Feature module anatomy
-5. Patterns avec code snippets :
-   - Usecase pattern (curried functions)
-   - Repository pattern (interface + implementation)
-   - Hook pattern (React Query integration)
-6. Import conventions
-7. State management (Zustand vs React Query)
-
-#### 9.4 docs/scripts.md
-
-Documentation de chaque script npm :
-
-1. `npm run add:feature <name>` - Scaffolding de features
-2. `npm run remove:feature <name>` - Suppression de features
-3. `npm run add:supabase` - Installation backend Supabase
-4. `npm run remove:supabase` - Suppression backend Supabase
-5. `npm run add:custom-backend` - Installation backend API REST
-6. `npm run setup:minimal` - Reset vers projet minimal
-7. `npm run init` - Initialisation app Expo/EAS
-
-Pour chaque script :
-- Description
-- Usage
-- Options (--dry-run, --force)
-- Examples
-- What it modifies
-
-#### 9.5 docs/deployment.md
-
-1. EAS Build setup
-2. Build profiles (development, preview, production)
-3. EAS Workflows explained
-4. Fingerprint strategy (build vs OTA)
-5. GitHub Actions CI pipeline
-6. Environment secrets management
-7. App Store / Play Store submission tips
-
-#### 9.6 docs/troubleshooting.md
-
-1. Common errors and solutions
-2. Build failures debugging
-3. Environment variables issues
-4. Dependency conflicts
-5. Metro bundler issues
-6. EAS Build issues
-
-### Langue
-
-Toute la documentation en **anglais**.
-
-### Critères de validation
-
-- [ ] README.md est clair et permet un quick start en 5 minutes
-- [ ] docs/getting-started.md permet l'installation complète
-- [ ] docs/architecture.md explique la Clean Architecture avec diagrammes
-- [ ] docs/scripts.md documente tous les scripts avec exemples
-- [ ] docs/deployment.md couvre le flow complet de déploiement
-- [ ] docs/troubleshooting.md résout les problèmes courants
-- [ ] Tous les code snippets sont testés et fonctionnels
+- ✅ **README.md** - Badges, features, quick start, architecture overview, scripts, contributing
+- ✅ **docs/getting-started.md** - Prerequisites, installation, env setup, running on simulators
+- ✅ **docs/architecture.md** - Clean Architecture diagrams, layer rules, patterns (usecase, repository), import conventions
+- ✅ **docs/scripts.md** - All scaffolding scripts documented with options and examples
+- ✅ **docs/deployment.md** - EAS Build profiles, CI/CD, fingerprint strategy, App Store submission
+- ✅ **docs/troubleshooting.md** - Common issues (installation, build, runtime, Metro, Supabase, testing)
 
 ---
 
