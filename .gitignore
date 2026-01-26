@@ -41,3 +41,5 @@ coverage/
 app-example
 .cursor/mcp.json
 .env
+
+.env.local

@@ -41,7 +41,14 @@
       "expo-localization",
       "expo-secure-store",
       "expo-font",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "@sentry/react-native/expo",
+        {
+          "organization": "your-sentry-org",
+          "project": "expo-boilerplate"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

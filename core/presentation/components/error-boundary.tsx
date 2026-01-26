@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/react-native';
 import { Component } from 'react';
 
 import type { ErrorInfo, ReactNode } from 'react';
@@ -29,6 +30,12 @@ export class ErrorBoundary extends Component<
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('ErrorBoundary caught:', error, errorInfo);
+
+    Sentry.withScope((scope) => {
+      scope.setTag('error_boundary', 'true');
+      scope.setExtra('componentStack', errorInfo.componentStack);
+      Sentry.captureException(error);
+    });
   }
 
   resetErrorState = () => {
