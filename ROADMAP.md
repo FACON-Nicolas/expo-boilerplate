@@ -12,6 +12,7 @@ Cette boilerplate est en cours de refonte pour devenir une base **modulaire**, *
 - ✅ **Phase 3 : Forms & Validation** - React Hook Form + Zod intégrés
 - ✅ **Phase 4 : Configuration ESLint Stricte** - Règles strictes + boundaries Clean Architecture
 - ✅ **Phase 5 : Error Handling & Config** - Error Boundary, validation env, toast, splash gate
+- ✅ **Phase 6 : Testing** - 91 tests, coverage 100% usecases/hooks, MSW configuré
 
 ### Structure actuelle
 
@@ -149,6 +150,7 @@ import { AppError } from "@/core";
 > **Complétée** - Configuration ESLint production-ready avec règles strictes.
 >
 > **Plugins installés** :
+>
 > - `eslint-plugin-boundaries` - Règles Clean Architecture entre layers
 > - `eslint-plugin-import` - Organisation et validation des imports
 > - `eslint-plugin-no-relative-import-paths` - Forcer `@/` alias
@@ -156,6 +158,7 @@ import { AppError } from "@/core";
 > - `lint-staged` - Lint uniquement les fichiers modifiés
 >
 > **Règles configurées** :
+>
 > - ✅ Imports relatifs (`./`, `../`) bloqués
 > - ✅ `require()` bloqué
 > - ✅ Naming convention : `handle*`, `manage*`, `process*` bloqués
@@ -167,6 +170,7 @@ import { AppError } from "@/core";
 > - ✅ `consistent-type-imports` pour les imports de types
 >
 > **Hooks configurés** :
+>
 > - `.husky/pre-commit` → `npx lint-staged`
 > - `.claude/settings.local.json` → Hook "Stop" avec lint
 >
@@ -179,6 +183,7 @@ import { AppError } from "@/core";
 > **Complétée** - Error handling global et validation de configuration en place.
 >
 > **Fichiers créés** :
+>
 > - `core/config/env.ts` - Validation Zod des variables d'environnement (fail-fast au boot)
 > - `core/config/query-client.ts` - Configuration React Query isolée avec retry logic
 > - `core/presentation/components/error-boundary.tsx` - Class component pour capturer les erreurs React
@@ -188,6 +193,7 @@ import { AppError } from "@/core";
 > - `core/presentation/hooks/use-app-toast.ts` - Hook toast avec support AppError et i18n
 >
 > **Fichiers modifiés** :
+>
 > - `app/_layout.tsx` - Simplifié à 47 lignes, composition de providers uniquement
 > - `infrastructure/supabase/client.ts` - Utilise `env` validé
 > - `i18n/en.json` et `i18n/fr.json` - Clés errorBoundary, toast, errors.api
@@ -195,12 +201,14 @@ import { AppError } from "@/core";
 > - `.eslintrc.js` - Ajout types `core-config` dans boundaries
 >
 > **Architecture SRP respectée** :
+>
 > - `SplashGate` gère uniquement le splash + hydration
 > - `useThemeSync` gère uniquement la sync Uniwind
 > - `queryClient` encapsule toute la config React Query
 > - `RootLayout` ne fait que composer les providers
 >
 > **Critères validés** :
+>
 > - ✅ L'app affiche un fallback en cas d'erreur critique
 > - ✅ L'app crash proprement si les env vars manquent
 > - ✅ Les erreurs API peuvent s'afficher via `useAppToast`
@@ -208,124 +216,43 @@ import { AppError } from "@/core";
 
 ---
 
-## Phase 6 : Testing
+## ~~Phase 6 : Testing~~ ✅
 
-### Objectif
-
-Coverage des hooks et composants critiques.
-
-### Prérequis
-
-- Jest est déjà configuré (`jest-expo`)
-- Lire la doc Testing Library : https://testing-library.com/docs/react-native-testing-library/intro/
-
-### Tâches
-
-#### 6.1 Setup Testing Library
-
-```bash
-npm install --save-dev @testing-library/react-native @testing-library/jest-native
-```
-
-Configurer dans `jest.config.js` ou `package.json`.
-
-#### 6.2 Setup MSW (Mock Service Worker)
-
-```bash
-npm install --save-dev msw
-```
-
-1. Créer `__tests__/mocks/handlers.ts` avec les mocks Supabase
-2. Créer `__tests__/mocks/server.ts`
-3. Configurer dans `jest.setup.js`
-
-#### 6.3 Tests Unitaires des Usecases
-
-Créer des tests pour chaque usecase :
-
-```
-__tests__/
-├── features/
-│   ├── auth/
-│   │   └── domain/
-│   │       └── usecases/
-│   │           ├── sign-in.test.ts
-│   │           ├── sign-up.test.ts
-│   │           └── sign-out.test.ts
-│   └── profile/
-│       └── domain/
-│           └── usecases/
-│               ├── fetch-profile.test.ts
-│               └── create-profile.test.ts
-```
-
-Exemple de test :
-
-```typescript
-import { signIn } from "@/features/auth/domain/usecases/sign-in";
-import { AuthRepository } from "@/features/auth/domain/repositories/auth-repository";
-
-describe("signIn usecase", () => {
-  it("should return session on successful sign in", async () => {
-    const mockSession = {
-      accessToken: "token",
-      user: { id: "1", email: "test@test.com" },
-    };
-    const mockRepository: AuthRepository = {
-      signIn: jest.fn().mockResolvedValue(mockSession),
-      signUp: jest.fn(),
-      signOut: jest.fn(),
-      refreshSession: jest.fn(),
-      setSession: jest.fn(),
-    };
-
-    const result = await signIn(mockRepository)({
-      email: "test@test.com",
-      password: "password",
-    });
-
-    expect(result).toEqual(mockSession);
-    expect(mockRepository.signIn).toHaveBeenCalledWith({
-      email: "test@test.com",
-      password: "password",
-    });
-  });
-});
-```
-
-#### 6.4 Tests des Hooks
-
-Créer des tests pour les hooks critiques :
-
-- `use-auth.test.ts`
-- `use-authentication.test.ts`
-- `use-fetch-profile.test.ts`
-
-Utiliser `@testing-library/react-hooks` ou `renderHook` de Testing Library.
-
-#### 6.5 Tests des Composants
-
-Créer des tests pour les composants UI critiques :
-
-- `button.test.tsx`
-- `input.test.tsx`
-- `form-input.test.tsx`
-
-#### 6.6 Hook Pre-commit
-
-Ajouter les tests au pre-commit hook `.husky/pre-commit` :
-
-```bash
-npm run lint
-npm test -- --watchAll=false --passWithNoTests
-```
-
-### Critères de validation
-
-- [ ] Tous les usecases ont des tests
-- [ ] Les hooks critiques ont des tests
-- [ ] `npm test` passe
-- [ ] Le pre-commit exécute les tests
+> **Complétée** - Infrastructure de tests complète avec coverage 100% sur les usecases et hooks.
+>
+> **Stack de tests** :
+>
+> - `jest-expo` - Preset Jest pour Expo
+> - `@testing-library/react-native` - Testing behavior-driven
+> - `msw` - Mock Service Worker (disponible pour tests d'intégration)
+>
+> **Tests créés** (91 tests, 16 suites) :
+>
+> - Usecases auth : `sign-in`, `sign-up`, `sign-out`, `refresh-session`
+> - Usecases profile : `fetch-profile`, `create-profile`
+> - Hooks auth : `use-auth`, `use-authentication`
+> - Hooks profile : `use-fetch-profile`, `use-create-profile`
+> - Store : `auth-store`
+> - Composants UI : `button`, `input`, `text`, `form-text-field`, `form-radio-group`
+>
+> **Configuration** :
+>
+> - `jest.config.js` - Coverage 100% sur usecases, MSW dans transformIgnorePatterns
+> - `jest.setup.ts` - Mocks i18n, react-i18next, expo-secure-store
+> - `__tests__/mocks/handlers.ts` - Handlers MSW pour Supabase auth et profiles
+> - `__tests__/mocks/server.ts` - Serveur MSW configuré
+> - `__tests__/mocks/msw-setup.ts` - Setup réutilisable pour tests d'intégration
+>
+> **Hooks configurés** :
+>
+> - `.husky/pre-commit` exécute les tests avant chaque commit
+>
+> **Critères validés** :
+>
+> - ✅ Tous les usecases ont des tests (coverage 100%)
+> - ✅ Les hooks critiques ont des tests (coverage 100%)
+> - ✅ `npm test` passe (91 tests)
+> - ✅ Le pre-commit exécute les tests
 
 ---
 
@@ -387,7 +314,7 @@ npm run add:custom-api
 
 Ce script doit :
 
-1. Créer `infrastructure/api/client.ts` avec un client HTTP (fetch ou axios)
+1. Créer `infrastructure/api/client.ts` avec un client HTTP (axios)
 2. Créer des templates de repository pour custom API
 3. Mettre à jour les imports
 
@@ -472,7 +399,7 @@ Voir la doc : https://docs.expo.dev/eas/workflows/
 2. ~~**Phase 3** (Forms) - Améliore la DX immédiatement~~ ✅
 3. ~~**Phase 4** (ESLint Strict) - Qualité de code dès maintenant~~ ✅
 4. ~~**Phase 5** (Error Handling) - Quick wins robustesse~~ ✅
-5. **Phase 6** (Testing) - Sécurise les refactos
+5. ~~**Phase 6** (Testing) - Sécurise les refactos~~ ✅
 6. **Phase 7** (Scripts + CI/CD) - Automatisation finale
 
 ---

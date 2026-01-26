@@ -55,6 +55,7 @@ module.exports = {
     '/.expo/*',
     '/android/*',
     '/ios/*',
+    '/coverage/*',
     'babel.config.js',
     'metro.config.js',
     'tailwind.config.js',
