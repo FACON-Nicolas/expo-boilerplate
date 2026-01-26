@@ -13,6 +13,7 @@ Cette boilerplate est en cours de refonte pour devenir une base **modulaire**, *
 - ✅ **Phase 4 : Configuration ESLint Stricte** - Règles strictes + boundaries Clean Architecture
 - ✅ **Phase 5 : Error Handling & Config** - Error Boundary, validation env, toast, splash gate
 - ✅ **Phase 6 : Testing** - 91 tests, coverage 100% usecases/hooks, MSW configuré
+- ✅ **Phase 7 : Scripts Modulaires + CI/CD** - Scripts de scaffolding, GitHub Actions, EAS Workflows
 
 ### Structure actuelle
 
@@ -114,287 +115,6 @@ import { useAuth } from "@/features/auth/presentation/hooks/use-auth";
 import { AppError } from "@/core";
 ```
 
----
-
-## ~~Phase 2 : HeroUI Native + Design System~~ ✅
-
-> **Complétée** - Migration vers HeroUI Native + Uniwind (Tailwind v4) terminée.
->
-> - Uniwind configuré avec `global.css` et Metro
-> - HeroUI Native avec `HeroUINativeProvider`
-> - Design tokens définis (colors, spacing, typography, radius)
-> - Composants migrés dans `ui/components/` (Button, Input, Text, View, Link, SafeAreaView, Skeleton, Icon, TabBarIcon)
-> - Theme store Zustand avec persistance (`ui/theme/theme-store.ts`)
-> - Anciens composants `themed-*.tsx` et `Colors.ts` supprimés
-
----
-
-## ~~Phase 3 : Forms & Validation (React Hook Form)~~ ✅
-
-> **Complétée** - React Hook Form + Zod intégrés pour la gestion des formulaires.
->
-> - `react-hook-form` et `@hookform/resolvers` installés
-> - Composants créés dans `ui/components/form/` :
->   - `form-text-field.tsx` - Input connecté à RHF via Controller
->   - `form-radio-group.tsx` - RadioGroup connecté à RHF
-> - Écrans migrés vers RHF :
->   - Login (`app/(public)/index.tsx`) avec `zodResolver(signInSchema)`
->   - Sign Up (`app/(public)/sign-up.tsx`) avec `zodResolver(signUpSchema)`
-> - Validation Zod en temps réel avec messages d'erreur i18n
-> - Onboarding supprimé (flow simplifié)
-
----
-
-## ~~Phase 4 : Configuration ESLint Stricte~~ ✅
-
-> **Complétée** - Configuration ESLint production-ready avec règles strictes.
->
-> **Plugins installés** :
->
-> - `eslint-plugin-boundaries` - Règles Clean Architecture entre layers
-> - `eslint-plugin-import` - Organisation et validation des imports
-> - `eslint-plugin-no-relative-import-paths` - Forcer `@/` alias
-> - `@typescript-eslint/eslint-plugin` - Règles TypeScript strictes
-> - `lint-staged` - Lint uniquement les fichiers modifiés
->
-> **Règles configurées** :
->
-> - ✅ Imports relatifs (`./`, `../`) bloqués
-> - ✅ `require()` bloqué
-> - ✅ Naming convention : `handle*`, `manage*`, `process*` bloqués
-> - ✅ Boundaries Clean Architecture :
->   - `feature-domain` → `[feature-domain, core-domain]` ✅
->   - `feature-domain` → `[feature-data, infrastructure]` ❌
->   - `feature-data` → `[feature-domain, core-domain, infrastructure]` ✅
-> - ✅ `import/order` avec alphabétisation automatique
-> - ✅ `consistent-type-imports` pour les imports de types
->
-> **Hooks configurés** :
->
-> - `.husky/pre-commit` → `npx lint-staged`
-> - `.claude/settings.local.json` → Hook "Stop" avec lint
->
-> **Correction pré-requise** : `validator.ts` déplacé de `core/data/` vers `core/domain/` pour respecter Clean Architecture
-
----
-
-## ~~Phase 5 : Error Handling & Config~~ ✅
-
-> **Complétée** - Error handling global et validation de configuration en place.
->
-> **Fichiers créés** :
->
-> - `core/config/env.ts` - Validation Zod des variables d'environnement (fail-fast au boot)
-> - `core/config/query-client.ts` - Configuration React Query isolée avec retry logic
-> - `core/presentation/components/error-boundary.tsx` - Class component pour capturer les erreurs React
-> - `core/presentation/components/error-fallback.tsx` - UI de fallback avec bouton retry
-> - `core/presentation/components/splash-gate.tsx` - Wrapper qui gère splash screen + hydration
-> - `core/presentation/hooks/use-theme-sync.ts` - Synchronisation Uniwind ↔ theme store
-> - `core/presentation/hooks/use-app-toast.ts` - Hook toast avec support AppError et i18n
->
-> **Fichiers modifiés** :
->
-> - `app/_layout.tsx` - Simplifié à 47 lignes, composition de providers uniquement
-> - `infrastructure/supabase/client.ts` - Utilise `env` validé
-> - `i18n/en.json` et `i18n/fr.json` - Clés errorBoundary, toast, errors.api
-> - `.env.example` - ANON_KEY → PUBLISHABLE_KEY
-> - `.eslintrc.js` - Ajout types `core-config` dans boundaries
->
-> **Architecture SRP respectée** :
->
-> - `SplashGate` gère uniquement le splash + hydration
-> - `useThemeSync` gère uniquement la sync Uniwind
-> - `queryClient` encapsule toute la config React Query
-> - `RootLayout` ne fait que composer les providers
->
-> **Critères validés** :
->
-> - ✅ L'app affiche un fallback en cas d'erreur critique
-> - ✅ L'app crash proprement si les env vars manquent
-> - ✅ Les erreurs API peuvent s'afficher via `useAppToast`
-> - ✅ Splash screen couvre le loading (plus de flash blanc)
-
----
-
-## ~~Phase 6 : Testing~~ ✅
-
-> **Complétée** - Infrastructure de tests complète avec coverage 100% sur les usecases et hooks.
->
-> **Stack de tests** :
->
-> - `jest-expo` - Preset Jest pour Expo
-> - `@testing-library/react-native` - Testing behavior-driven
-> - `msw` - Mock Service Worker (disponible pour tests d'intégration)
->
-> **Tests créés** (91 tests, 16 suites) :
->
-> - Usecases auth : `sign-in`, `sign-up`, `sign-out`, `refresh-session`
-> - Usecases profile : `fetch-profile`, `create-profile`
-> - Hooks auth : `use-auth`, `use-authentication`
-> - Hooks profile : `use-fetch-profile`, `use-create-profile`
-> - Store : `auth-store`
-> - Composants UI : `button`, `input`, `text`, `form-text-field`, `form-radio-group`
->
-> **Configuration** :
->
-> - `jest.config.js` - Coverage 100% sur usecases, MSW dans transformIgnorePatterns
-> - `jest.setup.ts` - Mocks i18n, react-i18next, expo-secure-store
-> - `__tests__/mocks/handlers.ts` - Handlers MSW pour Supabase auth et profiles
-> - `__tests__/mocks/server.ts` - Serveur MSW configuré
-> - `__tests__/mocks/msw-setup.ts` - Setup réutilisable pour tests d'intégration
->
-> **Hooks configurés** :
->
-> - `.husky/pre-commit` exécute les tests avant chaque commit
->
-> **Critères validés** :
->
-> - ✅ Tous les usecases ont des tests (coverage 100%)
-> - ✅ Les hooks critiques ont des tests (coverage 100%)
-> - ✅ `npm test` passe (91 tests)
-> - ✅ Le pre-commit exécute les tests
-
----
-
-## Phase 7 : Scripts Modulaires + CI/CD
-
-### Objectif
-
-Permettre de customiser la boilerplate via scripts et automatiser le déploiement.
-
-### Tâches
-
-#### 7.1 Script Engine
-
-Créer `scripts/utils/` avec des utilitaires communs :
-
-1. `file-utils.ts` - Lecture/écriture/suppression de fichiers
-2. `package-utils.ts` - Manipulation du package.json
-3. `import-utils.ts` - Analyse et modification des imports
-
-#### 7.2 Script `remove:feature`
-
-Créer `scripts/remove-feature.ts` :
-
-```bash
-npm run remove:feature auth
-```
-
-Ce script doit :
-
-1. Supprimer `features/auth/`
-2. Supprimer les routes liées dans `app/`
-3. Supprimer les imports cassés
-4. Mettre à jour `app/_layout.tsx` pour retirer les guards auth
-5. Supprimer les dépendances inutilisées du `package.json`
-
-#### 7.3 Script `remove:supabase`
-
-Créer `scripts/remove-supabase.ts` :
-
-```bash
-npm run remove:supabase
-```
-
-Ce script doit :
-
-1. Supprimer `infrastructure/supabase/`
-2. Supprimer tous les fichiers `supabase-*-repository.ts` dans features
-3. Désinstaller `@supabase/supabase-js`
-4. Créer des fichiers repository placeholder (interface vide avec TODO)
-5. Afficher les instructions pour implémenter un autre backend
-
-#### 7.4 Script `add:custom-api`
-
-Créer `scripts/add-custom-api.ts` :
-
-```bash
-npm run add:custom-api
-```
-
-Ce script doit :
-
-1. Créer `infrastructure/api/client.ts` avec un client HTTP (axios)
-2. Créer des templates de repository pour custom API
-3. Mettre à jour les imports
-
-#### 7.5 Script `setup:minimal`
-
-Créer `scripts/setup-minimal.ts` :
-
-```bash
-npm run setup:minimal
-```
-
-Ce script doit :
-
-1. Supprimer `features/auth/`, `features/profile/`, `features/onboarding/`
-2. Supprimer toutes les routes sauf une page d'accueil basique
-3. Nettoyer l'app pour avoir juste navigation + UI
-
-#### 7.6 Ajouter les scripts au package.json
-
-```json
-{
-  "scripts": {
-    "remove:feature": "npx tsx scripts/remove-feature.ts",
-    "remove:supabase": "npx tsx scripts/remove-supabase.ts",
-    "add:custom-api": "npx tsx scripts/add-custom-api.ts",
-    "setup:minimal": "npx tsx scripts/setup-minimal.ts"
-  }
-}
-```
-
-#### ~~7.7 GitHub Actions CI~~ ✅
-
-> **Complété** - CI configurée avec lint, typecheck et tests.
->
-> **Fichier créé** : `.github/workflows/ci.yml`
->
-> - Déclenché sur push/PR vers main
-> - Étapes : checkout → setup-node → npm ci → lint → tsc → tests
-
-#### ~~7.8 EAS Workflows~~ ✅
-
-> **Complété** - Workflows EAS avec fingerprint et OTA updates.
->
-> **Fichiers créés** :
->
-> - `eas.json` - Profiles development/preview/production avec channels
-> - `.eas/workflows/deploy-preview.yml` - Build/OTA sur PR vers main
-> - `.eas/workflows/deploy-production.yml` - Build/OTA sur push vers main
-> - `scripts/init-app.sh` - Script d'initialisation (nom, slug, bundleIdentifier)
->
-> **Stratégie fingerprint** :
->
-> 1. Calcul du fingerprint pour chaque plateforme
-> 2. Recherche d'un build existant avec ce fingerprint
-> 3. Si trouvé → OTA update uniquement (rapide)
-> 4. Sinon → nouveau build natif
->
-> **Commande d'initialisation** : `npm run init`
-
-### Critères de validation
-
-- [ ] `npm run remove:feature auth` supprime l'auth proprement
-- [ ] `npm run remove:supabase` supprime Supabase proprement
-- [ ] `npm run setup:minimal` crée un projet minimal fonctionnel
-- [x] GitHub Actions CI passe sur chaque PR
-- [x] EAS Workflow configuré avec fingerprint + OTA
-
----
-
-## Ordre d'exécution recommandé
-
-1. ~~**Phase 2** (HeroUI) - Donne une UI moderne rapidement~~ ✅
-2. ~~**Phase 3** (Forms) - Améliore la DX immédiatement~~ ✅
-3. ~~**Phase 4** (ESLint Strict) - Qualité de code dès maintenant~~ ✅
-4. ~~**Phase 5** (Error Handling) - Quick wins robustesse~~ ✅
-5. ~~**Phase 6** (Testing) - Sécurise les refactos~~ ✅
-6. **Phase 7** (Scripts + CI/CD) - Automatisation finale
-
----
-
 ## Notes importantes
 
 ### Conventions de code
@@ -422,3 +142,358 @@ Ce script doit :
 
 - **HeroUI Native ne supporte pas le web** actuellement
 - Cette boilerplate est **mobile-first** (iOS/Android)
+
+---
+
+## Phase 8 : Sentry (Monitoring & Error Tracking)
+
+### Objectif
+
+Intégrer Sentry pour le monitoring complet de l'application : crashes, errors, performance, et source maps.
+
+### Architecture
+
+```
+infrastructure/
+├── monitoring/
+│   └── sentry/
+│       ├── client.ts           # Configuration et initialisation Sentry
+│       ├── filters.ts          # Filtres d'erreurs (network, cancellations)
+│       └── types.ts            # Types Sentry custom
+└── supabase/
+```
+
+### Tâches
+
+#### 8.1 Installation et configuration de base
+
+1. Installer `@sentry/react-native` et `sentry-expo`
+2. Créer `infrastructure/monitoring/sentry/client.ts` avec :
+   - Initialisation Sentry avec DSN
+   - Configuration des environnements via EAS profiles (development/preview/production)
+   - Sample rates : 100% dev, 20% prod pour le performance monitoring
+   - Session replay activé
+3. Ajouter les variables d'environnement dans `core/config/env.ts` :
+   - `SENTRY_DSN` (requis)
+   - `SENTRY_ENABLED` (optionnel, défaut: true)
+
+#### 8.2 Intégration ErrorBoundary
+
+1. Modifier `core/presentation/components/error-boundary.tsx` pour :
+   - Capturer et envoyer les erreurs à Sentry
+   - Enrichir avec le contexte React (component stack)
+2. Intégrer `Sentry.ErrorBoundary` ou wrapper custom
+
+#### 8.3 Intégration AppError
+
+1. Créer un mapper `AppError` → Sentry avec :
+   - `error.code` → Sentry tag
+   - `error.context` → Sentry extra data
+   - `error.severity` → Sentry level (error, warning, info)
+2. Enrichir automatiquement les breadcrumbs
+
+#### 8.4 Hook useSentryContext
+
+Créer `infrastructure/monitoring/sentry/use-sentry-context.ts` :
+
+```typescript
+export const useSentryContext = () => {
+  const setUser = (user: SentryUser | null) => { ... };
+  const addBreadcrumb = (breadcrumb: Breadcrumb) => { ... };
+  const setTag = (key: string, value: string) => { ... };
+  const captureException = (error: Error, context?: Record<string, unknown>) => { ... };
+  const captureMessage = (message: string, level?: SeverityLevel) => { ... };
+
+  return { setUser, addBreadcrumb, setTag, captureException, captureMessage };
+};
+```
+
+#### 8.5 Filtrage des erreurs
+
+Créer `infrastructure/monitoring/sentry/filters.ts` pour ignorer :
+
+- Erreurs réseau (`Network request failed`, `Failed to fetch`)
+- Annulations utilisateur (`AbortError`, `cancelled`)
+- Erreurs de timeout non critiques
+
+#### 8.6 Navigation tracking
+
+1. Intégrer avec Expo Router pour tracker les changements d'écran
+2. Créer des transactions automatiques par route
+3. Ajouter des breadcrumbs de navigation
+
+#### 8.7 Source maps via EAS
+
+1. Configurer `sentry-expo` plugin dans `app.json`
+2. Ajouter les secrets EAS : `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT`
+3. Upload automatique des source maps pendant les builds EAS
+
+#### 8.8 Tests
+
+1. Tests unitaires pour `useSentryContext`
+2. Tests des filtres d'erreurs
+3. Mock Sentry dans `jest.setup.ts`
+
+### Variables d'environnement
+
+```bash
+# .env
+SENTRY_DSN=https://xxx@sentry.io/xxx
+SENTRY_ENABLED=true  # Optionnel, pour désactiver en local ou GDPR
+
+# EAS Secrets (via eas secret:create)
+SENTRY_AUTH_TOKEN=xxx
+SENTRY_ORG=your-org
+SENTRY_PROJECT=your-project
+```
+
+### Critères de validation
+
+- [ ] Les crashes natifs sont capturés et visibles dans Sentry
+- [ ] Les erreurs JS sont capturées avec stack trace
+- [ ] Les AppError sont enrichies avec code et context
+- [ ] Le performance monitoring fonctionne (transactions visibles)
+- [ ] Les source maps sont uploadées et les stack traces sont lisibles
+- [ ] La navigation est trackée (breadcrumbs et transactions)
+- [ ] Les erreurs réseau sont filtrées
+- [ ] `SENTRY_ENABLED=false` désactive complètement Sentry
+- [ ] Les tests passent
+
+---
+
+## Phase 9 : Documentation
+
+### Objectif
+
+Créer une documentation complète et maintenable pour faciliter l'onboarding et l'utilisation du boilerplate.
+
+### Structure
+
+```
+expo-boilerplate/
+├── README.md                    # Overview, quick start, links to docs
+└── docs/
+    ├── getting-started.md       # Installation, configuration, first run
+    ├── architecture.md          # Clean Architecture, patterns, diagrams
+    ├── scripts.md               # npm scripts documentation
+    ├── deployment.md            # EAS Build, CI/CD, OTA updates
+    └── troubleshooting.md       # FAQ, common issues and solutions
+```
+
+### Tâches
+
+#### 9.1 README.md
+
+Refonte du README principal avec :
+
+1. Badges (CI status, Expo SDK, license)
+2. Features list avec emojis
+3. Quick start (5 étapes max)
+4. Screenshots/GIFs de l'app
+5. Table of contents vers docs/
+6. Contributing guidelines
+7. License
+
+#### 9.2 docs/getting-started.md
+
+1. Prerequisites (Node, npm, Expo CLI, EAS CLI)
+2. Installation step-by-step
+3. Environment variables setup (.env)
+4. Running on iOS/Android simulators
+5. Running on physical devices
+6. First modifications guide
+
+#### 9.3 docs/architecture.md
+
+1. Clean Architecture overview avec diagramme ASCII/Mermaid
+2. Folder structure explained
+3. Layer dependencies diagram
+4. Feature module anatomy
+5. Patterns avec code snippets :
+   - Usecase pattern (curried functions)
+   - Repository pattern (interface + implementation)
+   - Hook pattern (React Query integration)
+6. Import conventions
+7. State management (Zustand vs React Query)
+
+#### 9.4 docs/scripts.md
+
+Documentation de chaque script npm :
+
+1. `npm run add:feature <name>` - Scaffolding de features
+2. `npm run remove:feature <name>` - Suppression de features
+3. `npm run add:supabase` - Installation backend Supabase
+4. `npm run remove:supabase` - Suppression backend Supabase
+5. `npm run add:custom-backend` - Installation backend API REST
+6. `npm run setup:minimal` - Reset vers projet minimal
+7. `npm run init` - Initialisation app Expo/EAS
+
+Pour chaque script :
+- Description
+- Usage
+- Options (--dry-run, --force)
+- Examples
+- What it modifies
+
+#### 9.5 docs/deployment.md
+
+1. EAS Build setup
+2. Build profiles (development, preview, production)
+3. EAS Workflows explained
+4. Fingerprint strategy (build vs OTA)
+5. GitHub Actions CI pipeline
+6. Environment secrets management
+7. App Store / Play Store submission tips
+
+#### 9.6 docs/troubleshooting.md
+
+1. Common errors and solutions
+2. Build failures debugging
+3. Environment variables issues
+4. Dependency conflicts
+5. Metro bundler issues
+6. EAS Build issues
+
+### Langue
+
+Toute la documentation en **anglais**.
+
+### Critères de validation
+
+- [ ] README.md est clair et permet un quick start en 5 minutes
+- [ ] docs/getting-started.md permet l'installation complète
+- [ ] docs/architecture.md explique la Clean Architecture avec diagrammes
+- [ ] docs/scripts.md documente tous les scripts avec exemples
+- [ ] docs/deployment.md couvre le flow complet de déploiement
+- [ ] docs/troubleshooting.md résout les problèmes courants
+- [ ] Tous les code snippets sont testés et fonctionnels
+
+---
+
+## Phase 10 : Analytics (Amplitude)
+
+### Objectif
+
+Intégrer un système d'analytics complet avec Amplitude, abstrait pour permettre un changement de provider futur.
+
+### Architecture
+
+```
+infrastructure/
+└── monitoring/
+    ├── sentry/                    # Phase 8
+    └── analytics/
+        ├── provider.ts            # Interface AnalyticsProvider
+        ├── amplitude-provider.ts  # Implémentation Amplitude
+        ├── use-analytics.ts       # Hook React
+        └── types.ts               # Types d'événements
+```
+
+### Tâches
+
+#### 10.1 Interface AnalyticsProvider
+
+Créer `infrastructure/monitoring/analytics/provider.ts` :
+
+```typescript
+export interface AnalyticsProvider {
+  initialize(apiKey: string): void;
+  identify(userId: string, traits?: Record<string, unknown>): void;
+  reset(): void;
+  track(event: string, properties?: Record<string, unknown>): void;
+  screen(name: string, properties?: Record<string, unknown>): void;
+  setUserProperties(properties: Record<string, unknown>): void;
+}
+```
+
+#### 10.2 Implémentation Amplitude
+
+1. Installer `@amplitude/analytics-react-native`
+2. Créer `infrastructure/monitoring/analytics/amplitude-provider.ts`
+3. Configurer :
+   - Auto-tracking des sessions
+   - Flush interval optimisé mobile
+   - Offline event queuing
+
+#### 10.3 Hook useAnalytics
+
+Créer `infrastructure/monitoring/analytics/use-analytics.ts` :
+
+```typescript
+export const useAnalytics = () => {
+  const track = (event: string, properties?: Record<string, unknown>) => { ... };
+  const screen = (name: string, properties?: Record<string, unknown>) => { ... };
+  const identify = (userId: string, traits?: Record<string, unknown>) => { ... };
+  const reset = () => { ... };
+
+  return { track, screen, identify, reset };
+};
+```
+
+#### 10.4 Types d'événements
+
+Créer `infrastructure/monitoring/analytics/types.ts` avec types stricts :
+
+```typescript
+type AuthEvent = 'sign_up_started' | 'sign_up_completed' | 'sign_in' | 'sign_out';
+type NavigationEvent = 'screen_view';
+type UserActionEvent = 'button_pressed' | 'form_submitted';
+
+export type AnalyticsEvent = AuthEvent | NavigationEvent | UserActionEvent;
+```
+
+#### 10.5 Navigation tracking
+
+1. Intégrer avec Expo Router pour auto-track les screen views
+2. Enrichir avec les paramètres de route
+3. Tracker le temps passé sur chaque écran
+
+#### 10.6 Synchronisation avec Sentry
+
+1. Partager le même `userId` entre Analytics et Sentry
+2. Créer un hook `useIdentity` qui synchronise les deux
+3. Ajouter des breadcrumbs Sentry pour les events analytics importants
+
+#### 10.7 GDPR Compliance
+
+1. Ajouter `ANALYTICS_ENABLED` dans `core/config/env.ts`
+2. Créer un système d'opt-out utilisateur persisté
+3. Respecter le tracking consent (ATT sur iOS)
+4. Pas de tracking si consentement refusé
+
+#### 10.8 Tests
+
+1. Tests unitaires pour `useAnalytics`
+2. Tests du provider Amplitude (mocké)
+3. Tests de la synchronisation avec Sentry
+
+### Variables d'environnement
+
+```bash
+# .env
+AMPLITUDE_API_KEY=xxx
+ANALYTICS_ENABLED=true  # Optionnel, pour désactiver globalement
+```
+
+### Événements standard
+
+| Événement | Propriétés | Quand |
+|-----------|------------|-------|
+| `sign_up_started` | `method` | Ouverture formulaire inscription |
+| `sign_up_completed` | `method`, `userId` | Inscription réussie |
+| `sign_in` | `method` | Connexion réussie |
+| `sign_out` | - | Déconnexion |
+| `screen_view` | `screen_name`, `params` | Changement d'écran |
+| `button_pressed` | `button_name`, `screen` | Clic sur bouton important |
+| `error_occurred` | `error_code`, `screen` | Erreur affichée à l'utilisateur |
+
+### Critères de validation
+
+- [ ] Amplitude reçoit les événements en temps réel
+- [ ] Les screen views sont auto-trackées via Expo Router
+- [ ] L'identification utilisateur fonctionne et persiste
+- [ ] La synchronisation Sentry fonctionne (même userId)
+- [ ] `ANALYTICS_ENABLED=false` désactive complètement le tracking
+- [ ] L'opt-out utilisateur fonctionne et est persisté
+- [ ] L'abstraction permet de switcher de provider facilement
+- [ ] Les tests passent
