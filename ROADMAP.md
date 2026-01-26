@@ -14,6 +14,7 @@ Cette boilerplate est en cours de refonte pour devenir une base **modulaire**, *
 - ✅ **Phase 5 : Error Handling & Config** - Error Boundary, validation env, toast, splash gate
 - ✅ **Phase 6 : Testing** - 91 tests, coverage 100% usecases/hooks, MSW configuré
 - ✅ **Phase 7 : Scripts Modulaires + CI/CD** - Scripts de scaffolding, GitHub Actions, EAS Workflows
+- ✅ **Phase 8 : Sentry** - Error tracking, performance monitoring, Session Replay, navigation tracking
 
 ### Structure actuelle
 
@@ -69,6 +70,13 @@ expo-boilerplate/
 │           └── use-app-toast.ts      # Toast avec support AppError
 │
 ├── infrastructure/                   # External Dependencies
+│   ├── monitoring/
+│   │   └── sentry/
+│   │       ├── client.ts             # Initialisation + navigation integration
+│   │       ├── filters.ts            # beforeSend filters (network, abort)
+│   │       ├── types.ts              # SentryUser, SentryBreadcrumb, severity mapping
+│   │       ├── app-error-reporter.ts # AppError → Sentry mapper
+│   │       └── use-sentry-context.ts # Hook React
 │   └── supabase/client.ts
 │
 ├── ui/                               # Design System
@@ -145,119 +153,30 @@ import { AppError } from "@/core";
 
 ---
 
-## Phase 8 : Sentry (Monitoring & Error Tracking)
+## ✅ Phase 8 : Sentry (Monitoring & Error Tracking) - TERMINÉE
 
-### Objectif
+### Réalisé
 
-Intégrer Sentry pour le monitoring complet de l'application : crashes, errors, performance, et source maps.
+- ✅ Installation `@sentry/react-native` avec plugin Expo
+- ✅ Configuration complète dans `infrastructure/monitoring/sentry/`
+- ✅ Mapping intelligent `AppError` → Sentry (severity par code)
+- ✅ Filtres `beforeSend` (network, timeout, abort errors)
+- ✅ Session Replay avec masquage total (GDPR)
+- ✅ Navigation tracking avec Expo Router
+- ✅ Hook `useSentryContext` pour React
+- ✅ Intégration ErrorBoundary avec componentStack
+- ✅ `Sentry.wrap()` sur RootLayout
+- ✅ 29 tests unitaires
+- ✅ Variables env : `EXPO_PUBLIC_SENTRY_DSN`, `EXPO_PUBLIC_SENTRY_ENABLED`
 
-### Architecture
-
-```
-infrastructure/
-├── monitoring/
-│   └── sentry/
-│       ├── client.ts           # Configuration et initialisation Sentry
-│       ├── filters.ts          # Filtres d'erreurs (network, cancellations)
-│       └── types.ts            # Types Sentry custom
-└── supabase/
-```
-
-### Tâches
-
-#### 8.1 Installation et configuration de base
-
-1. Installer `@sentry/react-native` et `sentry-expo`
-2. Créer `infrastructure/monitoring/sentry/client.ts` avec :
-   - Initialisation Sentry avec DSN
-   - Configuration des environnements via EAS profiles (development/preview/production)
-   - Sample rates : 100% dev, 20% prod pour le performance monitoring
-   - Session replay activé
-3. Ajouter les variables d'environnement dans `core/config/env.ts` :
-   - `SENTRY_DSN` (requis)
-   - `SENTRY_ENABLED` (optionnel, défaut: true)
-
-#### 8.2 Intégration ErrorBoundary
-
-1. Modifier `core/presentation/components/error-boundary.tsx` pour :
-   - Capturer et envoyer les erreurs à Sentry
-   - Enrichir avec le contexte React (component stack)
-2. Intégrer `Sentry.ErrorBoundary` ou wrapper custom
-
-#### 8.3 Intégration AppError
-
-1. Créer un mapper `AppError` → Sentry avec :
-   - `error.code` → Sentry tag
-   - `error.context` → Sentry extra data
-   - `error.severity` → Sentry level (error, warning, info)
-2. Enrichir automatiquement les breadcrumbs
-
-#### 8.4 Hook useSentryContext
-
-Créer `infrastructure/monitoring/sentry/use-sentry-context.ts` :
-
-```typescript
-export const useSentryContext = () => {
-  const setUser = (user: SentryUser | null) => { ... };
-  const addBreadcrumb = (breadcrumb: Breadcrumb) => { ... };
-  const setTag = (key: string, value: string) => { ... };
-  const captureException = (error: Error, context?: Record<string, unknown>) => { ... };
-  const captureMessage = (message: string, level?: SeverityLevel) => { ... };
-
-  return { setUser, addBreadcrumb, setTag, captureException, captureMessage };
-};
-```
-
-#### 8.5 Filtrage des erreurs
-
-Créer `infrastructure/monitoring/sentry/filters.ts` pour ignorer :
-
-- Erreurs réseau (`Network request failed`, `Failed to fetch`)
-- Annulations utilisateur (`AbortError`, `cancelled`)
-- Erreurs de timeout non critiques
-
-#### 8.6 Navigation tracking
-
-1. Intégrer avec Expo Router pour tracker les changements d'écran
-2. Créer des transactions automatiques par route
-3. Ajouter des breadcrumbs de navigation
-
-#### 8.7 Source maps via EAS
-
-1. Configurer `sentry-expo` plugin dans `app.json`
-2. Ajouter les secrets EAS : `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT`
-3. Upload automatique des source maps pendant les builds EAS
-
-#### 8.8 Tests
-
-1. Tests unitaires pour `useSentryContext`
-2. Tests des filtres d'erreurs
-3. Mock Sentry dans `jest.setup.ts`
-
-### Variables d'environnement
+### Configuration source maps (pour production)
 
 ```bash
-# .env
-SENTRY_DSN=https://xxx@sentry.io/xxx
-SENTRY_ENABLED=true  # Optionnel, pour désactiver en local ou GDPR
-
-# EAS Secrets (via eas secret:create)
-SENTRY_AUTH_TOKEN=xxx
-SENTRY_ORG=your-org
-SENTRY_PROJECT=your-project
+# EAS Secrets (optionnel, pour source maps lisibles en prod)
+eas secret:create --name SENTRY_AUTH_TOKEN --value "xxx"
+eas secret:create --name SENTRY_ORG --value "your-org"
+eas secret:create --name SENTRY_PROJECT --value "expo-boilerplate"
 ```
-
-### Critères de validation
-
-- [ ] Les crashes natifs sont capturés et visibles dans Sentry
-- [ ] Les erreurs JS sont capturées avec stack trace
-- [ ] Les AppError sont enrichies avec code et context
-- [ ] Le performance monitoring fonctionne (transactions visibles)
-- [ ] Les source maps sont uploadées et les stack traces sont lisibles
-- [ ] La navigation est trackée (breadcrumbs et transactions)
-- [ ] Les erreurs réseau sont filtrées
-- [ ] `SENTRY_ENABLED=false` désactive complètement Sentry
-- [ ] Les tests passent
 
 ---
 
