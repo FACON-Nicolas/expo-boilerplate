@@ -52,6 +52,14 @@
   "home": {
     "title": "Home"
   },
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred. Please try again.",
+    "retryButton": "Try Again"
+  },
+  "toast": {
+    "errorTitle": "Error"
+  },
   "errors": {
     "email": {
       "invalid": "Invalid email address"
@@ -79,6 +87,14 @@
         "required": "Age range is required",
         "invalid": "Please select a valid age range"
       }
+    },
+    "api": {
+      "UNKNOWN": "An unexpected error occurred",
+      "VALIDATION": "Invalid data provided",
+      "NETWORK": "Network error. Please check your connection.",
+      "UNAUTHORIZED": "You are not authorized to perform this action",
+      "NOT_FOUND": "The requested resource was not found",
+      "CONFLICT": "A conflict occurred. Please try again."
     }
   }
 }

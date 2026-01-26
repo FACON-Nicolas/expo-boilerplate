@@ -11,6 +11,7 @@ Cette boilerplate est en cours de refonte pour devenir une base **modulaire**, *
 - ✅ **Phase 2 : HeroUI Native + Design System** - Migration complète
 - ✅ **Phase 3 : Forms & Validation** - React Hook Form + Zod intégrés
 - ✅ **Phase 4 : Configuration ESLint Stricte** - Règles strictes + boundaries Clean Architecture
+- ✅ **Phase 5 : Error Handling & Config** - Error Boundary, validation env, toast, splash gate
 
 ### Structure actuelle
 
@@ -47,13 +48,23 @@ expo-boilerplate/
 │           └── hooks/use-fetch-profile.ts, use-create-profile.ts
 │
 ├── core/                             # Shared Domain
+│   ├── config/
+│   │   ├── env.ts                    # Validation des env vars (Zod)
+│   │   └── query-client.ts           # Configuration React Query
 │   ├── domain/
 │   │   ├── errors/app-error.ts
 │   │   └── validation/validator.ts
 │   ├── data/
 │   │   └── storage/secure-storage.ts
-│   └── presentation/hooks/
-│       └── use-toggle.ts
+│   └── presentation/
+│       ├── components/
+│       │   ├── error-boundary.tsx    # Error boundary global
+│       │   ├── error-fallback.tsx    # UI de fallback
+│       │   └── splash-gate.tsx       # Gestion splash + hydration
+│       └── hooks/
+│           ├── use-toggle.ts
+│           ├── use-theme-sync.ts     # Sync Uniwind ↔ theme store
+│           └── use-app-toast.ts      # Toast avec support AppError
 │
 ├── infrastructure/                   # External Dependencies
 │   └── supabase/client.ts
@@ -163,97 +174,37 @@ import { AppError } from "@/core";
 
 ---
 
-## Phase 5 : Error Handling & Config
+## ~~Phase 5 : Error Handling & Config~~ ✅
 
-### Objectif
-
-Robustesse production avec error handling global et validation de config.
-
-### Tâches
-
-#### 5.1 Error Boundary Global
-
-1. Créer `core/presentation/components/error-boundary.tsx` :
-
-   ```typescript
-   import { Component, ReactNode } from "react";
-
-   interface Props {
-     children: ReactNode;
-     fallback: ReactNode;
-   }
-
-   interface State {
-     hasError: boolean;
-     error?: Error;
-   }
-
-   export class ErrorBoundary extends Component<Props, State> {
-     state: State = { hasError: false };
-
-     static getDerivedStateFromError(error: Error): State {
-       return { hasError: true, error };
-     }
-
-     componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-       // Log vers Sentry ou autre service
-       console.error("ErrorBoundary caught:", error, errorInfo);
-     }
-
-     render() {
-       if (this.state.hasError) {
-         return this.props.fallback;
-       }
-       return this.props.children;
-     }
-   }
-   ```
-
-2. Créer `core/presentation/components/error-fallback.tsx` - UI de fallback
-
-3. Wrapper l'app dans `app/_layout.tsx`
-
-#### 5.2 Validation des Variables d'Environnement
-
-1. Créer `core/config/env.ts` :
-
-   ```typescript
-   import { z } from "zod";
-
-   const envSchema = z.object({
-     EXPO_PUBLIC_SUPABASE_URL: z.string().url(),
-     EXPO_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
-   });
-
-   export const env = envSchema.parse({
-     EXPO_PUBLIC_SUPABASE_URL: process.env.EXPO_PUBLIC_SUPABASE_URL,
-     EXPO_PUBLIC_SUPABASE_ANON_KEY: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
-   });
-   ```
-
-2. Utiliser `env.EXPO_PUBLIC_SUPABASE_URL` au lieu de `process.env.EXPO_PUBLIC_SUPABASE_URL`
-
-3. L'app crashera au démarrage si les env vars sont manquantes (mieux qu'un crash random plus tard)
-
-#### 5.3 Toast / Snackbar
-
-1. Installer un package de toast compatible HeroUI ou créer un custom
-2. Créer `core/presentation/hooks/use-toast.ts`
-3. Afficher les erreurs API via toast au lieu de `console.error`
-
-#### 5.4 Améliorer les Loading States
-
-Remplacer tous les `return null` pendant le loading :
-
-1. `app/_layout.tsx` - Splash screen ou skeleton
-2. `app/(protected)/_layout.tsx` - Skeleton de profile
-
-### Critères de validation
-
-- [ ] L'app affiche un fallback en cas d'erreur critique
-- [ ] L'app crash proprement si les env vars manquent
-- [ ] Les erreurs API s'affichent via toast
-- [ ] Plus aucun `return null` pendant le loading
+> **Complétée** - Error handling global et validation de configuration en place.
+>
+> **Fichiers créés** :
+> - `core/config/env.ts` - Validation Zod des variables d'environnement (fail-fast au boot)
+> - `core/config/query-client.ts` - Configuration React Query isolée avec retry logic
+> - `core/presentation/components/error-boundary.tsx` - Class component pour capturer les erreurs React
+> - `core/presentation/components/error-fallback.tsx` - UI de fallback avec bouton retry
+> - `core/presentation/components/splash-gate.tsx` - Wrapper qui gère splash screen + hydration
+> - `core/presentation/hooks/use-theme-sync.ts` - Synchronisation Uniwind ↔ theme store
+> - `core/presentation/hooks/use-app-toast.ts` - Hook toast avec support AppError et i18n
+>
+> **Fichiers modifiés** :
+> - `app/_layout.tsx` - Simplifié à 47 lignes, composition de providers uniquement
+> - `infrastructure/supabase/client.ts` - Utilise `env` validé
+> - `i18n/en.json` et `i18n/fr.json` - Clés errorBoundary, toast, errors.api
+> - `.env.example` - ANON_KEY → PUBLISHABLE_KEY
+> - `.eslintrc.js` - Ajout types `core-config` dans boundaries
+>
+> **Architecture SRP respectée** :
+> - `SplashGate` gère uniquement le splash + hydration
+> - `useThemeSync` gère uniquement la sync Uniwind
+> - `queryClient` encapsule toute la config React Query
+> - `RootLayout` ne fait que composer les providers
+>
+> **Critères validés** :
+> - ✅ L'app affiche un fallback en cas d'erreur critique
+> - ✅ L'app crash proprement si les env vars manquent
+> - ✅ Les erreurs API peuvent s'afficher via `useAppToast`
+> - ✅ Splash screen couvre le loading (plus de flash blanc)
 
 ---
 
@@ -520,7 +471,7 @@ Voir la doc : https://docs.expo.dev/eas/workflows/
 1. ~~**Phase 2** (HeroUI) - Donne une UI moderne rapidement~~ ✅
 2. ~~**Phase 3** (Forms) - Améliore la DX immédiatement~~ ✅
 3. ~~**Phase 4** (ESLint Strict) - Qualité de code dès maintenant~~ ✅
-4. **Phase 5** (Error Handling) - Quick wins robustesse
+4. ~~**Phase 5** (Error Handling) - Quick wins robustesse~~ ✅
 5. **Phase 6** (Testing) - Sécurise les refactos
 6. **Phase 7** (Scripts + CI/CD) - Automatisation finale
 

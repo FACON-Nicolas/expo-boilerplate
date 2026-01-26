@@ -1,8 +1,10 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from '@supabase/supabase-js';
+
+import { env } from '@/core/config/env';
 
 export const supabaseClient = createClient(
-  process.env.EXPO_PUBLIC_SUPABASE_URL!,
-  process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+  env.EXPO_PUBLIC_SUPABASE_URL,
+  env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
   {
     auth: {
       autoRefreshToken: false,

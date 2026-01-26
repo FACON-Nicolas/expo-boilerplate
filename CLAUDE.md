@@ -2,6 +2,10 @@
 
 ## Architecture
 
+> ⛪ **Clean Architecture and SRP are a religion here.**
+> There is NO exception, NO compromise, NO shortcut.
+> Every violation is a sin. Every sin must be refactored immediately.
+
 This project follows a **Clean Architecture Feature-Based** pattern. Strictly respect this structure.
 
 ### Folder structure
@@ -172,18 +176,38 @@ Never use these words:
 
 **NEVER create custom implementations** before checking:
 
-1. **HeroUI Native components first** - Use MCP Context7 to search for existing components (Button, TextField, RadioGroup, Skeleton, Chip, etc.)
-2. **Existing codebase utilities** - Search with Grep for similar patterns (storage, hooks, helpers)
-3. **HeroUI hooks** - Use `useThemeColor` from heroui-native instead of custom color constants
+1. **`ui/components/` first** - Always check if a wrapper exists in `ui/components/` (View, Text, Button, SafeAreaView, etc.) before importing from `react-native` or `heroui-native` directly
+2. **HeroUI Native components** - Use MCP Context7 to search for existing components (Button, TextField, RadioGroup, Skeleton, Chip, etc.)
+3. **Existing codebase utilities** - Search with mgrep for similar patterns (storage, hooks, helpers)
+4. **HeroUI hooks** - Use `useThemeColor` from heroui-native instead of custom color constants
+
+### UI Components Priority
+
+Before using any UI component, follow this checklist:
+
+1. **Search `ui/components/`** with Glob for existing wrappers
+2. **If found** → Use it (e.g., `@/ui/components/view` instead of `react-native`)
+3. **If not found** → Ask the user via AskUserQuestion if a new wrapper should be created
+4. **Never import directly** from `react-native` or `heroui-native` if a wrapper exists
+
+```typescript
+// ❌ FORBIDDEN - Direct import when wrapper exists
+import { View } from "react-native";
+import { Button } from "heroui-native";
+
+// ✅ CORRECT - Use project wrappers
+import { View } from "@/ui/components/view";
+import { Button } from "@/ui/components/button";
+```
 
 ```typescript
 // ❌ FORBIDDEN - Custom implementation when lib provides it
-const COLORS = { light: { text: '#11181C' }, dark: { text: '#ECEDEE' } };
+const COLORS = { light: { text: "#11181C" }, dark: { text: "#ECEDEE" } };
 const color = COLORS[theme].text;
 
 // ✅ CORRECT - Use HeroUI hook
-import { useThemeColor } from 'heroui-native';
-const [textColor] = useThemeColor(['foreground']);
+import { useThemeColor } from "heroui-native";
+const [textColor] = useThemeColor(["foreground"]);
 ```
 
 ```typescript

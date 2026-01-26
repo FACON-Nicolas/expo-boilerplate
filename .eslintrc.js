@@ -28,6 +28,7 @@ module.exports = {
     },
     'boundaries/elements': [
       { type: 'app', pattern: 'app/**' },
+      { type: 'core-config', pattern: 'core/config/**' },
       { type: 'core-domain', pattern: 'core/domain/**' },
       { type: 'core-data', pattern: 'core/data/**' },
       { type: 'core-presentation', pattern: 'core/presentation/**' },
@@ -40,7 +41,7 @@ module.exports = {
       { type: 'scripts', pattern: 'scripts/**' },
       { type: 'tests', pattern: '__tests__/**' },
       { type: 'mocks', pattern: '__mocks__/**' },
-          ],
+    ],
     'boundaries/ignore': [
       '**/*.test.ts',
       '**/*.test.tsx',
@@ -107,8 +108,10 @@ module.exports = {
               'feature-presentation',
               'feature-domain',
               'feature-data',
+              'core-config',
               'core-domain',
               'core-data',
+              'core-presentation',
               'infrastructure',
               'ui',
               'i18n',
@@ -149,12 +152,16 @@ module.exports = {
             allow: ['core-domain', 'infrastructure'],
           },
           {
-            from: 'infrastructure',
+            from: 'core-config',
             allow: ['core-domain'],
           },
           {
+            from: 'infrastructure',
+            allow: ['core-config', 'core-domain'],
+          },
+          {
             from: 'core-presentation',
-            allow: ['core-domain', 'core-data', 'ui', 'i18n'],
+            allow: ['core-domain', 'core-data', 'core-presentation', 'ui', 'i18n'],
           },
           {
             from: 'ui',

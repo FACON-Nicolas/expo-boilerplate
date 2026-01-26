@@ -52,6 +52,14 @@
   "home": {
     "title": "Accueil"
   },
+  "errorBoundary": {
+    "title": "Une erreur est survenue",
+    "description": "Une erreur inattendue s'est produite. Veuillez réessayer.",
+    "retryButton": "Réessayer"
+  },
+  "toast": {
+    "errorTitle": "Erreur"
+  },
   "errors": {
     "email": {
       "invalid": "Adresse email invalide"
@@ -79,6 +87,14 @@
         "required": "La tranche d'âge est requise",
         "invalid": "Veuillez sélectionner une tranche d'âge valide"
       }
+    },
+    "api": {
+      "UNKNOWN": "Une erreur inattendue s'est produite",
+      "VALIDATION": "Données invalides fournies",
+      "NETWORK": "Erreur réseau. Vérifiez votre connexion.",
+      "UNAUTHORIZED": "Vous n'êtes pas autorisé à effectuer cette action",
+      "NOT_FOUND": "La ressource demandée n'a pas été trouvée",
+      "CONFLICT": "Un conflit s'est produit. Veuillez réessayer."
     }
   }
 }
