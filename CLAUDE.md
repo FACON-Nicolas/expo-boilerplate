@@ -4,6 +4,8 @@
 > There is NO exception, NO compromise, NO shortcut.
 > Every violation is a sin. Every sin must be refactored immediately.
 
+**Task parallelization**: When planning with TodoWrite, order tasks so that independent tasks come first. This allows launching multiple Tasks in parallel. Dependent tasks should follow, executed only after their dependencies complete.
+
 ## Quick Reference
 
 ```bash
