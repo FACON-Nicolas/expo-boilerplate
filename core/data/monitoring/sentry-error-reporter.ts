@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/react-native';
 
-import { APP_ERROR_SEVERITY_MAP } from '@/core/data/monitoring/sentry-types';
 import { AppError } from '@/core/domain/errors/app-error';
+import { APP_ERROR_SEVERITY_MAP } from '@/core/domain/monitoring/sentry-types';
 
 export type ErrorContext = {
   tags?: Record<string, string>;

@@ -159,7 +159,7 @@ module.exports = {
           },
           {
             from: 'infrastructure',
-            allow: ['core-config', 'core-data', 'core-presentation', 'infrastructure'],
+            allow: ['core-config', 'core-data', 'infrastructure'],
           },
           {
             from: 'core-presentation',
@@ -167,7 +167,7 @@ module.exports = {
           },
           {
             from: 'ui',
-            allow: ['ui', 'core-domain', 'core-presentation', 'core-data'],
+            allow: ['ui', 'core-domain', 'core-presentation'],
           },
           {
             from: 'i18n',

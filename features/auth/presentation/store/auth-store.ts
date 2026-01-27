@@ -2,8 +2,8 @@ import * as Sentry from "@sentry/react-native";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-import { secureStorage } from "@/core/data/storage/secure-storage";
 import { AppError } from "@/core/domain/errors/app-error";
+import { getStorage } from "@/core/presentation/store/storage";
 import { refreshSession as refreshSessionUsecase } from "@/features/auth/domain/usecases/refresh-session";
 import { signIn as signInUsecase } from "@/features/auth/domain/usecases/sign-in";
 import { signUp as signUpUsecase } from "@/features/auth/domain/usecases/sign-up";
@@ -133,7 +133,7 @@ export const createAuthStore = (
       }),
       {
         name: "auth-storage",
-        storage: createJSONStorage(() => secureStorage),
+        storage: createJSONStorage(() => getStorage()),
         partialize: (state) => ({
           user: state.user,
           session: state.session,

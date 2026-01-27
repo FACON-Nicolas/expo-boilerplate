@@ -4,7 +4,7 @@ import { useCallback, useMemo } from "react";
 import type {
   SentryBreadcrumb,
   SentryUser,
-} from "@/core/data/monitoring/sentry-types";
+} from "@/core/domain/monitoring/sentry-types";
 import type { SeverityLevel } from "@sentry/react-native";
 
 type SentryContextDependencies = {

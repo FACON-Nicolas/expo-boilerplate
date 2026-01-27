@@ -9,9 +9,11 @@ import { StatusBar } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { queryClient } from "@/core/config/query-client";
+import { secureStorage } from "@/core/data/storage/secure-storage";
 import { ErrorBoundary } from "@/core/presentation/components/error-boundary";
 import { ErrorFallback } from "@/core/presentation/components/error-fallback";
 import { SplashGate } from "@/core/presentation/components/splash-gate";
+import { initializeStorage } from "@/core/presentation/store/storage";
 import { createSupabaseAuthRepository } from "@/features/auth/data/repositories/supabase-auth-repository";
 import { useAuthInit } from "@/features/auth/presentation/hooks/use-auth-init";
 import { useAuthentication } from "@/features/auth/presentation/hooks/use-authentication";
@@ -28,6 +30,7 @@ import { supabaseClient } from "@/infrastructure/supabase/client";
 import "@/i18n";
 
 initializeSentry();
+initializeStorage(secureStorage);
 
 const authRepository = createSupabaseAuthRepository(supabaseClient);
 const profileRepository = createSupabaseProfileRepository(supabaseClient);

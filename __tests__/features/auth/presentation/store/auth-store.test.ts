@@ -26,12 +26,12 @@ jest.mock("@/features/auth/domain/usecases/refresh-session", () => ({
   refreshSession: () => mockRefreshSessionUsecase,
 }));
 
-jest.mock("@/core/data/storage/secure-storage", () => ({
-  secureStorage: {
-    getItem: jest.fn(),
-    setItem: jest.fn(),
-    removeItem: jest.fn(),
-  },
+jest.mock("@/core/presentation/store/storage", () => ({
+  getStorage: () => ({
+    getItem: jest.fn().mockResolvedValue(null),
+    setItem: jest.fn().mockResolvedValue(undefined),
+    removeItem: jest.fn().mockResolvedValue(undefined),
+  }),
 }));
 
 const createMockSession = (overrides?: Partial<Session>): Session => ({

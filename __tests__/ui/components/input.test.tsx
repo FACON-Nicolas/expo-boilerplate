@@ -6,7 +6,7 @@ import { Input } from '@/ui/components/input';
 let mockIsPasswordVisible = false;
 const mockTogglePasswordVisibility = jest.fn();
 
-jest.mock('@/core/presentation/hooks/use-toggle', () => ({
+jest.mock('@/ui/hooks/use-toggle', () => ({
   useToggle: () => [mockIsPasswordVisible, mockTogglePasswordVisibility],
 }));
 

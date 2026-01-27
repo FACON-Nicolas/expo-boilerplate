@@ -8,7 +8,7 @@ import type { ReactNode } from 'react';
 
 let mockIsPasswordVisible = false;
 
-jest.mock('@/core/presentation/hooks/use-toggle', () => ({
+jest.mock('@/ui/hooks/use-toggle', () => ({
   useToggle: () => [mockIsPasswordVisible, jest.fn()],
 }));
 

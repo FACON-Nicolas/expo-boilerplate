@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
-import { secureStorage } from '@/core/data/storage/secure-storage';
+import { getStorage } from '@/core/presentation/store/storage';
 
 import type { ThemeMode } from '@/ui/theme/tokens';
 
@@ -18,7 +18,7 @@ export const useThemeStore = create<ThemeState>()(
     }),
     {
       name: 'theme-storage',
-      storage: createJSONStorage(() => secureStorage),
+      storage: createJSONStorage(() => getStorage()),
     }
   )
 );
