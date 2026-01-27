@@ -20,10 +20,24 @@ const textVariants = tv({
 
 type TextVariants = VariantProps<typeof textVariants>;
 
-type TextProps = RNTextProps & TextVariants;
+type TextProps = RNTextProps &
+  TextVariants & {
+    maxFontSizeMultiplier?: number;
+  };
 
-export function Text({ variant, className, ...props }: TextProps) {
+const DEFAULT_MAX_FONT_SIZE_MULTIPLIER = 1.5;
+
+export function Text({
+  variant,
+  className,
+  maxFontSizeMultiplier = DEFAULT_MAX_FONT_SIZE_MULTIPLIER,
+  ...props
+}: TextProps) {
   return (
-    <RNText className={textVariants({ variant, className })} {...props} />
+    <RNText
+      className={textVariants({ variant, className })}
+      maxFontSizeMultiplier={maxFontSizeMultiplier}
+      {...props}
+    />
   );
 }

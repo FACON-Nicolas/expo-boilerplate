@@ -79,7 +79,7 @@ describe('FormTextField', () => {
   });
 
   it('renders with secure text entry for password', () => {
-    const { getByTestId } = render(
+    const { getByLabelText } = render(
       <TestWrapper>
         {(form) => (
           <FormTextField
@@ -92,7 +92,7 @@ describe('FormTextField', () => {
       </TestWrapper>
     );
 
-    expect(getByTestId('icon-eye')).toBeTruthy();
+    expect(getByLabelText('accessibility.input.showPassword')).toBeTruthy();
   });
 
   it('passes placeholder to input', () => {
