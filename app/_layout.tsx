@@ -19,6 +19,10 @@ import { useAuthInit } from "@/features/auth/presentation/hooks/use-auth-init";
 import { useAuthentication } from "@/features/auth/presentation/hooks/use-authentication";
 import { initializeAuthRepository } from "@/features/auth/presentation/store/auth-repository";
 import { initializeAuthStore } from "@/features/auth/presentation/store/auth-store";
+import { createLocalNotificationRepository } from "@/features/notifications/data/repositories/local-notification-repository";
+import { useNotificationsInit } from "@/features/notifications/presentation/hooks/use-notifications-init";
+import { initializeNotificationRepository } from "@/features/notifications/presentation/store/notification-repository";
+import { initializeNotificationStore } from "@/features/notifications/presentation/store/notification-store";
 import { createSupabaseProfileRepository } from "@/features/profile/data/repositories/supabase-profile-repository";
 import { initializeProfileRepository } from "@/features/profile/presentation/store/profile-repository";
 import {
@@ -34,10 +38,13 @@ initializeStorage(secureStorage);
 
 const authRepository = createSupabaseAuthRepository(supabaseClient);
 const profileRepository = createSupabaseProfileRepository(supabaseClient);
+const notificationRepository = createLocalNotificationRepository(secureStorage);
 
 initializeAuthRepository(authRepository);
 initializeAuthStore(authRepository);
 initializeProfileRepository(profileRepository);
+initializeNotificationRepository(notificationRepository);
+initializeNotificationStore(notificationRepository);
 
 function NavigationStack() {
   const { isUserAuthenticated } = useAuthentication();
@@ -57,6 +64,7 @@ function NavigationStack() {
 function RootLayout() {
   const navigationRef = useNavigationContainerRef();
   useAuthInit();
+  useNotificationsInit();
 
   useEffect(() => {
     if (navigationRef.current) {
