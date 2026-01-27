@@ -1,14 +1,30 @@
 # Claude Code Instructions - Expo Boilerplate
 
-## Architecture
-
-> ⛪ **Clean Architecture and SRP are a religion here.**
+> **Clean Architecture and SRP are a religion here.**
 > There is NO exception, NO compromise, NO shortcut.
 > Every violation is a sin. Every sin must be refactored immediately.
 
-This project follows a **Clean Architecture Feature-Based** pattern. Strictly respect this structure.
+**Task parallelization**: When planning with TodoWrite, order tasks so that independent tasks come first. This allows launching multiple Tasks in parallel. Dependent tasks should follow, executed only after their dependencies complete.
 
-### Folder structure
+## Quick Reference
+
+```bash
+npm run lint          # ESLint with boundary validation
+npm run start         # Expo dev server
+npm run ios           # iOS simulator
+npm run android       # Android emulator
+npx tsc --noEmit      # TypeScript check
+```
+
+**Before coding**: Ask questions → Use TodoWrite → Verify with `tsc` and `lint` after each modification.
+
+---
+
+## Architecture
+
+This project follows a **Clean Architecture Feature-Based** pattern.
+
+### Folder Structure
 
 ```
 features/{feature-name}/
@@ -21,11 +37,53 @@ features/{feature-name}/
 │   └── repositories/          # Adapters (implement domain interfaces)
 └── presentation/              # React layer
     ├── hooks/                 # Custom hooks
-    ├── store/                 # Zustand stores
-    └── context/               # React contexts (if needed)
+    ├── store/                 # Zustand stores + DI holders
+    ├── context/               # React contexts (if needed)
+    └── query-keys.ts          # React Query keys
+
+core/
+├── domain/
+│   ├── errors/                # AppError, error types
+│   ├── storage/               # Storage adapter interface
+│   ├── validation/            # validateWithI18n helpers
+│   └── monitoring/            # Sentry types
+├── data/
+│   ├── storage/               # SecureStorage implementation
+│   └── monitoring/            # SentryErrorReporter
+├── presentation/
+│   ├── components/            # ErrorBoundary, SplashGate
+│   ├── hooks/                 # useToggle, etc.
+│   └── store/                 # Storage provider
+└── config/
+    └── query-client.ts
+
+infrastructure/
+├── supabase/                  # Supabase client
+└── monitoring/sentry/         # Sentry integration
+
+ui/
+├── components/                # Reusable UI wrappers
+└── theme/                     # Design tokens
 ```
 
-### Import rules
+### Layer Dependencies
+
+```
+app/ → features/*/presentation/ → features/*/domain/
+                ↓
+        features/*/data/ → infrastructure/
+```
+
+| Layer | Can Import From |
+|-------|-----------------|
+| `domain/` | `core/domain/` only - **NEVER** from `data/`, `presentation/`, `infrastructure/` |
+| `data/` | `domain/`, `core/domain/`, `core/data/`, `infrastructure/` |
+| `presentation/` | `domain/`, `data/`, `core/`, `ui/` |
+| `infrastructure/` | `core/config/`, `core/data/` only |
+
+ESLint enforces these boundaries automatically via `eslint-plugin-boundaries`.
+
+### Import Rules
 
 ```typescript
 // ✅ CORRECT - Direct imports, explicit paths
@@ -40,7 +98,11 @@ import { useAuth, Session } from "@/features/auth";
 
 **Never create `index.ts` files** for re-exports. Each import must point to the exact file.
 
-### Usecase pattern
+---
+
+## Patterns
+
+### Usecase Pattern
 
 Usecases are **curried functions** with repository injection:
 
@@ -49,17 +111,18 @@ Usecases are **curried functions** with repository injection:
 export const signIn =
   (repository: AuthRepository) =>
   async (credentials: SignInCredentials): Promise<Session> => {
-    return repository.signIn(credentials);
+    const validated = validateWithI18n(signInSchema, credentials);
+    return repository.signIn(validated);
   };
 
 // Usage
 const session = await signIn(authRepository)(credentials);
 ```
 
-### Repository pattern
+### Repository Pattern
 
-1. **Interface in domain/** - Defines the contract
-2. **Implementation in data/** - Connected to infra (Supabase, API, etc.)
+1. **Interface in `domain/`** - Defines the contract
+2. **Implementation in `data/`** - Connected to infra (Supabase, API, etc.)
 
 ```typescript
 // domain/repositories/auth-repository.ts
@@ -81,114 +144,138 @@ export const createSupabaseAuthRepository = (
 });
 ```
 
-### Layer dependencies
+### Query Keys Pattern
 
-```
-app/ → features/*/presentation/ → features/*/domain/
-                ↓
-        features/*/data/ → infrastructure/
+Each feature with React Query defines its query keys:
+
+```typescript
+// features/profile/presentation/query-keys.ts
+export const profileQueryKeys = {
+  all: ['profile'] as const,
+  byUserId: (userId: string | undefined) => ['profile', userId] as const,
+};
+
+// Usage in hooks
+useQuery({
+  queryKey: profileQueryKeys.byUserId(user?.id),
+  queryFn: fetchProfile(repository),
+});
 ```
 
-- `domain/` must NEVER import from `data/`, `presentation/`, or `infrastructure/`
-- `presentation/` imports from `domain/` and `data/`
-- `data/` imports from `domain/` and `infrastructure/`
+### Repository Initialization (DI)
+
+Repositories are initialized in `app/_layout.tsx`:
+
+```typescript
+// Create repository instance
+const authRepository = createSupabaseAuthRepository(supabaseClient);
+
+// Inject into store and presentation layer
+initializeAuthStore(authRepository);
+initializeAuthRepository(authRepository);
+```
+
+Each feature with a repository needs:
+
+1. `presentation/store/{feature}-repository.ts` - DI holder with `initializeXRepository()` and `getXRepository()`
+2. Initialization call in `_layout.tsx`
+
+---
 
 ## State Management
 
-- **Zustand** for client state (auth, theme, preferences)
-- **React Query** for server state (API data)
+### Zustand (Client State)
+
+For auth, theme, preferences, and other client-side state:
+
+```typescript
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set, get) => ({
+      session: null,
+      setSession: (session) => set({ session }),
+    }),
+    {
+      name: 'auth-storage',
+      storage: createJSONStorage(() => secureStorage),
+      partialize: (state) => ({ session: state.session }),
+    }
+  )
+);
+```
+
+### React Query (Server State)
+
+For API data fetching and caching:
+
+```typescript
+// features/profile/presentation/hooks/use-fetch-profile.ts
+export const useFetchProfile = () => {
+  const repository = getProfileRepository();
+  const { user } = useAuth();
+
+  return useQuery({
+    queryKey: profileQueryKeys.byUserId(user?.id),
+    queryFn: fetchProfile(repository),
+    enabled: !!user,
+  });
+};
+```
+
+### Storage & Persistence
+
+- **Secure storage**: `@/core/data/storage/secure-storage.ts` (wraps Expo SecureStore)
+- **Storage DI**: `StorageProvider` context in `core/presentation/store/`
+- Zustand stores use `persist` middleware with `createJSONStorage()`
+
+---
 
 ## Validation
 
 - **Zod** for all validation
-- Schemas are in `domain/validation/`
-- Types are inferred from schemas: `type User = z.infer<typeof userSchema>`
-
-## Styling
-
-- **HeroUI Native** + **Uniwind** (Tailwind v4) for components
-- UI components are in `ui/components/`
-- Design tokens are in `ui/theme/`
-
-## Backend
-
-- **Supabase** is the default backend
-- **Firebase is NOT supported** - Never suggest Firebase
-- For a custom backend, create a new repository in `data/repositories/`
-
-## Code conventions
-
-### Naming
+- Schemas in `domain/validation/`
+- Types inferred from schemas: `type User = z.infer<typeof userSchema>`
+- Use `validateWithI18n()` for i18n-aware error messages
 
 ```typescript
-// ✅ Explicit and descriptive names
-const isSubmitButtonDisabled = true;
-const isEmailInputFocused = false;
-const onPressSignInButton = () => {};
+// domain/validation/auth-schema.ts
+export const signInSchema = z.object({
+  email: z.string().email('errors.email.invalid'),
+  password: z.string().min(1, 'errors.password.required'),
+});
 
-// ❌ Vague names
-const isDisabled = true;
-const isFocused = false;
-const onPress = () => {};
+// Usage with i18n
+import { validateWithI18n } from '@/core/domain/validation/validator';
+const validated = validateWithI18n(signInSchema, data);
 ```
 
-### Forbidden words in naming
+---
 
-Never use these words:
+## Internationalization (i18n)
 
-- `handle` → use `onPress`, `onSubmit`, `onChange`, etc.
-- `manage` → be more specific about the action
-- `process` → describe what is actually being done
+- **i18next** for translations
+- Translation files in `i18n/locales/{lang}/`
+- Zod errors use i18n keys that get translated via `validateWithI18n()`
 
-### Files
+---
 
-- **kebab-case** for file names: `use-auth.ts`, `auth-repository.ts`
-- **One file = one responsibility**
-- **No nested components** - Extract into separate files
+## UI & Styling
 
-### Code
+### Stack
 
-- **No comments** unless absolutely necessary
-- **No Co-Authored-By** in commits
-- **Pure functions** when possible
-- **One function = one responsibility**
+- **HeroUI Native** for components
+- **Uniwind** (Tailwind v4) for styling
+- UI wrappers in `ui/components/`
+- Design tokens in `ui/theme/`
 
-## Expo & React Native
+### Component Priority Checklist
 
-- **Expo SDK 54** - Do not downgrade
-- **Expo Router** for navigation (file-based routing)
-- **New Architecture** enabled
-- **Reanimated v4** with `react-native-worklets`
+Before using any UI component:
 
-## Testing
-
-- **Jest** + **Testing Library** for tests
-- **MSW** for mocking API calls
-- Test structure mirrors `features/` in `__tests__/`
-
-## Before coding
-
-1. **Ask questions** to clarify context and edge cases
-2. **Use TodoWrite** to plan complex tasks
-3. **Verify** with `npx tsc --noEmit` and `npm run lint` after each modification
-
-## Reuse over reinvention
-
-**NEVER create custom implementations** before checking:
-
-1. **`ui/components/` first** - Always check if a wrapper exists in `ui/components/` (View, Text, Button, SafeAreaView, etc.) before importing from `react-native` or `heroui-native` directly
-2. **HeroUI Native components** - Use MCP Context7 to search for existing components (Button, TextField, RadioGroup, Skeleton, Chip, etc.)
-3. **Existing codebase utilities** - Search with mgrep for similar patterns (storage, hooks, helpers)
-4. **HeroUI hooks** - Use `useThemeColor` from heroui-native instead of custom color constants
-
-### UI Components Priority
-
-Before using any UI component, follow this checklist:
-
-1. **Search `ui/components/`** with Glob for existing wrappers
+1. **Search `ui/components/`** for existing wrappers
 2. **If found** → Use it (e.g., `@/ui/components/view` instead of `react-native`)
-3. **If not found** → Ask the user via AskUserQuestion if a new wrapper should be created
-4. **Never import directly** from `react-native` or `heroui-native` if a wrapper exists
+3. **If not found** → Check HeroUI Native docs via MCP Context7
+4. **Still not found** → Ask user if a new wrapper should be created
 
 ```typescript
 // ❌ FORBIDDEN - Direct import when wrapper exists
@@ -201,9 +288,8 @@ import { Button } from "@/ui/components/button";
 ```
 
 ```typescript
-// ❌ FORBIDDEN - Custom implementation when lib provides it
+// ❌ FORBIDDEN - Custom color constants
 const COLORS = { light: { text: "#11181C" }, dark: { text: "#ECEDEE" } };
-const color = COLORS[theme].text;
 
 // ✅ CORRECT - Use HeroUI hook
 import { useThemeColor } from "heroui-native";
@@ -222,20 +308,99 @@ import { RadioGroup } from 'heroui-native';
 </RadioGroup.Item>
 ```
 
-**Rule**: If you're about to create a UI component, search HeroUI docs first via MCP.
+---
 
-## Available scripts
+## Error Handling & Monitoring
 
-```bash
-npm run lint          # ESLint
-npm run start         # Expo dev server
-npm run ios           # iOS simulator
-npm run android       # Android emulator
+### AppError
+
+Typed errors via `core/domain/errors/app-error.ts`:
+
+```typescript
+throw new AppError('NETWORK_ERROR', 'Failed to fetch profile');
+
+// Error types: AUTH_ERROR | NETWORK_ERROR | VALIDATION_ERROR | UNKNOWN_ERROR
 ```
+
+### Sentry
+
+- Integration in `infrastructure/monitoring/sentry/`
+- Error reporter in `core/data/monitoring/sentry-error-reporter.ts`
+- `ErrorBoundary` component wraps the app
+
+---
+
+## Code Conventions
+
+### Naming
+
+```typescript
+// ✅ Explicit and descriptive names
+const isSubmitButtonDisabled = true;
+const isEmailInputFocused = false;
+const onPressSignInButton = () => {};
+
+// ❌ Vague names
+const isDisabled = true;
+const isFocused = false;
+const onPress = () => {};
+```
+
+### Forbidden Words
+
+Never use these words in naming:
+
+| Forbidden | Use Instead |
+|-----------|-------------|
+| `handle` | `onPress`, `onSubmit`, `onChange`, etc. |
+| `manage` | Be specific: `updateUser`, `deleteSession` |
+| `process` | Describe the action: `parseResponse`, `transformData` |
+
+### Files
+
+- **kebab-case** for file names: `use-auth.ts`, `auth-repository.ts`
+- **One file = one responsibility**
+- **No nested components** - Extract into separate files
+
+### Code
+
+- **No comments** unless absolutely necessary
+- **No Co-Authored-By** in commits
+- **Pure functions** when possible
+- **One function = one responsibility**
+
+---
+
+## Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| Framework | Expo SDK 54 (do not downgrade) |
+| Navigation | Expo Router (file-based) |
+| Architecture | New Architecture enabled |
+| Animations | Reanimated v4 + react-native-worklets |
+| Backend | Supabase (**Firebase NOT supported**) |
+| State (client) | Zustand |
+| State (server) | React Query |
+| Validation | Zod |
+| UI | HeroUI Native |
+| Styling | Uniwind (Tailwind v4) |
+| Testing | Jest + Testing Library + MSW |
+| Monitoring | Sentry |
+
+---
+
+## Testing
+
+- **Jest** + **Testing Library** for tests
+- **MSW** for mocking API calls
+- Test structure mirrors `features/` in `__tests__/`
+
+---
 
 ## Resources
 
-- [ROADMAP.md](./ROADMAP.md) - Detailed refactoring plan with remaining phases
+- [ROADMAP.md](./ROADMAP.md) - Refactoring plan with remaining phases
 - [Expo Docs](https://docs.expo.dev/)
 - [HeroUI Native](https://v3.heroui.com/docs/native/getting-started)
 - [Uniwind](https://docs.uniwind.dev/)
