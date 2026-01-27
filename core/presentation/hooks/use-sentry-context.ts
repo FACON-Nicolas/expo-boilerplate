@@ -1,14 +1,19 @@
 import * as Sentry from "@sentry/react-native";
-import { useCallback } from "react";
-
-import { env } from "@/core/config/env";
-import { reportErrorToSentry } from "@/infrastructure/monitoring/sentry/app-error-reporter";
+import { useCallback, useMemo } from "react";
 
 import type {
   SentryBreadcrumb,
   SentryUser,
-} from "@/infrastructure/monitoring/sentry/types";
+} from "@/core/data/monitoring/sentry-types";
 import type { SeverityLevel } from "@sentry/react-native";
+
+type SentryContextDependencies = {
+  isEnabled: boolean;
+  reportError: (
+    error: unknown,
+    context?: { tags?: Record<string, string>; extras?: Record<string, unknown> },
+  ) => void;
+};
 
 type UseSentryContextReturn = {
   setUser: (user: SentryUser | null) => void;
@@ -24,9 +29,10 @@ type UseSentryContextReturn = {
   captureMessage: (message: string, level?: SeverityLevel) => void;
 };
 
-export function useSentryContext(): UseSentryContextReturn {
-  const isEnabled =
-    env.EXPO_PUBLIC_SENTRY_ENABLED && !!env.EXPO_PUBLIC_SENTRY_DSN;
+export function useSentryContext(
+  dependencies: SentryContextDependencies,
+): UseSentryContextReturn {
+  const { isEnabled, reportError } = dependencies;
 
   const setUser = useCallback(
     (user: SentryUser | null) => {
@@ -66,9 +72,9 @@ export function useSentryContext(): UseSentryContextReturn {
       },
     ) => {
       if (!isEnabled) return;
-      reportErrorToSentry(error, context);
+      reportError(error, context);
     },
-    [isEnabled],
+    [isEnabled, reportError],
   );
 
   const captureMessage = useCallback(
@@ -79,11 +85,14 @@ export function useSentryContext(): UseSentryContextReturn {
     [isEnabled],
   );
 
-  return {
-    setUser,
-    addBreadcrumb,
-    setTag,
-    captureException,
-    captureMessage,
-  };
+  return useMemo(
+    () => ({
+      setUser,
+      addBreadcrumb,
+      setTag,
+      captureException,
+      captureMessage,
+    }),
+    [setUser, addBreadcrumb, setTag, captureException, captureMessage],
+  );
 }

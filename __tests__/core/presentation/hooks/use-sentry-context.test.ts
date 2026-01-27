@@ -1,14 +1,14 @@
 import * as Sentry from '@sentry/react-native';
 import { renderHook } from '@testing-library/react-native';
 
-import { useSentryContext } from '@/infrastructure/monitoring/sentry/use-sentry-context';
+import { useSentryContext } from '@/core/presentation/hooks/use-sentry-context';
 
-jest.mock('@/core/config/env', () => ({
-  env: {
-    EXPO_PUBLIC_SENTRY_ENABLED: true,
-    EXPO_PUBLIC_SENTRY_DSN: 'https://test@sentry.io/123',
-  },
-}));
+const mockReportError = jest.fn();
+
+const createDependencies = (isEnabled = true) => ({
+  isEnabled,
+  reportError: mockReportError,
+});
 
 describe('useSentryContext', () => {
   beforeEach(() => {
@@ -17,7 +17,7 @@ describe('useSentryContext', () => {
 
   describe('setUser', () => {
     it('should call Sentry.setUser with user data', () => {
-      const { result } = renderHook(() => useSentryContext());
+      const { result } = renderHook(() => useSentryContext(createDependencies()));
 
       result.current.setUser({
         id: 'user-123',
@@ -33,17 +33,25 @@ describe('useSentryContext', () => {
     });
 
     it('should call Sentry.setUser with null to clear user', () => {
-      const { result } = renderHook(() => useSentryContext());
+      const { result } = renderHook(() => useSentryContext(createDependencies()));
 
       result.current.setUser(null);
 
       expect(Sentry.setUser).toHaveBeenCalledWith(null);
     });
+
+    it('should not call Sentry.setUser when disabled', () => {
+      const { result } = renderHook(() => useSentryContext(createDependencies(false)));
+
+      result.current.setUser({ id: 'user-123' });
+
+      expect(Sentry.setUser).not.toHaveBeenCalled();
+    });
   });
 
   describe('addBreadcrumb', () => {
     it('should call Sentry.addBreadcrumb', () => {
-      const { result } = renderHook(() => useSentryContext());
+      const { result } = renderHook(() => useSentryContext(createDependencies()));
 
       result.current.addBreadcrumb({
         category: 'navigation',
@@ -63,7 +71,7 @@ describe('useSentryContext', () => {
 
   describe('setTag', () => {
     it('should call Sentry.setTag', () => {
-      const { result } = renderHook(() => useSentryContext());
+      const { result } = renderHook(() => useSentryContext(createDependencies()));
 
       result.current.setTag('feature', 'auth');
 
@@ -73,7 +81,7 @@ describe('useSentryContext', () => {
 
   describe('captureMessage', () => {
     it('should call Sentry.captureMessage with default level', () => {
-      const { result } = renderHook(() => useSentryContext());
+      const { result } = renderHook(() => useSentryContext(createDependencies()));
 
       result.current.captureMessage('Test message');
 
@@ -81,7 +89,7 @@ describe('useSentryContext', () => {
     });
 
     it('should call Sentry.captureMessage with custom level', () => {
-      const { result } = renderHook(() => useSentryContext());
+      const { result } = renderHook(() => useSentryContext(createDependencies()));
 
       result.current.captureMessage('Warning message', 'warning');
 
@@ -93,25 +101,33 @@ describe('useSentryContext', () => {
   });
 
   describe('captureException', () => {
-    it('should call withScope for generic errors', () => {
-      const { result } = renderHook(() => useSentryContext());
+    it('should call reportError for errors', () => {
+      const { result } = renderHook(() => useSentryContext(createDependencies()));
       const error = new Error('Test error');
 
       result.current.captureException(error);
 
-      expect(Sentry.withScope).toHaveBeenCalled();
+      expect(mockReportError).toHaveBeenCalledWith(error, undefined);
     });
 
-    it('should call withScope with context', () => {
-      const { result } = renderHook(() => useSentryContext());
+    it('should call reportError with context', () => {
+      const { result } = renderHook(() => useSentryContext(createDependencies()));
+      const error = new Error('Test error');
+      const context = { tags: { feature: 'auth' }, extras: { userId: '123' } };
+
+      result.current.captureException(error, context);
+
+      expect(mockReportError).toHaveBeenCalledWith(error, context);
+    });
+
+    it('should not call reportError when disabled', () => {
+      const { result } = renderHook(() => useSentryContext(createDependencies(false)));
       const error = new Error('Test error');
 
-      result.current.captureException(error, {
-        tags: { feature: 'auth' },
-        extras: { userId: '123' },
-      });
+      result.current.captureException(error);
 
-      expect(Sentry.withScope).toHaveBeenCalled();
+      expect(mockReportError).not.toHaveBeenCalled();
     });
   });
 });
+

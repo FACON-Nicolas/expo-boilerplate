@@ -53,7 +53,7 @@ function NavigationStack() {
 
 function RootLayout() {
   const navigationRef = useNavigationContainerRef();
-  const { isBootstrapping } = useAuthInit();
+  useAuthInit();
 
   useEffect(() => {
     if (navigationRef.current) {
@@ -66,7 +66,7 @@ function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <StatusBar translucent />
         <ErrorBoundary fallback={(props) => <ErrorFallback {...props} />}>
-          <SplashGate isAuthReady={!isBootstrapping}>
+          <SplashGate>
             <HeroUINativeProvider>
               <NavigationStack />
             </HeroUINativeProvider>

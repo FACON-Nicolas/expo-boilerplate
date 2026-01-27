@@ -1,4 +1,11 @@
 import '@testing-library/react-native';
+import { act } from '@testing-library/react-native';
+
+afterEach(async () => {
+  await act(async () => {
+    jest.clearAllTimers();
+  });
+});
 
 jest.mock('@sentry/react-native', () => ({
   init: jest.fn(),
@@ -39,7 +46,7 @@ jest.mock('react-i18next', () => ({
 }));
 
 jest.mock('expo-secure-store', () => ({
-  getItemAsync: jest.fn(),
-  setItemAsync: jest.fn(),
-  deleteItemAsync: jest.fn(),
+  getItemAsync: jest.fn().mockResolvedValue(null),
+  setItemAsync: jest.fn().mockResolvedValue(undefined),
+  deleteItemAsync: jest.fn().mockResolvedValue(undefined),
 }));

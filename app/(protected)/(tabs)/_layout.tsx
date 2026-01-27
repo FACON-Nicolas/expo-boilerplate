@@ -1,38 +1,40 @@
-import { Tabs } from "expo-router";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import {
+  Icon,
+  Label,
+  NativeTabs,
+  VectorIcon,
+} from "expo-router/unstable-native-tabs";
 import { useThemeColor } from "heroui-native";
 import { useTranslation } from "react-i18next";
 
-import { TabBarIcon } from "@/ui/components/tab-bar-icon";
-
 export default function RootLayout() {
   const { t } = useTranslation();
-  const [backgroundColor, tintColor] = useThemeColor(["background", "accent"]);
+  const [tintColor] = useThemeColor(["accent"]);
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: tintColor,
-        headerShown: false,
-        tabBarStyle: {
-          backgroundColor,
-          borderTopColor: tintColor,
-        },
-      }}
-    >
-      <Tabs.Screen
-        name='index'
-        options={{
-          title: t("tabs.home"),
-          tabBarIcon: (props) => <TabBarIcon name='home' {...props} />,
-        }}
-      />
-      <Tabs.Screen
-        name='profile'
-        options={{
-          title: t("tabs.profile"),
-          tabBarIcon: (props) => <TabBarIcon name='person' {...props} />,
-        }}
-      />
-    </Tabs>
+    <NativeTabs tintColor={tintColor}>
+      <NativeTabs.Trigger name="index">
+        <Icon
+          sf={{ default: "house", selected: "house.fill" }}
+          androidSrc={{
+            default: <VectorIcon family={Ionicons} name="home-outline" />,
+            selected: <VectorIcon family={Ionicons} name="home" />,
+          }}
+        />
+        <Label>{t("tabs.home")}</Label>
+      </NativeTabs.Trigger>
+
+      <NativeTabs.Trigger name="profile">
+        <Icon
+          sf={{ default: "person", selected: "person.fill" }}
+          androidSrc={{
+            default: <VectorIcon family={Ionicons} name="person-outline" />,
+            selected: <VectorIcon family={Ionicons} name="person" />,
+          }}
+        />
+        <Label>{t("tabs.profile")}</Label>
+      </NativeTabs.Trigger>
+    </NativeTabs>
   );
 }

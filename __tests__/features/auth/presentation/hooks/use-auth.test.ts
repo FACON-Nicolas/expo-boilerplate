@@ -1,4 +1,6 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook } from "@testing-library/react-native";
+import { createElement } from "react";
 
 import { useAuth } from "@/features/auth/presentation/hooks/use-auth";
 import {
@@ -7,6 +9,7 @@ import {
 } from "@/features/auth/presentation/store/auth-store";
 
 import type { AuthRepository } from "@/features/auth/domain/repositories/auth-repository";
+import type { ReactNode } from "react";
 
 jest.mock("@/features/auth/domain/usecases/sign-in", () => ({
   signIn: () => jest.fn(),
@@ -38,6 +41,21 @@ const createMockRepository = (): AuthRepository => ({
   subscribeToAuthChanges: jest.fn().mockReturnValue(() => {}),
 });
 
+const createQueryWrapper = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+    },
+  });
+
+  return {
+    queryClient,
+    Wrapper: function Wrapper({ children }: { children: ReactNode }) {
+      return createElement(QueryClientProvider, { client: queryClient }, children);
+    },
+  };
+};
+
 describe("useAuth", () => {
   beforeEach(() => {
     initializeAuthStore(createMockRepository());
@@ -50,7 +68,8 @@ describe("useAuth", () => {
   });
 
   it("returns the full auth store state", () => {
-    const { result } = renderHook(() => useAuth());
+    const { Wrapper } = createQueryWrapper();
+    const { result } = renderHook(() => useAuth(), { wrapper: Wrapper });
 
     expect(result.current).toHaveProperty("user");
     expect(result.current).toHaveProperty("session");
@@ -64,7 +83,8 @@ describe("useAuth", () => {
   });
 
   it("reflects store state changes", () => {
-    const { result } = renderHook(() => useAuth());
+    const { Wrapper } = createQueryWrapper();
+    const { result } = renderHook(() => useAuth(), { wrapper: Wrapper });
 
     expect(result.current.user).toBeNull();
 

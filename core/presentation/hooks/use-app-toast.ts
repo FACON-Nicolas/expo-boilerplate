@@ -9,6 +9,7 @@ const ERROR_CODE_TO_VARIANT: Record<AppErrorCode, ToastVariant> = {
   UNKNOWN: 'danger',
   VALIDATION: 'warning',
   NETWORK: 'danger',
+  NETWORK_TIMEOUT: 'danger',
   UNAUTHORIZED: 'warning',
   NOT_FOUND: 'warning',
   CONFLICT: 'warning',

@@ -134,6 +134,16 @@ export const createAuthStore = (
       {
         name: "auth-storage",
         storage: createJSONStorage(() => secureStorage),
+        partialize: (state) => ({
+          user: state.user,
+          session: state.session,
+        }),
+        merge: (persistedState, currentState) => ({
+          ...currentState,
+          ...(persistedState as Partial<AuthState>),
+          isLoading: false,
+          error: null,
+        }),
       }
     )
   ) as AuthStorePersist;

@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react-native';
-import { createElement } from 'react';
+import { act, createElement } from 'react';
 
 import { useFetchProfile } from '@/features/profile/presentation/hooks/use-fetch-profile';
 import { initializeProfileRepository } from '@/features/profile/presentation/store/profile-repository';
@@ -38,8 +38,10 @@ const createMockRepository = (): ProfileRepository => ({
   updateProfile: jest.fn(),
 });
 
+let queryClient: QueryClient;
+
 const createQueryWrapper = () => {
-  const queryClient = new QueryClient({
+  queryClient = new QueryClient({
     defaultOptions: {
       queries: {
         retry: false,
@@ -58,8 +60,17 @@ const createQueryWrapper = () => {
 
 describe('useFetchProfile', () => {
   beforeEach(() => {
+    jest.useFakeTimers();
     jest.clearAllMocks();
     initializeProfileRepository(createMockRepository());
+  });
+
+  afterEach(async () => {
+    await act(async () => {
+      queryClient.cancelQueries();
+      queryClient.clear();
+    });
+    jest.useRealTimers();
   });
 
   it('fetches profile when user is authenticated', async () => {

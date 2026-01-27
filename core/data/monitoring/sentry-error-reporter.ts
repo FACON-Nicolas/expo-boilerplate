@@ -1,22 +1,17 @@
 import * as Sentry from '@sentry/react-native';
 
-import { env } from '@/core/config/env';
+import { APP_ERROR_SEVERITY_MAP } from '@/core/data/monitoring/sentry-types';
 import { AppError } from '@/core/domain/errors/app-error';
-import { APP_ERROR_SEVERITY_MAP } from '@/infrastructure/monitoring/sentry/types';
 
-type ErrorContext = {
+export type ErrorContext = {
   tags?: Record<string, string>;
   extras?: Record<string, unknown>;
 };
 
-export function reportAppErrorToSentry(
+export function captureAppError(
   error: AppError,
   context?: ErrorContext,
 ): void {
-  if (!env.EXPO_PUBLIC_SENTRY_ENABLED || !env.EXPO_PUBLIC_SENTRY_DSN) {
-    return;
-  }
-
   const severity = APP_ERROR_SEVERITY_MAP[error.code];
 
   Sentry.withScope((scope) => {
@@ -43,16 +38,12 @@ export function reportAppErrorToSentry(
   });
 }
 
-export function reportErrorToSentry(
+export function captureError(
   error: unknown,
   context?: ErrorContext,
 ): void {
-  if (!env.EXPO_PUBLIC_SENTRY_ENABLED || !env.EXPO_PUBLIC_SENTRY_DSN) {
-    return;
-  }
-
   if (error instanceof AppError) {
-    reportAppErrorToSentry(error, context);
+    captureAppError(error, context);
     return;
   }
 

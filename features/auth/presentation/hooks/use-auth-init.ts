@@ -2,15 +2,10 @@ import { useAuthStateListener } from "@/features/auth/presentation/hooks/use-aut
 import { useSessionBootstrap } from "@/features/auth/presentation/hooks/use-session-bootstrap";
 import { useTokenRefresh } from "@/features/auth/presentation/hooks/use-token-refresh";
 
-type UseAuthInitResult = {
-  isBootstrapping: boolean;
-};
+type UseAuthInitResult = void;
 
 export function useAuthInit(): UseAuthInitResult {
-  const { isBootstrapping } = useSessionBootstrap();
-
+  useSessionBootstrap();
   useAuthStateListener();
   useTokenRefresh();
-
-  return { isBootstrapping };
 }

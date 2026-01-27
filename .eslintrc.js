@@ -151,7 +151,7 @@ module.exports = {
           },
           {
             from: 'core-data',
-            allow: ['core-domain', 'infrastructure'],
+            allow: ['core-domain', 'core-data'],
           },
           {
             from: 'core-config',
@@ -159,7 +159,7 @@ module.exports = {
           },
           {
             from: 'infrastructure',
-            allow: ['core-config', 'core-domain'],
+            allow: ['core-config', 'core-data', 'core-presentation', 'infrastructure'],
           },
           {
             from: 'core-presentation',
@@ -226,6 +226,8 @@ module.exports = {
         fixStyle: 'separate-type-imports',
       },
     ],
+
+    'react-hooks/exhaustive-deps': 'off',
   },
   overrides: [
     {

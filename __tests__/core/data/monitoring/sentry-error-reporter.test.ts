@@ -1,19 +1,9 @@
 import * as Sentry from '@sentry/react-native';
 
+import { captureAppError, captureError } from '@/core/data/monitoring/sentry-error-reporter';
 import { AppError } from '@/core/domain/errors/app-error';
-import {
-  reportAppErrorToSentry,
-  reportErrorToSentry,
-} from '@/infrastructure/monitoring/sentry/app-error-reporter';
 
-jest.mock('@/core/config/env', () => ({
-  env: {
-    EXPO_PUBLIC_SENTRY_ENABLED: true,
-    EXPO_PUBLIC_SENTRY_DSN: 'https://test@sentry.io/123',
-  },
-}));
-
-describe('app-error-reporter', () => {
+describe('sentry-error-reporter', () => {
   const mockScope = {
     setLevel: jest.fn(),
     setTag: jest.fn(),
@@ -27,11 +17,11 @@ describe('app-error-reporter', () => {
     );
   });
 
-  describe('reportAppErrorToSentry', () => {
+  describe('captureAppError', () => {
     it('should set correct severity for UNKNOWN errors', () => {
       const error = new AppError('Unknown error', 'UNKNOWN');
 
-      reportAppErrorToSentry(error);
+      captureAppError(error);
 
       expect(mockScope.setLevel).toHaveBeenCalledWith('error');
       expect(mockScope.setTag).toHaveBeenCalledWith('app_error_code', 'UNKNOWN');
@@ -41,7 +31,7 @@ describe('app-error-reporter', () => {
     it('should set correct severity for VALIDATION errors', () => {
       const error = AppError.validation('Invalid email');
 
-      reportAppErrorToSentry(error);
+      captureAppError(error);
 
       expect(mockScope.setLevel).toHaveBeenCalledWith('warning');
       expect(mockScope.setTag).toHaveBeenCalledWith(
@@ -53,7 +43,7 @@ describe('app-error-reporter', () => {
     it('should set correct severity for NETWORK errors', () => {
       const error = AppError.network('Connection failed');
 
-      reportAppErrorToSentry(error);
+      captureAppError(error);
 
       expect(mockScope.setLevel).toHaveBeenCalledWith('warning');
       expect(mockScope.setTag).toHaveBeenCalledWith('app_error_code', 'NETWORK');
@@ -62,7 +52,7 @@ describe('app-error-reporter', () => {
     it('should set correct severity for UNAUTHORIZED errors', () => {
       const error = AppError.unauthorized();
 
-      reportAppErrorToSentry(error);
+      captureAppError(error);
 
       expect(mockScope.setLevel).toHaveBeenCalledWith('info');
       expect(mockScope.setTag).toHaveBeenCalledWith(
@@ -74,7 +64,7 @@ describe('app-error-reporter', () => {
     it('should set correct severity for NOT_FOUND errors', () => {
       const error = AppError.notFound('User not found');
 
-      reportAppErrorToSentry(error);
+      captureAppError(error);
 
       expect(mockScope.setLevel).toHaveBeenCalledWith('info');
       expect(mockScope.setTag).toHaveBeenCalledWith(
@@ -87,7 +77,7 @@ describe('app-error-reporter', () => {
       const originalError = new Error('Original');
       const error = new AppError('Wrapped error', 'UNKNOWN', originalError);
 
-      reportAppErrorToSentry(error);
+      captureAppError(error);
 
       expect(mockScope.setExtra).toHaveBeenCalledWith(
         'original_error',
@@ -98,7 +88,7 @@ describe('app-error-reporter', () => {
     it('should add custom tags and extras', () => {
       const error = new AppError('Test', 'UNKNOWN');
 
-      reportAppErrorToSentry(error, {
+      captureAppError(error, {
         tags: { feature: 'auth', action: 'login' },
         extras: { userId: '123', attempt: 3 },
       });
@@ -110,11 +100,11 @@ describe('app-error-reporter', () => {
     });
   });
 
-  describe('reportErrorToSentry', () => {
-    it('should delegate AppError to reportAppErrorToSentry', () => {
+  describe('captureError', () => {
+    it('should delegate AppError to captureAppError', () => {
       const error = new AppError('App error', 'VALIDATION');
 
-      reportErrorToSentry(error);
+      captureError(error);
 
       expect(mockScope.setTag).toHaveBeenCalledWith(
         'app_error_code',
@@ -125,7 +115,7 @@ describe('app-error-reporter', () => {
     it('should capture generic errors directly', () => {
       const error = new Error('Generic error');
 
-      reportErrorToSentry(error);
+      captureError(error);
 
       expect(Sentry.captureException).toHaveBeenCalledWith(error);
       expect(mockScope.setTag).not.toHaveBeenCalledWith(
@@ -137,7 +127,7 @@ describe('app-error-reporter', () => {
     it('should add tags and extras for generic errors', () => {
       const error = new Error('Generic error');
 
-      reportErrorToSentry(error, {
+      captureError(error, {
         tags: { source: 'api' },
         extras: { endpoint: '/users' },
       });
@@ -147,3 +137,4 @@ describe('app-error-reporter', () => {
     });
   });
 });
+

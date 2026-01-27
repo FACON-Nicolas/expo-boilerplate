@@ -2,6 +2,7 @@ export type AppErrorCode =
   | 'UNKNOWN'
   | 'VALIDATION'
   | 'NETWORK'
+  | 'NETWORK_TIMEOUT'
   | 'UNAUTHORIZED'
   | 'NOT_FOUND'
   | 'CONFLICT';
@@ -35,6 +36,10 @@ export class AppError extends Error {
 
   static network(message: string, originalError?: unknown): AppError {
     return new AppError(message, 'NETWORK', originalError);
+  }
+
+  static networkTimeout(message: string = 'Request timed out', originalError?: unknown): AppError {
+    return new AppError(message, 'NETWORK_TIMEOUT', originalError);
   }
 
   static unauthorized(message: string = 'Unauthorized'): AppError {

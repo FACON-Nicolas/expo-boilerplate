@@ -38,8 +38,10 @@ const createMockRepository = (): ProfileRepository => ({
   updateProfile: jest.fn(),
 });
 
+let queryClient: QueryClient;
+
 const createQueryWrapper = () => {
-  const queryClient = new QueryClient({
+  queryClient = new QueryClient({
     defaultOptions: {
       queries: {
         retry: false,
@@ -61,8 +63,17 @@ const createQueryWrapper = () => {
 
 describe('useCreateProfile', () => {
   beforeEach(() => {
+    jest.useFakeTimers();
     jest.clearAllMocks();
     initializeProfileRepository(createMockRepository());
+  });
+
+  afterEach(async () => {
+    await act(async () => {
+      queryClient.cancelQueries();
+      queryClient.clear();
+    });
+    jest.useRealTimers();
   });
 
   it('calls mutation with correct parameters', async () => {

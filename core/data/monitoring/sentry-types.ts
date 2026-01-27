@@ -18,6 +18,7 @@ export const APP_ERROR_SEVERITY_MAP: Record<AppErrorCode, SeverityLevel> = {
   UNKNOWN: 'error',
   VALIDATION: 'warning',
   NETWORK: 'warning',
+  NETWORK_TIMEOUT: 'warning',
   UNAUTHORIZED: 'info',
   NOT_FOUND: 'info',
   CONFLICT: 'warning',
