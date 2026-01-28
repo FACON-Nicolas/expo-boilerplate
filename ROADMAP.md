@@ -323,3 +323,181 @@ ANALYTICS_ENABLED=true  # Optionnel, pour désactiver globalement
 - [ ] L'opt-out utilisateur fonctionne et est persisté
 - [ ] L'abstraction permet de switcher de provider facilement
 - [ ] Les tests passent
+
+---
+
+## Phase 11 : Security Scanning (RNSec)
+
+### Objectif
+
+Intégrer RNSec pour automatiser les audits de sécurité et générer des rapports détectant les vulnérabilités, secrets exposés et mauvaises configurations.
+
+### Qu'est-ce que RNSec ?
+
+[RNSec](https://github.com/adnxy/rnsec) est un scanner de sécurité statique spécialisé pour React Native et Expo :
+
+- **63 règles de sécurité** couvrant OWASP Mobile Top 10
+- **Zero configuration** - fonctionne immédiatement sur tout projet RN/Expo
+- **Rapide** - analyse complète en quelques secondes
+- **Multi-format** - rapports HTML interactifs et JSON pour CI/CD
+- **Mode incrémental** - scan uniquement des fichiers modifiés (`--changed-files`)
+
+### Catégories de règles
+
+| Catégorie | Règles | Exemples |
+|-----------|--------|----------|
+| Storage | 6 | AsyncStorage non chiffré, données sensibles |
+| Network | 13 | HTTP en clair, SSL/TLS, WebView |
+| Authentication | 6 | JWT, OAuth, biométrie |
+| Secrets | 2 | 27+ patterns de clés API (AWS, Firebase, Stripe, etc.) |
+| Cryptography | 2 | Algorithmes faibles |
+| Logging | 2 | Exposition de données sensibles |
+| React Native | 10 | Deep links, native bridge |
+| Debug | 3 | Credentials de test |
+| Android | 8 | Manifest, Keystore |
+| iOS | 8 | ATS, Keychain |
+
+### Tâches
+
+#### 11.1 Installation et configuration
+
+1. Ajouter `rnsec` comme dépendance de développement :
+   ```bash
+   npm install -D rnsec
+   ```
+
+2. Créer `.rnsec.jsonc` à la racine du projet :
+   ```jsonc
+   {
+     // Règles à ignorer (faux positifs ou cas acceptés)
+     "ignoredRules": [],
+     // Chemins à exclure
+     "exclude": [
+       "**/node_modules/**",
+       "**/__tests__/**",
+       "**/coverage/**"
+     ]
+   }
+   ```
+
+3. Ajouter le script npm dans `package.json` :
+   ```json
+   {
+     "scripts": {
+       "security": "rnsec scan",
+       "security:json": "rnsec scan --json",
+       "security:report": "rnsec scan --html security-report.html --output security-report.json"
+     }
+   }
+   ```
+
+#### 11.2 Intégration CI/CD (GitHub Actions)
+
+Modifier `.github/workflows/` pour inclure le scan de sécurité :
+
+```yaml
+security-scan:
+  name: Security Scan
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Nécessaire pour --changed-files
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run security scan (PR - changed files only)
+      if: github.event_name == 'pull_request'
+      run: npx rnsec scan --changed-files ${{ github.base_ref }} --output security.json --silent
+
+    - name: Run security scan (push - full scan)
+      if: github.event_name == 'push'
+      run: npx rnsec scan --output security.json --html security-report.html --silent
+
+    - name: Upload security report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: security-report
+        path: |
+          security.json
+          security-report.html
+        retention-days: 30
+```
+
+#### 11.3 Intégration EAS Workflows
+
+Ajouter le scan de sécurité aux workflows EAS existants :
+
+```yaml
+# Dans .eas/workflows/build.yml
+jobs:
+  security_scan:
+    name: Security Scan
+    type: build
+    params:
+      platform: android
+    steps:
+      - name: Run RNSec
+        run: |
+          npm install -g rnsec
+          echo "y" | rnsec scan --output security.json --silent
+```
+
+#### 11.4 Pre-commit hook (optionnel)
+
+Intégrer avec Husky pour scanner avant chaque commit :
+
+```bash
+# .husky/pre-commit
+npx rnsec scan --changed-files HEAD~1 --silent
+```
+
+#### 11.5 Documentation des règles ignorées
+
+Créer `docs/security.md` documentant :
+- Les règles intentionnellement ignorées et pourquoi
+- Les bonnes pratiques de sécurité du projet
+- Comment interpréter les rapports RNSec
+
+### Commandes CLI
+
+| Commande | Description |
+|----------|-------------|
+| `rnsec scan` | Scan complet du projet |
+| `rnsec scan --path ./src` | Scan d'un répertoire spécifique |
+| `rnsec scan --json` | Output JSON en console |
+| `rnsec scan --html report.html` | Génère un rapport HTML interactif |
+| `rnsec scan --output report.json` | Génère un rapport JSON |
+| `rnsec scan --changed-files main` | Scan uniquement les fichiers modifiés vs main |
+| `rnsec scan --silent` | Mode silencieux (CI/CD) |
+| `rnsec rules` | Liste toutes les règles de sécurité |
+
+### Codes de sortie
+
+- `0` : Aucun problème de haute sévérité
+- `1` : Problèmes de haute sévérité détectés (bloque le CI)
+
+### Limitations
+
+RNSec est un outil d'analyse statique avec des limitations inhérentes :
+- **Pas d'analyse runtime** - ne détecte pas les problèmes dynamiques
+- **Pas de test réseau** - ne teste pas les endpoints réels
+- **Pas d'analyse binaire** - n'analyse pas le code natif compilé
+- **Détection par patterns** - peut produire des faux positifs
+
+### Critères de validation
+
+- [ ] `npm run security` exécute le scan sans erreur
+- [ ] Le rapport HTML est généré et lisible
+- [ ] Le CI bloque sur les vulnérabilités haute sévérité
+- [ ] Le mode incrémental fonctionne sur les PRs
+- [ ] Les faux positifs sont documentés et ignorés via `.rnsec.jsonc`
+- [ ] La documentation `docs/security.md` existe
+- [ ] Le workflow EAS inclut le scan de sécurité
