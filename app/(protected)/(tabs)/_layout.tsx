@@ -8,12 +8,18 @@ import {
 import { useThemeColor } from "heroui-native";
 import { useTranslation } from "react-i18next";
 
+import { useReducedTransparency } from "@/core/presentation/hooks/use-accessibility";
+
 export default function RootLayout() {
   const { t } = useTranslation();
   const [tintColor] = useThemeColor(["accent"]);
+  const isReducedTransparency = useReducedTransparency();
 
   return (
-    <NativeTabs tintColor={tintColor}>
+    <NativeTabs
+      tintColor={tintColor}
+      disableTransparentOnScrollEdge={isReducedTransparency}
+    >
       <NativeTabs.Trigger name="index">
         <Icon
           sf={{ default: "house", selected: "house.fill" }}

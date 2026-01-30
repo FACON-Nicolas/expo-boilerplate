@@ -1,4 +1,15 @@
 {
+  "accessibility": {
+    "button": {
+      "loading": "Chargement en cours, veuillez patienter"
+    },
+    "input": {
+      "showPassword": "Afficher le mot de passe",
+      "hidePassword": "Masquer le mot de passe",
+      "passwordVisible": "Le mot de passe est maintenant visible",
+      "passwordHidden": "Le mot de passe est maintenant masqué"
+    }
+  },
   "auth": {
     "common": {
       "email": "Email",

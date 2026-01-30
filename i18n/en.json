@@ -1,4 +1,15 @@
 {
+  "accessibility": {
+    "button": {
+      "loading": "Loading, please wait"
+    },
+    "input": {
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "passwordVisible": "Password is now visible",
+      "passwordHidden": "Password is now hidden"
+    }
+  },
   "auth": {
     "common": {
       "email": "Email",

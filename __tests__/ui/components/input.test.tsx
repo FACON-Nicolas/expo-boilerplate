@@ -53,17 +53,17 @@ describe('Input', () => {
   });
 
   it('renders password visibility toggle for secure text entry', () => {
-    const { getByTestId } = render(<Input secureTextEntry />);
+    const { getByLabelText } = render(<Input secureTextEntry />);
 
-    expect(getByTestId('icon-eye')).toBeTruthy();
+    expect(getByLabelText('accessibility.input.showPassword')).toBeTruthy();
   });
 
-  it('shows eye-off icon when password is visible', () => {
+  it('shows hide password button when password is visible', () => {
     mockIsPasswordVisible = true;
 
-    const { getByTestId } = render(<Input secureTextEntry />);
+    const { getByLabelText } = render(<Input secureTextEntry />);
 
-    expect(getByTestId('icon-eye-off')).toBeTruthy();
+    expect(getByLabelText('accessibility.input.hidePassword')).toBeTruthy();
   });
 
   it('does not show toggle when secureTextEntry is false', () => {

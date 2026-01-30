@@ -26,6 +26,7 @@ import {
   navigationIntegration,
 } from "@/infrastructure/monitoring/sentry/client";
 import { supabaseClient } from "@/infrastructure/supabase/client";
+import { heroUIConfig } from "@/ui/theme/heroui-config";
 
 import "@/i18n";
 
@@ -70,7 +71,7 @@ function RootLayout() {
         <StatusBar translucent />
         <ErrorBoundary fallback={(props) => <ErrorFallback {...props} />}>
           <SplashGate>
-            <HeroUINativeProvider>
+            <HeroUINativeProvider config={heroUIConfig}>
               <NavigationStack />
             </HeroUINativeProvider>
           </SplashGate>

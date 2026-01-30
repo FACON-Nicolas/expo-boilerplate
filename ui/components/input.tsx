@@ -1,5 +1,6 @@
 import { TextField } from "heroui-native";
-import { Pressable, type TextInputProps } from "react-native";
+import { useTranslation } from "react-i18next";
+import { AccessibilityInfo, Pressable, type TextInputProps } from "react-native";
 
 import { Icon } from "@/ui/components/icon";
 import { View } from "@/ui/components/view";
@@ -9,16 +10,33 @@ type InputProps = TextInputProps & {
   secureTextEntry?: boolean;
   label?: string;
   errorMessage?: string;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
 };
 
 export function Input({
   secureTextEntry,
   label,
   errorMessage,
+  accessibilityLabel,
+  accessibilityHint,
   ...props
 }: InputProps) {
+  const { t } = useTranslation();
   const [isPasswordVisible, togglePasswordVisibility] = useToggle(false);
   const isSecure = secureTextEntry && !isPasswordVisible;
+
+  const onPressPasswordToggle = () => {
+    togglePasswordVisibility();
+    const announcement = isPasswordVisible
+      ? t('accessibility.input.passwordHidden')
+      : t('accessibility.input.passwordVisible');
+    AccessibilityInfo.announceForAccessibility(announcement);
+  };
+
+  const passwordToggleLabel = isPasswordVisible
+    ? t('accessibility.input.hidePassword')
+    : t('accessibility.input.showPassword');
 
   return (
     <TextField isInvalid={!!errorMessage} className='w-full'>
@@ -31,18 +49,29 @@ export function Input({
           className='rounded-md bg-input-background p-4'
           autoCapitalize={"none"}
           secureTextEntry={isSecure}
+          accessibilityLabel={accessibilityLabel ?? label}
+          accessibilityHint={accessibilityHint}
+          accessibilityState={{ disabled: props.editable === false }}
         />
         {secureTextEntry && (
           <Pressable
-            onPress={togglePasswordVisibility}
+            onPress={onPressPasswordToggle}
             className='absolute right-4 top-1/2 -translate-y-1/2'
+            accessibilityRole="button"
+            accessibilityLabel={passwordToggleLabel}
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
           >
-            <Icon name={isPasswordVisible ? "eye-off" : "eye"} />
+            <Icon
+              name={isPasswordVisible ? "eye-off" : "eye"}
+              accessibilityElementsHidden
+            />
           </Pressable>
         )}
       </View>
       {errorMessage && (
-        <TextField.ErrorMessage>{errorMessage}</TextField.ErrorMessage>
+        <TextField.ErrorMessage accessibilityLiveRegion="polite">
+          {errorMessage}
+        </TextField.ErrorMessage>
       )}
     </TextField>
   );
