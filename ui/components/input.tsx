@@ -1,4 +1,4 @@
-import { TextField } from "heroui-native";
+import { FieldError, Input as HeroInput, Label, TextField } from "heroui-native";
 import { useTranslation } from "react-i18next";
 import { AccessibilityInfo, Pressable, type TextInputProps } from "react-native";
 
@@ -40,9 +40,9 @@ export function Input({
 
   return (
     <TextField isInvalid={!!errorMessage} className='w-full'>
-      {label && <TextField.Label>{label}</TextField.Label>}
+      {label && <Label>{label}</Label>}
       <View className='relative'>
-        <TextField.Input
+        <HeroInput
           {...props}
           keyboardType='default'
           key={isSecure ? "secure" : "visible"}
@@ -69,9 +69,9 @@ export function Input({
         )}
       </View>
       {errorMessage && (
-        <TextField.ErrorMessage accessibilityLiveRegion="polite">
+        <FieldError accessibilityLiveRegion="polite">
           {errorMessage}
-        </TextField.ErrorMessage>
+        </FieldError>
       )}
     </TextField>
   );

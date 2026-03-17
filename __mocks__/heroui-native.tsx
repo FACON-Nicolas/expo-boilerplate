@@ -38,17 +38,17 @@ function TextField({ children, isInvalid }: TextFieldProps) {
   );
 }
 
-TextField.Label = function TextFieldLabel({ children }: { children: ReactNode }) {
+function Label({ children }: { children: ReactNode }) {
   return <Text>{children}</Text>;
-};
+}
 
-TextField.Input = function TextFieldInput(props: Record<string, unknown>) {
+function Input(props: Record<string, unknown>) {
   return <TextInput {...props} />;
-};
+}
 
-TextField.ErrorMessage = function TextFieldErrorMessage({ children }: { children: ReactNode }) {
+function FieldError({ children }: { children: ReactNode }) {
   return <Text testID="error-message">{children}</Text>;
-};
+}
 
 type RadioGroupProps = {
   children: ReactNode;
@@ -91,16 +91,20 @@ RadioGroup.Item = function RadioGroupItem({ children, value, selectedValue, onSe
   );
 };
 
-RadioGroup.Indicator = function RadioGroupIndicator() {
-  return null;
+function Radio({ children }: { children: ReactNode }) {
+  return <View>{children}</View>;
+}
+
+Radio.Indicator = function RadioIndicator({ children }: { children?: ReactNode }) {
+  return <View>{children}</View>;
 };
 
-RadioGroup.Label = function RadioGroupLabel({ children }: { children: ReactNode }) {
-  return <Text>{children}</Text>;
+Radio.IndicatorThumb = function RadioIndicatorThumb() {
+  return null;
 };
 
 export function useThemeColor(colors: string[]) {
   return colors.map(() => '#000000');
 }
 
-export { Button, Spinner, TextField, RadioGroup };
+export { Button, FieldError, Input, Label, Radio, RadioGroup, Spinner, TextField };

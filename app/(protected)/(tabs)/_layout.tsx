@@ -1,10 +1,4 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
-import {
-  Icon,
-  Label,
-  NativeTabs,
-  VectorIcon,
-} from "expo-router/unstable-native-tabs";
+import { NativeTabs } from "expo-router/unstable-native-tabs";
 import { useThemeColor } from "heroui-native";
 import { useTranslation } from "react-i18next";
 
@@ -21,25 +15,19 @@ export default function RootLayout() {
       disableTransparentOnScrollEdge={isReducedTransparency}
     >
       <NativeTabs.Trigger name="index">
-        <Icon
+        <NativeTabs.Trigger.Icon
           sf={{ default: "house", selected: "house.fill" }}
-          androidSrc={{
-            default: <VectorIcon family={Ionicons} name="home-outline" />,
-            selected: <VectorIcon family={Ionicons} name="home" />,
-          }}
+          md="home"
         />
-        <Label>{t("tabs.home")}</Label>
+        <NativeTabs.Trigger.Label>{t("tabs.home")}</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="profile">
-        <Icon
+        <NativeTabs.Trigger.Icon
           sf={{ default: "person", selected: "person.fill" }}
-          androidSrc={{
-            default: <VectorIcon family={Ionicons} name="person-outline" />,
-            selected: <VectorIcon family={Ionicons} name="person" />,
-          }}
+          md="person"
         />
-        <Label>{t("tabs.profile")}</Label>
+        <NativeTabs.Trigger.Label>{t("tabs.profile")}</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
     </NativeTabs>
   );

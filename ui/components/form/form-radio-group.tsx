@@ -1,4 +1,4 @@
-import { RadioGroup } from "heroui-native";
+import { Label, Radio, RadioGroup } from "heroui-native";
 import {
   Controller,
   type Control,
@@ -34,8 +34,12 @@ export function FormRadioGroup<T extends FieldValues>({
               value={option.value}
               className="flex-row-reverse justify-between p-4 border border-border rounded-lg"
             >
-              <RadioGroup.Indicator />
-              <RadioGroup.Label className="text-base">{option.label}</RadioGroup.Label>
+              <Radio>
+                <Radio.Indicator>
+                  <Radio.IndicatorThumb />
+                </Radio.Indicator>
+              </Radio>
+              <Label className="text-base">{option.label}</Label>
             </RadioGroup.Item>
           ))}
         </RadioGroup>
