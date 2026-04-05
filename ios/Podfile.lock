@@ -28,6 +28,8 @@ PODS:
     - Yoga
   - ExpoAsset (55.0.12):
     - ExpoModulesCore
+  - ExpoAudio (55.0.11):
+    - ExpoModulesCore
   - ExpoBlur (55.0.12):
     - ExpoModulesCore
   - ExpoDomWebView (55.0.5):
@@ -2315,6 +2317,7 @@ DEPENDENCIES:
   - EXConstants (from `../node_modules/expo-constants/ios`)
   - Expo (from `../node_modules/expo`)
   - ExpoAsset (from `../node_modules/expo-asset/ios`)
+  - ExpoAudio (from `../node_modules/expo-audio/ios`)
   - ExpoBlur (from `../node_modules/expo-blur/ios`)
   - "ExpoDomWebView (from `../node_modules/@expo/dom-webview/ios`)"
   - ExpoFileSystem (from `../node_modules/expo-file-system/ios`)
@@ -2438,6 +2441,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo"
   ExpoAsset:
     :path: "../node_modules/expo-asset/ios"
+  ExpoAudio:
+    :path: "../node_modules/expo-audio/ios"
   ExpoBlur:
     :path: "../node_modules/expo-blur/ios"
   ExpoDomWebView:
@@ -2648,6 +2653,7 @@ SPEC CHECKSUMS:
   EXConstants: 9813b8a316e5b7bb562731c7a45e236f54195185
   Expo: f298f7cafc2bfeb81997ddeae502ce98a672ae7f
   ExpoAsset: 63f22b029eb9aa68d5048f77ff9430f42c770d2c
+  ExpoAudio: 0de9d744a2255359f09feeb012656ae25bed30f3
   ExpoBlur: 9f78729ced5ad7c2aa79fa5daceacfe5eb638903
   ExpoDomWebView: 2b2fbd9a07de8790569257cbf9dfdaa31cf95c70
   ExpoFileSystem: 05e8c679738bd90263f9ed32bfa221f7b52ebbe5

@@ -9,6 +9,7 @@ import {
   tint,
   disabled as disabledModifier,
   frame,
+  foregroundStyle,
 } from "@expo/ui/swift-ui/modifiers";
 import { useTranslation } from "react-i18next";
 
@@ -79,7 +80,12 @@ export function Button({
           ]}
           onPress={onPress as () => void}
         >
-          <Text modifiers={[frame({ minHeight: 36, maxWidth: Infinity })]}>
+          <Text
+            modifiers={[
+              frame({ minHeight: 36, maxWidth: Infinity }),
+              foregroundStyle(colors.background),
+            ]}
+          >
             {label}
           </Text>
         </SwiftButton>

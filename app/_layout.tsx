@@ -11,6 +11,7 @@ import { ErrorBoundary } from "@/core/presentation/components/error-boundary";
 import { ErrorFallback } from "@/core/presentation/components/error-fallback";
 import { SplashGate } from "@/core/presentation/components/splash-gate";
 import { initializeStorage } from "@/core/presentation/store/storage";
+import { useAudioInit } from "@/features/audio/presentation/hooks/use-audio-init";
 import { createSupabaseAuthRepository } from "@/features/auth/data/repositories/supabase-auth-repository";
 import { useAuthInit } from "@/features/auth/presentation/hooks/use-auth-init";
 import { useAuthentication } from "@/features/auth/presentation/hooks/use-authentication";
@@ -54,6 +55,7 @@ function NavigationStack() {
 function RootLayout() {
   const navigationRef = useNavigationContainerRef();
   useAuthInit();
+  useAudioInit();
 
   useEffect(() => {
     if (navigationRef.current) {
