@@ -18,7 +18,6 @@ export default tseslint.config(
       'scripts/**/*.js',
       'babel.config.js',
       'metro.config.cjs',
-      'tailwind.config.js',
       'jest.config.cjs',
       'jest.setup.ts',
       'commitlint.config.cjs',

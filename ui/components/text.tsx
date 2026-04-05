@@ -1,29 +1,56 @@
-import { Text as RNText, type TextProps as RNTextProps } from 'react-native';
-import { tv, type VariantProps } from 'tailwind-variants';
+import { Text as RNText, StyleSheet } from 'react-native';
 
-const textVariants = tv({
-  base: 'text-text',
-  variants: {
-    variant: {
-      default: 'text-base leading-relaxed',
-      title: 'text-xl font-bold leading-tight',
-      subtitle: 'text-lg font-bold',
-      semibold: 'text-base font-semibold leading-relaxed',
-      link: 'text-base text-link leading-relaxed',
-      error: 'text-sm text-error',
-    },
-  },
-  defaultVariants: {
-    variant: 'default',
-  },
-});
+import { useThemeColors } from '@/ui/theme/use-theme-colors';
 
-type TextVariants = VariantProps<typeof textVariants>;
+import type { TextProps as RNTextProps } from 'react-native';
 
-type TextProps = RNTextProps & TextVariants;
+type TextVariant = 'default' | 'title' | 'subtitle' | 'semibold' | 'link' | 'error';
 
-export function Text({ variant, className, ...props }: TextProps) {
+type TextProps = RNTextProps & {
+  variant?: TextVariant;
+};
+
+export function Text({ variant = 'default', style, ...props }: TextProps) {
+  const colors = useThemeColors();
+
+  const variantColor = variant === 'link'
+    ? colors.link
+    : variant === 'error'
+      ? colors.error
+      : colors.text;
+
   return (
-    <RNText className={textVariants({ variant, className })} {...props} />
+    <RNText
+      style={[styles.base, { color: variantColor }, styles[variant], style]}
+      {...props}
+    />
   );
 }
+
+const styles = StyleSheet.create({
+  base: {
+    fontSize: 16,
+  },
+  default: {
+    lineHeight: 28,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    lineHeight: 25,
+  },
+  subtitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  semibold: {
+    fontWeight: '600',
+    lineHeight: 28,
+  },
+  link: {
+    lineHeight: 28,
+  },
+  error: {
+    fontSize: 14,
+  },
+});

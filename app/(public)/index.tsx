@@ -31,7 +31,7 @@ export default function Index() {
   const onSubmitSignIn = handleSubmit(async (data) => await signIn(data));
 
   return (
-    <View className="flex-1 justify-center gap-2.5 p-2.5">
+    <View style={{ flex: 1, justifyContent: 'center', gap: 10, padding: 10 }}>
       <Text variant="subtitle">{t("auth.login.title")}</Text>
       {error && <Text variant="error">{t(error.message)}</Text>}
       <FormTextField
@@ -53,7 +53,7 @@ export default function Index() {
       <Button onPress={onSubmitSignIn} isLoading={isUserLoading}>
         {t("auth.login.button")}
       </Button>
-      <Link href="/(public)/sign-up" className="text-center">
+      <Link href="/(public)/sign-up" style={{ textAlign: 'center' }}>
         {t("auth.login.link")}
       </Link>
     </View>

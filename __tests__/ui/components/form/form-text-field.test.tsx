@@ -1,6 +1,6 @@
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import { useForm } from 'react-hook-form';
-import { TextInput, View } from 'react-native';
+import { View } from 'react-native';
 
 import { FormTextField } from '@/ui/components/form/form-text-field';
 
@@ -66,16 +66,11 @@ describe('FormTextField', () => {
       </TestWrapper>
     );
 
-    const textField = getByTestId('text-field');
-    const textInputs = textField.findAllByType(TextInput);
+    fireEvent.changeText(getByTestId('text-field'), 'test@example.com');
 
-    if (textInputs.length > 0) {
-      fireEvent.changeText(textInputs[0], 'test@example.com');
-
-      await waitFor(() => {
-        expect(formInstance?.getValues('email')).toBe('test@example.com');
-      });
-    }
+    await waitFor(() => {
+      expect(formInstance?.getValues('email')).toBe('test@example.com');
+    });
   });
 
   it('renders with secure text entry for password', () => {
@@ -96,7 +91,7 @@ describe('FormTextField', () => {
   });
 
   it('passes placeholder to input', () => {
-    const { getByTestId } = render(
+    const { getByPlaceholderText } = render(
       <TestWrapper>
         {(form) => (
           <FormTextField
@@ -108,11 +103,6 @@ describe('FormTextField', () => {
       </TestWrapper>
     );
 
-    const textField = getByTestId('text-field');
-    const textInputs = textField.findAllByType(TextInput);
-
-    if (textInputs.length > 0) {
-      expect(textInputs[0].props.placeholder).toBe('Enter your email');
-    }
+    expect(getByPlaceholderText('Enter your email')).toBeTruthy();
   });
 });

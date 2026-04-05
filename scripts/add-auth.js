@@ -236,8 +236,8 @@ import { Text } from '@/ui/components/text';
 
 export default function SignInScreen() {
   return (
-    <View className="flex-1 items-center justify-center p-4">
-      <Text className="text-2xl font-bold mb-4">Sign In</Text>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+      <Text variant="title">Sign In</Text>
     </View>
   );
 }
@@ -249,8 +249,8 @@ import { Text } from '@/ui/components/text';
 
 export default function SignUpScreen() {
   return (
-    <View className="flex-1 items-center justify-center p-4">
-      <Text className="text-2xl font-bold mb-4">Sign Up</Text>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+      <Text variant="title">Sign Up</Text>
     </View>
   );
 }

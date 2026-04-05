@@ -4,21 +4,23 @@ import { Button } from '@/ui/components/button';
 import { SafeAreaView } from '@/ui/components/safe-area-view';
 import { Text } from '@/ui/components/text';
 import { View } from '@/ui/components/view';
+import { useThemeColors } from '@/ui/theme/use-theme-colors';
 
 import type { ErrorBoundaryFallbackProps } from '@/core/presentation/components/error-boundary';
 
 export function ErrorFallback({ error, onRetry }: ErrorBoundaryFallbackProps) {
   const { t } = useTranslation();
+  const colors = useThemeColors();
 
   return (
-    <SafeAreaView className="flex-1 justify-center items-center p-6 gap-6">
-      <View className="items-center gap-4">
+    <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24, gap: 24 }}>
+      <View style={{ alignItems: 'center', gap: 16 }}>
         <Text variant="title">{t('errorBoundary.title')}</Text>
-        <Text className="text-center text-default-500">
+        <Text style={{ textAlign: 'center', color: colors.placeholder }}>
           {t('errorBoundary.description')}
         </Text>
         {__DEV__ && (
-          <Text variant="error" className="text-center text-sm">
+          <Text variant="error" style={{ textAlign: 'center', fontSize: 14 }}>
             {error.message}
           </Text>
         )}

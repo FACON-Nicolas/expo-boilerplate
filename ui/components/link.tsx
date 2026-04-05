@@ -1,15 +1,22 @@
-import { Link as ExpoLink, type LinkProps as ExpoLinkProps } from 'expo-router';
-import { twMerge } from 'tailwind-merge';
+import { Link as ExpoLink } from 'expo-router';
+import { StyleSheet } from 'react-native';
 
-type LinkProps = ExpoLinkProps & {
-  className?: string;
-};
+import { useThemeColors } from '@/ui/theme/use-theme-colors';
 
-export function Link({ className, ...props }: LinkProps) {
+import type { LinkProps as ExpoLinkProps } from 'expo-router';
+
+export function Link({ style, ...props }: ExpoLinkProps) {
+  const colors = useThemeColors();
   return (
     <ExpoLink
-      className={twMerge('text-base text-link', className)}
+      style={[styles.base, { color: colors.link }, style]}
       {...props}
     />
   );
 }
+
+const styles = StyleSheet.create({
+  base: {
+    fontSize: 16,
+  },
+});

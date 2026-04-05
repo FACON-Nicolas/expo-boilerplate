@@ -6,7 +6,7 @@ import { Skeleton, SkeletonGroup } from '@/ui/components/skeleton';
 
 function LoadingSkeleton() {
   return (
-    <SafeAreaView className="p-6 gap-4">
+    <SafeAreaView style={{ padding: 24, gap: 16 }}>
       <SkeletonGroup>
         <Skeleton variant="title" />
         <Skeleton variant="text" />

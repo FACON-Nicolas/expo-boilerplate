@@ -30,7 +30,7 @@ export default function SignUp() {
   const onSubmitSignUp = handleSubmit(async (data) => await signUp(data));
 
   return (
-    <View className="flex-1 justify-center gap-2.5 p-2.5">
+    <View style={{ flex: 1, justifyContent: 'center', gap: 10, padding: 10 }}>
       <Text variant="subtitle">{t("auth.signUp.title")}</Text>
       {error && <Text variant="error">{t(error.message)}</Text>}
       <FormTextField
@@ -60,7 +60,7 @@ export default function SignUp() {
       <Button onPress={onSubmitSignUp} isLoading={isUserLoading}>
         {t("auth.signUp.button")}
       </Button>
-      <Link href="/(public)" className="text-center">
+      <Link href="/(public)" style={{ textAlign: 'center' }}>
         {t("auth.signUp.link")}
       </Link>
     </View>

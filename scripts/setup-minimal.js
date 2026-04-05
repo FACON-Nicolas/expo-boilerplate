@@ -93,11 +93,8 @@ export const env = validateEnv();
 };
 
 const createMinimalLayout = () => {
-  const minimalLayout = `import "@/global.css";
-
-import { QueryClientProvider } from "@tanstack/react-query";
+  const minimalLayout = `import { QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
-import { HeroUINativeProvider } from "heroui-native";
 import { StatusBar } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -123,9 +120,7 @@ export default function RootLayout() {
         <StatusBar translucent />
         <ErrorBoundary fallback={(props) => <ErrorFallback {...props} />}>
           <SplashGate>
-            <HeroUINativeProvider>
-              <NavigationStack />
-            </HeroUINativeProvider>
+            <NavigationStack />
           </SplashGate>
         </ErrorBoundary>
       </QueryClientProvider>
@@ -142,9 +137,9 @@ import { Text } from '@/ui/components/text';
 
 export default function HomeScreen() {
   return (
-    <View className="flex-1 items-center justify-center p-4">
-      <Text className="text-2xl font-bold mb-4">Welcome</Text>
-      <Text className="text-base text-gray-600 text-center">
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+      <Text variant="title">Welcome</Text>
+      <Text style={{ textAlign: 'center' }}>
         Your minimal Expo boilerplate is ready.
       </Text>
     </View>

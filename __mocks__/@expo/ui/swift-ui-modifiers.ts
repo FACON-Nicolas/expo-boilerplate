@@ -1,0 +1,12 @@
+export const buttonStyle = (style: string) => ({ type: 'buttonStyle', style });
+export const controlSize = (size: string) => ({ type: 'controlSize', size });
+export const tint = (color: string | undefined) => ({ type: 'tint', color });
+export const disabled = (value = true) => ({ type: 'disabled', value });
+export const progressViewStyle = (style: string) => ({ type: 'progressViewStyle', style });
+export const padding = (params: object) => ({ type: 'padding', params });
+export const foregroundStyle = (params: object) => ({ type: 'foregroundStyle', params });
+export const font = (params: object) => ({ type: 'font', params });
+export const frame = (params: object) => ({ type: 'frame', params });
+export const background = (color: string) => ({ type: 'background', color });
+export const clipShape = (shape: string) => ({ type: 'clipShape', shape });
+export const labelStyle = (style: string) => ({ type: 'labelStyle', style });

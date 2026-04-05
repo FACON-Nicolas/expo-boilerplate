@@ -16,7 +16,7 @@ describe('Button', () => {
       <Button onPress={onPressMock}>Press me</Button>
     );
 
-    fireEvent.press(getByTestId('heroui-button'));
+    fireEvent.press(getByTestId('button'));
 
     expect(onPressMock).toHaveBeenCalledTimes(1);
   });
@@ -29,21 +29,21 @@ describe('Button', () => {
       </Button>
     );
 
-    fireEvent.press(getByTestId('heroui-button'));
+    fireEvent.press(getByTestId('button'));
 
     expect(onPressMock).not.toHaveBeenCalled();
   });
 
   it('shows spinner when isLoading is true', () => {
-    const { getByTestId, queryByText } = render(
+    const { getByTestId, queryByTestId } = render(
       <Button isLoading>Loading</Button>
     );
 
     expect(getByTestId('spinner')).toBeTruthy();
-    expect(queryByText('Loading')).toBeNull();
+    expect(queryByTestId('button')).toBeNull();
   });
 
-  it('is disabled when isLoading is true', () => {
+  it('does not call onPress when isLoading is true', () => {
     const onPressMock = jest.fn();
     const { getByTestId } = render(
       <Button onPress={onPressMock} isLoading>
@@ -51,8 +51,7 @@ describe('Button', () => {
       </Button>
     );
 
-    fireEvent.press(getByTestId('heroui-button'));
-
+    expect(getByTestId('spinner')).toBeTruthy();
     expect(onPressMock).not.toHaveBeenCalled();
   });
 
@@ -60,10 +59,10 @@ describe('Button', () => {
     const variants = ['primary', 'secondary', 'danger', 'ghost'] as const;
 
     variants.forEach((variant) => {
-      const { getByText } = render(
+      const { getByTestId } = render(
         <Button variant={variant}>{variant} button</Button>
       );
-      expect(getByText(`${variant} button`)).toBeTruthy();
+      expect(getByTestId('button')).toBeTruthy();
     });
   });
 
@@ -71,10 +70,10 @@ describe('Button', () => {
     const sizes = ['sm', 'md', 'lg'] as const;
 
     sizes.forEach((size) => {
-      const { getByText } = render(
+      const { getByTestId } = render(
         <Button size={size}>{size} button</Button>
       );
-      expect(getByText(`${size} button`)).toBeTruthy();
+      expect(getByTestId('button')).toBeTruthy();
     });
   });
 });

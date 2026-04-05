@@ -11,10 +11,10 @@ export default function Profile() {
   const { signOut } = useAuth();
 
   return (
-    <SafeAreaView className='px-5 gap-2.5'>
+    <SafeAreaView style={{ paddingHorizontal: 20, gap: 10 }}>
       <Text>{t("profile.title")}</Text>
 
-      <View className='mt-auto mb-4'>
+      <View style={{ marginTop: 'auto', marginBottom: 16 }}>
         <Button onPress={signOut} variant='danger'>
           {t("profile.signOut")}
         </Button>

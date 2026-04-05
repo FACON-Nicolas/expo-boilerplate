@@ -1,12 +1,13 @@
 import { NativeTabs } from "expo-router/unstable-native-tabs";
-import { useThemeColor } from "heroui-native";
 import { useTranslation } from "react-i18next";
 
 import { useReducedTransparency } from "@/core/presentation/hooks/use-accessibility";
+import { useThemeColors } from "@/ui/theme/use-theme-colors";
 
 export default function RootLayout() {
   const { t } = useTranslation();
-  const [tintColor] = useThemeColor(["accent"]);
+  const colors = useThemeColors();
+  const tintColor = colors.tint;
   const isReducedTransparency = useReducedTransparency();
 
   return (

@@ -47,9 +47,9 @@ describe("Text", () => {
     expect(getByText("Error text")).toBeTruthy();
   });
 
-  it("applies custom className", () => {
+  it("applies custom style", () => {
     const { getByText } = render(
-      <Text className='custom-class'>Custom styled text</Text>,
+      <Text style={{ color: 'red' }}>Custom styled text</Text>,
     );
 
     expect(getByText("Custom styled text")).toBeTruthy();

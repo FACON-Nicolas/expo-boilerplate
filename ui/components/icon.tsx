@@ -1,10 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 
+import { useThemeColors } from '@/ui/theme/use-theme-colors';
+
 type IconProps = {
   name: keyof typeof Ionicons.glyphMap;
   size?: number;
   color?: string;
-  className?: string;
   accessibilityLabel?: string;
   accessibilityElementsHidden?: boolean;
 };
@@ -13,16 +14,15 @@ export function Icon({
   name,
   size = 24,
   color,
-  className,
   accessibilityLabel,
   accessibilityElementsHidden = !accessibilityLabel,
 }: IconProps) {
+  const colors = useThemeColors();
   return (
     <Ionicons
       name={name}
       size={size}
-      color={color}
-      className={className ?? 'text-icon'}
+      color={color ?? colors.icon}
       accessibilityRole={accessibilityLabel ? 'image' : undefined}
       accessibilityLabel={accessibilityLabel}
       accessibilityElementsHidden={accessibilityElementsHidden}

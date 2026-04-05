@@ -54,11 +54,8 @@ const removeAuthFromLayout = () => {
     return;
   }
 
-  const newLayout = `import "@/global.css";
-
-import { QueryClientProvider } from "@tanstack/react-query";
+  const newLayout = `import { QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
-import { HeroUINativeProvider } from "heroui-native";
 import { StatusBar } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -84,9 +81,7 @@ export default function RootLayout() {
         <StatusBar translucent />
         <ErrorBoundary fallback={(props) => <ErrorFallback {...props} />}>
           <SplashGate>
-            <HeroUINativeProvider>
-              <NavigationStack />
-            </HeroUINativeProvider>
+            <NavigationStack />
           </SplashGate>
         </ErrorBoundary>
       </QueryClientProvider>
