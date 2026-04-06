@@ -34,6 +34,10 @@
   "profile": {
     "title": "Profil",
     "signOut": "Déconnexion",
+    "sonioxApiKey": "Clé API Soniox",
+    "sonioxApiKeyPlaceholder": "Collez votre clé API temporaire",
+    "saveSonioxApiKey": "Enregistrer la clé API",
+    "sonioxApiKeySaved": "Clé API enregistrée",
     "firstname": "Prénom",
     "lastname": "Nom de famille",
     "save": "Enregistrer le profil",
@@ -70,6 +74,24 @@
   },
   "toast": {
     "errorTitle": "Erreur"
+  },
+  "speechToText": {
+    "errors": {
+      "permissionDenied": "La permission de reconnaissance vocale a été refusée. Veuillez l'activer dans les Réglages.",
+      "notAvailable": "La reconnaissance vocale n'est pas disponible sur cet appareil.",
+      "noSpeechDetected": "Aucune parole détectée. Veuillez réessayer.",
+      "recognitionFailed": "La reconnaissance vocale a échoué. Veuillez réessayer.",
+      "networkError": "Une connexion réseau est nécessaire pour la reconnaissance vocale.",
+      "audioError": "Une erreur audio s'est produite pendant la reconnaissance vocale.",
+      "apiKeyMissing": "Veuillez configurer votre clé API Soniox dans les paramètres du Profil.",
+      "uploadFailed": "Échec de l'envoi du fichier audio.",
+      "transcriptionFailed": "La transcription a échoué. Veuillez réessayer."
+    },
+    "status": {
+      "idle": "Prêt",
+      "transcribing": "Transcription en cours...",
+      "completed": "Transcription terminée"
+    }
   },
   "errors": {
     "email": {

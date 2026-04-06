@@ -12,6 +12,7 @@ export const useAudioRecorder = () => {
   const startPlayback = useAudioStore((state) => state.startPlayback);
   const stopPlayback = useAudioStore((state) => state.stopPlayback);
   const clearError = useAudioStore((state) => state.clearError);
+  const clearRecording = useAudioStore((state) => state.clearRecording);
 
   return {
     isRecording,
@@ -25,5 +26,6 @@ export const useAudioRecorder = () => {
     startPlayback,
     stopPlayback,
     clearError,
+    clearRecording,
   };
 };

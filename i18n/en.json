@@ -34,6 +34,10 @@
   "profile": {
     "title": "Profile",
     "signOut": "Sign Out",
+    "sonioxApiKey": "Soniox API Key",
+    "sonioxApiKeyPlaceholder": "Paste your temporary API key",
+    "saveSonioxApiKey": "Save API Key",
+    "sonioxApiKeySaved": "API Key Saved",
     "firstname": "First Name",
     "lastname": "Last Name",
     "save": "Save Profile",
@@ -70,6 +74,24 @@
   },
   "toast": {
     "errorTitle": "Error"
+  },
+  "speechToText": {
+    "errors": {
+      "permissionDenied": "Speech recognition permission was denied. Please enable it in Settings.",
+      "notAvailable": "Speech recognition is not available on this device.",
+      "noSpeechDetected": "No speech was detected. Please try again.",
+      "recognitionFailed": "Speech recognition failed. Please try again.",
+      "networkError": "A network connection is required for speech recognition.",
+      "audioError": "An audio error occurred during speech recognition.",
+      "apiKeyMissing": "Please set your Soniox API key in Profile settings.",
+      "uploadFailed": "Failed to upload audio file.",
+      "transcriptionFailed": "Transcription failed. Please try again."
+    },
+    "status": {
+      "idle": "Ready",
+      "transcribing": "Transcribing...",
+      "completed": "Transcription complete"
+    }
   },
   "errors": {
     "email": {

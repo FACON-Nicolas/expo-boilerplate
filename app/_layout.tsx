@@ -19,6 +19,7 @@ import { initializeAuthRepository } from "@/features/auth/presentation/store/aut
 import { initializeAuthStore } from "@/features/auth/presentation/store/auth-store";
 import { createSupabaseProfileRepository } from "@/features/profile/data/repositories/supabase-profile-repository";
 import { initializeProfileRepository } from "@/features/profile/presentation/store/profile-repository";
+import { useSpeechRecognitionInit } from "@/features/speech-to-text/presentation/hooks/use-speech-recognition-init";
 import {
   initializeSentry,
   navigationIntegration,
@@ -56,6 +57,7 @@ function RootLayout() {
   const navigationRef = useNavigationContainerRef();
   useAuthInit();
   useAudioInit();
+  useSpeechRecognitionInit();
 
   useEffect(() => {
     if (navigationRef.current) {

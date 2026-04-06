@@ -25,6 +25,7 @@ type AudioActions = {
   addAmplitudeSample: (sample: AmplitudeSample) => void;
   setCurrentTimeMs: (ms: number) => void;
   clearError: () => void;
+  clearRecording: () => void;
 };
 
 type AudioStore = AudioState & AudioActions;
@@ -92,6 +93,12 @@ const createAudioStore = (
 
     clearError: () => {
       set({ error: null });
+    },
+
+    clearRecording: () => {
+      set({
+        ...initialState,
+      });
     },
   }));
 
