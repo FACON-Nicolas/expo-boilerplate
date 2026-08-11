@@ -10,3 +10,5 @@ export const frame = (params: object) => ({ type: 'frame', params });
 export const background = (color: string) => ({ type: 'background', color });
 export const clipShape = (shape: string) => ({ type: 'clipShape', shape });
 export const labelStyle = (style: string) => ({ type: 'labelStyle', style });
+export const keyboardType = (type: string) => ({ type: 'keyboardType', value: type });
+export const autocorrectionDisabled = (disabled = true) => ({ type: 'autocorrectionDisabled', disabled });

@@ -2,8 +2,8 @@
 
 <div align="center">
 
-![Expo](https://img.shields.io/badge/Expo-54-000020?style=for-the-badge&logo=expo&logoColor=white)
-![React Native](https://img.shields.io/badge/React_Native-0.81-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Expo](https://img.shields.io/badge/Expo-57-000020?style=for-the-badge&logo=expo&logoColor=white)
+![React Native](https://img.shields.io/badge/React_Native-0.86-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
@@ -20,7 +20,7 @@
 | Category | Technologies |
 |----------|--------------|
 | 🏗️ **Architecture** | Clean Architecture, Feature-Based, Strict ESLint Boundaries |
-| 📱 **Framework** | Expo SDK 54, React Native 0.81, New Architecture |
+| 📱 **Framework** | Expo SDK 57, React Native 0.86, New Architecture (iOS only) |
 | 🧭 **Navigation** | Expo Router 6 (file-based routing) |
 | 🎨 **UI** | HeroUI Native, Uniwind (Tailwind CSS v4) |
 | 📝 **Forms** | React Hook Form + Zod validation |
@@ -50,7 +50,6 @@ cp .env.example .env
 
 # 4. Run the app
 npm run ios     # iOS Simulator
-npm run android # Android Emulator
 ```
 
 > 📖 For detailed setup instructions, see [Getting Started](./docs/getting-started.md)
@@ -145,7 +144,6 @@ expo-boilerplate/
 ```bash
 npm start          # Start Expo dev server
 npm run ios        # Run on iOS simulator
-npm run android    # Run on Android emulator
 npm test           # Run tests
 npm run lint       # Check code quality
 ```
@@ -195,7 +193,7 @@ npx eas build --profile development --platform ios
 ### Production Build
 
 ```bash
-npx eas build --profile production --platform all
+npx eas build --profile production --platform ios
 ```
 
 ### OTA Update

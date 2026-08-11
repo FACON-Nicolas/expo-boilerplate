@@ -369,7 +369,7 @@ OTA update rejected due to fingerprint mismatch.
 This means native code changed. You need a new build:
 
 ```bash
-npx eas build --profile production --platform all
+npx eas build --profile production --platform ios
 ```
 
 ---

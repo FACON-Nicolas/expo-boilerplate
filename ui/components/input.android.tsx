@@ -1,4 +1,4 @@
-import { Host, TextInput as ComposeTextInput } from '@expo/ui/jetpack-compose';
+import { Host, TextInput as ComposeTextInput } from '@expo/ui';
 import { useTranslation } from 'react-i18next';
 import { AccessibilityInfo, Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -54,7 +54,7 @@ export function Input({
             defaultValue={value}
             keyboardType={resolvedKeyboardType as 'default'}
             onChangeText={onChangeText as (value: string) => void}
-            autocorrection={false}
+            autoCorrect={false}
           />
         </Host>
         {secureTextEntry && (

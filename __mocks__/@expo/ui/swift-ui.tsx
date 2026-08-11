@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Pressable, Text as RNText, TextInput, View } from 'react-native';
 
 import type { ReactNode } from 'react';
@@ -82,4 +83,9 @@ export type TextFieldRef = { setText: (value: string) => void };
 export type SecureFieldRef = { setText: (value: string) => void };
 export type TextFieldKeyboardType = string;
 
-export { Host, Button, ProgressView, TextField, SecureField, Text };
+function useNativeState<T>(initialValue: T) {
+  const [value, setValue] = useState(initialValue);
+  return { value, get: () => value, set: setValue };
+}
+
+export { Host, Button, ProgressView, TextField, SecureField, Text, useNativeState };

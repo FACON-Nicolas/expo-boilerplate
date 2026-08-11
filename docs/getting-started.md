@@ -102,12 +102,6 @@ create policy "Users can insert own profile"
 npm run ios
 ```
 
-### Android Emulator
-
-```bash
-npm run android
-```
-
 ### Expo Go (Limited)
 
 ```bash
@@ -132,15 +126,9 @@ npx eas build:configure
 npx eas build --profile development --platform ios
 ```
 
-### 3. Build for Android Emulator
+### 3. Install and Run
 
-```bash
-npx eas build --profile development --platform android
-```
-
-### 4. Install and Run
-
-After the build completes, download and install the `.app` (iOS) or `.apk` (Android) file, then:
+After the build completes, download and install the iOS `.app`, then:
 
 ```bash
 npm start
@@ -161,9 +149,7 @@ npm start
     "ios": {
       "bundleIdentifier": "com.yourcompany.yourapp"
     },
-    "android": {
-      "package": "com.yourcompany.yourapp"
-    }
+    "platforms": ["ios"]
   }
 }
 ```
@@ -208,7 +194,6 @@ All commands should pass without errors.
 |---------|-------------|
 | `npm start` | Start Expo dev server |
 | `npm run ios` | Run on iOS simulator |
-| `npm run android` | Run on Android emulator |
 | `npm test` | Run tests |
 | `npm run lint` | Check code quality |
 | `npm run add:feature <name>` | Scaffold a new feature |

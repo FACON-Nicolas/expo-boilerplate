@@ -1,6 +1,6 @@
 # Deployment Guide
 
-This guide covers building, deploying, and publishing your Expo app to the App Store and Play Store.
+This guide covers building, deploying, and publishing your Expo app to the Apple App Store.
 
 ## Overview
 
@@ -43,8 +43,6 @@ For local development with dev tools enabled.
 # Build for iOS Simulator
 npx eas build --profile development --platform ios
 
-# Build for Android Emulator
-npx eas build --profile development --platform android
 ```
 
 ### Preview
@@ -64,12 +62,12 @@ For internal testing and QA.
 ```
 
 ```bash
-npx eas build --profile preview --platform all
+npx eas build --profile preview --platform ios
 ```
 
 ### Production
 
-For App Store / Play Store submission.
+For App Store submission.
 
 ```json
 {
@@ -84,7 +82,7 @@ For App Store / Play Store submission.
 ```
 
 ```bash
-npx eas build --profile production --platform all
+npx eas build --profile production --platform ios
 ```
 
 ---
@@ -157,7 +155,7 @@ jobs:
 
       - name: Build (if needed)
         if: needs.check.outputs.needs_build == 'true'
-        run: eas build --profile production --platform all
+        run: eas build --profile production --platform ios
 
       - name: Publish OTA Update
         run: eas update --branch production
@@ -179,7 +177,7 @@ jobs:
     name: Deploy Preview
     steps:
       - name: Build Preview
-        run: eas build --profile preview --platform all
+        run: eas build --profile preview --platform ios
 
       - name: Publish OTA Update
         run: eas update --branch preview
@@ -331,33 +329,7 @@ npx eas submit --platform ios
    - Privacy policy URL
    - Support URL
 
-### Android (Play Store)
-
-#### Prerequisites
-
-1. Google Play Developer account ($25 one-time)
-2. Play Console app created
-3. Signing key (handled by EAS)
-
-#### Build and Submit
-
-```bash
-# Build for production
-npx eas build --profile production --platform android
-
-# Submit to Play Store
-npx eas submit --platform android
-```
-
-#### Play Console Configuration
-
-1. Go to [Play Console](https://play.google.com/console)
-2. Create a new app
-3. Fill in store listing:
-   - App name, description
-   - Screenshots and feature graphic
-   - Privacy policy URL
-   - Content rating questionnaire
+<!-- Android deployment is intentionally unsupported; this project targets iOS only. -->
 
 ---
 

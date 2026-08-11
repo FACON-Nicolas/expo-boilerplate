@@ -1,4 +1,5 @@
-import { Host, SecureField as SwiftSecureField, TextField as SwiftTextField } from '@expo/ui/swift-ui';
+import { Host, SecureField as SwiftSecureField, TextField as SwiftTextField, useNativeState } from '@expo/ui/swift-ui';
+import { autocorrectionDisabled, keyboardType as keyboardTypeModifier } from '@expo/ui/swift-ui/modifiers';
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AccessibilityInfo, Pressable, StyleSheet, Text, View } from 'react-native';
@@ -7,7 +8,7 @@ import { Icon } from '@/ui/components/icon';
 import { useToggle } from '@/ui/hooks/use-toggle';
 import { useThemeColors } from '@/ui/theme/use-theme-colors';
 
-import type { SecureFieldRef, TextFieldKeyboardType, TextFieldRef } from '@expo/ui/swift-ui';
+import type { SecureFieldRef, TextFieldRef } from '@expo/ui/swift-ui';
 import type { TextInputProps } from 'react-native';
 
 type InputProps = TextInputProps & {
@@ -30,17 +31,15 @@ export function Input({
   const colors = useThemeColors();
   const [isPasswordVisible, togglePasswordVisibility] = useToggle(false);
   const isSecure = secureTextEntry && !isPasswordVisible;
+  const nativeKeyboardType = (keyboardType ?? 'default') as Parameters<typeof keyboardTypeModifier>[0];
   const textFieldRef = useRef<TextFieldRef>(null);
   const secureFieldRef = useRef<SecureFieldRef>(null);
+  const textState = useNativeState(value ?? '');
 
   useEffect(() => {
     if (value === undefined) return;
-    if (isSecure) {
-      secureFieldRef.current?.setText(value);
-    } else {
-      textFieldRef.current?.setText(value);
-    }
-  }, [value, isSecure]);
+    textState.set(value);
+  }, [textState, value]);
 
   const onPressPasswordToggle = () => {
     togglePasswordVisibility();
@@ -64,23 +63,25 @@ export function Input({
           {isSecure ? (
             <SwiftSecureField
               ref={secureFieldRef}
-              defaultValue={value}
+              text={textState}
               placeholder={placeholder}
-              keyboardType={keyboardType as TextFieldKeyboardType}
-              onChangeText={onChangeText}
-              onChangeFocus={(focused) => {
+              modifiers={[keyboardTypeModifier(nativeKeyboardType)]}
+              onTextChange={onChangeText}
+              onFocusChange={(focused: boolean) => {
                 if (!focused) (onBlur as (() => void) | undefined)?.();
               }}
             />
           ) : (
             <SwiftTextField
               ref={textFieldRef}
-              defaultValue={value}
+              text={textState}
               placeholder={placeholder}
-              keyboardType={keyboardType as TextFieldKeyboardType}
-              autocorrection={false}
-              onChangeText={onChangeText}
-              onChangeFocus={(focused) => {
+              modifiers={[
+                keyboardTypeModifier(nativeKeyboardType),
+                autocorrectionDisabled(),
+              ]}
+              onTextChange={onChangeText}
+              onFocusChange={(focused: boolean) => {
                 if (!focused) (onBlur as (() => void) | undefined)?.();
               }}
             />
